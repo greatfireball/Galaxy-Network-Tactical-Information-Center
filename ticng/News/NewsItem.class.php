@@ -19,7 +19,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.  *
  *                                                                                   *
  *************************************************************************************/
-
+//FIXME getGala hinzufügen ?!
 class NewsItem {
     var $_id = null;          //id der nachricht
     var $_sender = null;      //id des sendenden ticusers

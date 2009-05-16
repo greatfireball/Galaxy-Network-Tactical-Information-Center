@@ -20,7 +20,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.  *
  *                                                                                   *
  *************************************************************************************/
-
+/* TODO : IFace für Classen schreiben die Right benutzrn */
 require_once('capabilities.php');
 
 class Right extends TICModule
