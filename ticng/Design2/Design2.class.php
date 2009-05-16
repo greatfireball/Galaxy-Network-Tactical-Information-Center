@@ -24,9 +24,9 @@ require_once('Template.class.php');
 
 class Design2 extends TICModule
 {
-    var $_design = 'default';
-    var $_path = '';
-    var $_main_template = 'main.tpl';
+    private $_design = 'default';
+    private $_path = '';
+    private $_main_template = 'main.tpl';
     
     function Design2()
     {
@@ -39,6 +39,21 @@ class Design2 extends TICModule
             "Core" => "1","ADOdb" => "2"
         ));
     }     
+    
+   	function get_Design()
+	{
+		return $this->_design;
+	}
+	
+	function get_Design_path()
+	{
+		return $this->_path;
+	}
+	
+	function get_Design_maintpl()
+	{
+		return $this->_main_template;
+	} 
     
     function onLoad()
     {

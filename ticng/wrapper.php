@@ -65,7 +65,7 @@ elseif ($tic->modExists($active_mod))
 else
     die("Module '$active_mod' does not exist!");
 
-if ($tic->mod['Design']->show === false) {
+if ($tic->mod['Design']->getShow() === false) {
     switch ($_GET['extern']) {
         case 'scans':
             // Ausgaben ohne smarty fuer extenr oder so

@@ -47,8 +47,8 @@ if( !function_exists('ftok') ) {
 
 class Ticker extends TICModule
 {
-    var $_thisTick = 0;
-    var $_frequenceTick = 15;
+    private $_thisTick = 0;
+    private $_frequenceTick = 15;
     
     function Ticker()
     {

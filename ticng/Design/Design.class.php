@@ -32,12 +32,12 @@ require('smarty/Smarty.class.php');
 
 class Design extends TICModule
 {
-    var $_design = 'default';
-    var $_design_path = '';
-    var $_design_maintpl = 'main.tpl';
-    var $show = true;
+    private $_design = 'default';
+    private $_design_path = '';
+    private $_design_maintpl = 'main.tpl';
+    private $show = true;
     
-    var $_smarty;
+    private $_smarty;
 
     function Design()
     {
@@ -50,6 +50,21 @@ class Design extends TICModule
             "Core" => "1"
         ));
     }
+    
+	function get_Design()
+	{
+		return $this->_design;
+	}
+	
+	function get_Design_path()
+	{
+		return $this->_design_path;
+	}
+	
+	function get_Design_maintpl()
+	{
+		return $this->_design_maintpl;
+	}
     
     function onLoad()
     {
@@ -73,6 +88,11 @@ class Design extends TICModule
             $tic->mod['Core']->set($this->getName(), 'design', $this->_design);
         }
     }
+    
+   function getShow()
+	{
+		return $this->show;
+	}
     
     function onUnload()
     {
