@@ -1,0 +1,47 @@
+* {
+    color: #C0C00;
+}
+
+body {
+    background-color: #000010;
+}
+
+#main_top_left {
+    float: left;
+    background-color: #200000;
+}
+
+#main_top_right {
+    float: right;
+    background-color: #200000;
+}
+
+#main_top_center {
+    text-align: center;
+    background-color: #200000;
+}
+
+
+#main_left {
+    float: left;
+    background-color: #001010;
+    border: 1px solid gray;
+    min-height: 500px;
+    margin-right: 20px;
+    padding: 5px;
+}
+
+#main_right {
+}
+
+#main_center {
+}
+
+#main_footer_left {
+}
+#main_footer_right {
+}
+#main_footer_center {
+    text-align: center;
+}
+

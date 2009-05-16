@@ -1,0 +1,545 @@
+<?php
+/*************************************************************************************
+ *                                                                                   *
+ *  T.I.C. NG - Next Generation of Tactical Information Center                       *
+ *  Copyright (C) 2006  Andreas Hemel  <dai.shan@gmx.net>                            *
+ *                                                                                   *
+ *  This program is free software; you can redistribute it and/or                    *
+ *  modify it under the terms of the GNU General Public License                      *
+ *  as published by the Free Software Foundation; either version 2                   *
+ *  of the License, or (at your option) any later version.                           *
+ *                                                                                   *
+ *  This program is distributed in the hope that it will be useful,                  *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    *
+ *  GNU General Public License for more details.                                     *
+ *                                                                                   *
+ *  You should have received a copy of the GNU General Public License                *
+ *  along with this program; if not, write to the Free Software                      *
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.  *
+ *                                                                                   *
+ *************************************************************************************/
+
+//
+// Class ADOdb
+//
+//
+
+// --------------------------------------------------------------------------------- //
+
+require_once('ADOdb/adodb/adodb.inc.php');
+include_once('ADOdb/adodb/adodb-error.inc.php');
+include_once('ADOdb/adodb/lang/adodb-de.inc.php');
+
+class ADOdb extends TICModule
+{
+    function getAuthors()
+    {
+        return array(new Author("Andreas Hemel", "daishan", "dai.shan@gmx.net"));
+    }
+
+    function getDependencies()
+    {
+        return array(
+            "Core" => "0.0.4",
+            "Design" => "0.0.2"
+        );
+    }
+
+    function getDescription()
+    {
+        return "ADOdb backend";
+    }
+
+    function getName()
+    {
+        return "ADOdb";
+    }
+
+    function getVersion()
+    {
+        return "0.0.5";
+    }
+
+    function getMenuEntry()
+    {
+        return "ADOdb";
+    }
+
+    function get($module, $key, $value = false)
+    {
+        global $tic;
+        $qry = "SELECT value FROM config WHERE module = %s AND key = %s;";
+        $rs = $tic->db->Execute($this->getName(), $qry, array($module, $key));
+        if ($rs->EOF)
+            return $value;
+        else
+            return $rs->fields[0];
+    }
+
+    function set($module, $key, $value)
+    {
+        global $tic;
+        $qry = "SELECT value FROM config WHERE module = %s AND key = %s;";
+        $rs = $tic->db->Execute($this->getName(), $qry, array($module, $key));
+        if ($rs->EOF)
+            $qry = "INSERT INTO config (value, module, key) VALUES (%s, %s, %s);";
+        else
+            $qry = "UPDATE config SET value = %s WHERE module = %s AND key = %s;";
+        $tic->db->Execute($this->getName(), $qry, array($value, $module, $key));
+    }
+
+    function onLoad()
+    {
+        global $tic;
+
+        $dsn = $tic->mod['Core']->get($this->getName(), 'dsn');
+        if ($dsn) {
+            $db = NewADOConnection($dsn);
+        } else {
+            $type = $tic->mod['Core']->get($this->getName(), 'type');
+            $host = $tic->mod['Core']->get($this->getName(), 'host');
+            $user = $tic->mod['Core']->get($this->getName(), 'user');
+            $pw = $tic->mod['Core']->get($this->getName(), 'pw');
+            $name = $tic->mod['Core']->get($this->getName(), 'name');
+            $db = NewADOConnection($type);
+            $db->PConnect($host, $user, $pw, $name);
+        }
+        if ($db)
+            $tic->db = new ADOWrapper($db);
+        else
+            die('could not connect to database');
+    }
+
+    function execInstall($installdata)
+    {
+        global $tic;
+        if (isset($installdata['dsn']))
+            $tic->mod['Core']->set($this->getName(), 'dsn', $installdata['dsn']);
+        else {
+            $tic->mod['Core']->set($this->getName(), 'type', $installdata['type']);
+            $tic->mod['Core']->set($this->getName(), 'host', $installdata['host']);
+            $tic->mod['Core']->set($this->getName(), 'user', $installdata['user']);
+            $tic->mod['Core']->set($this->getName(), 'pw', $installdata['pw']);
+            $tic->mod['Core']->set($this->getName(), 'name', $installdata['name']);
+        }
+        $this->onLoad();
+        $this->_createTables();
+    }
+
+    function getDBType()
+    {
+        global $tic;
+        $type = $tic->mod['Core']->get($this->getName(), 'type');
+        if ($tmp)
+            return $type;
+
+        $dsn = $tic->mod['Core']->get($this->getName(), 'dsn');
+        $tmp = explode('://', $dsn);
+        return $tmp[0];
+    }
+
+    function onExecute()
+    {
+        global $tic;
+
+        //$tic->db->Execute($this->getName(), "kaputtes sql statement");
+
+        $qry = "SELECT module, sql, sql_orig, errnum, time FROM sql_error ORDER BY time DESC";
+        $rs = $tic->db->SelectLimit($this->getName(), $qry, 20, 0);
+        $errors = $rs->getArray();
+        foreach ($errors as $i => $row) {
+            $errors[$i]['msg'] = $tic->db->ado->MetaErrorMsg($row['errnum']);
+        }
+        $this->setVar('errors', $errors);
+        $this->setTemplate('ADOdb.tpl');
+    }
+
+    function _createTables() {
+        global $tic;
+
+        switch ($this->getDBType()) {
+        case 'postgres':
+            $qryArr = array(
+                'DROP TABLE sql_error;',
+                'CREATE TABLE sql_error (
+                    module varchar(20) NOT NULL,
+                    sql varchar NOT NULL,
+                    sql_orig varchar NOT NULL,
+                    errnum int NOT NULL,
+                    time timestamp NOT NULL default now()
+                );',
+                'DROP TABLE config;',
+                'CREATE TABLE config (
+                    module varchar(20) NOT NULL,
+                    key varchar(20) NOT NULL,
+                    value varchar(50),
+                    UNIQUE(module, key)
+                );',
+                'DROP TABLE Meta CASCADE;',
+                'CREATE TABLE Meta (
+                    id serial PRIMARY KEY,
+                    name varchar(40) NOT NULL,
+                    tag varchar(6) NOT NULL
+                )',
+                'DROP TABLE Allianz CASCADE;',
+                'CREATE TABLE Allianz (
+                    id serial PRIMARY KEY,
+                    name varchar(40) NOT NULL,
+                    tag varchar(6) NOT NULL,
+                    meta int REFERENCES Meta(id)
+                );',
+                'DROP TABLE AllianzBnd CASCADE;',
+                'CREATE TABLE AllianzBnd (
+                    a int NOT NULL REFERENCES Allianz(id),
+                    b int NOT NULL REFERENCES Allianz(id)
+                );',
+                'DROP TABLE Galaxie CASCADE;',
+                'CREATE TABLE Galaxie (
+                    nr int NOT NULL UNIQUE,
+                    allianz int REFERENCES Allianz(id)
+                );',
+                'DROP TABLE GNPlayer CASCADE;',
+                'CREATE TABLE GNPlayer (
+                    nick varchar(50) NOT NULL,
+                    planet int NOT NULL,
+                    gala int NOT NULL REFERENCES galaxie(nr),
+                    UNIQUE(nick),
+                    PRIMARY KEY(planet, gala)
+                );',
+                'DROP TABLE TICUser CASCADE;',
+                'CREATE TABLE TICUser (
+                    id serial PRIMARY KEY,
+                    planet int NOT NULL,
+                    gala int NOT NULL,
+                    pw_sha1 char(40) NOT NULL,
+                    salt char(24) NOT NULL,
+                    pw_aendern boolean NOT NULL default true,
+                    is_bot boolean NOT NULL default false,
+                    gn_rang int NOT NULL DEFAULT 0,
+                    tic_rang int NOT NULL DEFAULT 0,
+                    --last_login timestamp,  --mit http auth nicht von last_active zu unterscheiden
+                    last_active timestamp,
+                    failed_logins int NOT NULL DEFAULT 0,
+                    banned boolean NOT NULL DEFAULT false,
+                    timeformat int NOT NULL DEFAULT 0,
+                    inc_comment text,
+                    inc_comment_time timestamp,
+                    inc_comment_user int REFERENCES TICUser(id),
+                    authnick varchar(15),
+                    telnr varchar(20),
+                    telnr_comment varchar(400),
+                    telnr_sichtbarkeit int NOT NULL DEFAULT 0,      -- alli/meta/tic kann die nummer einsehen 
+                    icq int,                     -- int oder varchar?
+                    jabber varchar(200),
+                    UNIQUE(planet, gala),
+                    FOREIGN KEY (planet, gala) REFERENCES GNPlayer(planet, gala)
+                );',
+                'DROP TABLE Flotte CASCADE;',
+                'CREATE TABLE Flotte (
+                    flottennr int NOT NULL,
+                    eta int,                        --  not null?
+                    ziel_planet int,
+                    ziel_gala int,
+                    att boolean NOT NULL DEFAULT false,
+                    unterwegs boolean NOT NULL DEFAULT false,
+                    CHECK (flottennr >= 0 AND flottennr <= 1),
+                    FOREIGN KEY (ziel_planet, ziel_gala) REFERENCES GNPlayer(planet, gala)
+                );',
+                'DROP TABLE SekScan CASCADE;',
+                'CREATE TABLE SekScan (
+                    id serial PRIMARY KEY,
+                    planet int NOT NULL,
+                    gala int NOT NULL,
+                    scanner int NOT NULL REFERENCES TICUser(id),
+                    time timestamp NOT NULL DEFAULT now(),
+                    punkte int NOT NULL,
+                    fleet int NOT NULL,
+                    orb int NOT NULL,
+                    met int NOT NULL,
+                    kris int NOT NULL,
+                    astros int NOT NULL,
+                    UNIQUE(planet, gala),
+                    FOREIGN KEY (planet, gala) REFERENCES GNPlayer(planet, gala)
+                );',
+                'DROP TABLE UnitScan CASCADE;',
+                'CREATE TABLE UnitScan (
+                    id serial PRIMARY KEY,
+                    planet int NOT NULL,
+                    gala int NOT NULL,
+                    scanner int NOT NULL REFERENCES TICUser(id),
+                    time timestamp NOT NULL DEFAULT now(),
+                    jaeger int NOT NULL,
+                    bomber int NOT NULL,
+                    fregatten int NOT NULL,
+                    kreuzer int NOT NULL,
+                    schlachter int NOT NULL,
+                    traeger int NOT NULL,
+                    cancs int NOT NULL,
+                    cleps int NOT NULL,
+                    UNIQUE(planet, gala),
+                    FOREIGN KEY (planet, gala) REFERENCES GNPlayer(planet, gala)
+                );',
+                'DROP TABLE MiliScan CASCADE;',
+                'CREATE TABLE MiliScan (
+                    id serial PRIMARY KEY,
+                    planet int NOT NULL,
+                    gala int NOT NULL,
+                    scanner int NOT NULL REFERENCES TICUser(id),
+                    time timestamp NOT NULL DEFAULT now(),
+                    jaeger_1 int NOT NULL,
+                    jaeger_2 int,
+                    bomber_1 int NOT NULL,
+                    bomber_2 int,
+                    fregatten_1 int NOT NULL,
+                    fregatten_2 int,
+                    kreuzer_1 int NOT NULL,
+                    kreuzer_2 int,
+                    schlachter_1 int NOT NULL,
+                    schlachter_2 int,
+                    traeger_1 int NOT NULL,
+                    traeger_2 int,
+                    cancs_1 int NOT NULL,
+                    cancs_2 int,
+                    cleps_1 int NOT NULL,
+                    cleps_2 int,
+                    ziel_1 varchar(50),
+                    ziel_2 varchar(50),
+                    fleet2 boolean NOT NULL,
+                    erw_scan boolean NOT NULL,
+                    UNIQUE(planet, gala),
+                    CHECK(fleet2 = true OR (
+                        jaeger_2 IS NULL AND
+                        bomber_2 IS NULL AND 
+                        kreuzer_2 IS NULL AND
+                        schlachter_2 IS NULL AND
+                        traeger_2 IS NULL AND
+                        cleps_2 IS NULL AND
+                        cancs_2 IS NULL AND
+                        ziel_2 IS NULL)),
+                    CHECK(erw_scan = true OR (ziel_1 IS NULL AND ziel_2 IS NULL)),
+                    FOREIGN KEY (planet, gala) REFERENCES GNPlayer(planet, gala)
+                );',
+                // alternatives miliscan table design
+                'DROP TABLE MiliScan CASCADE;',
+                'CREATE TABLE MiliScan (
+                    id serial PRIMARY KEY,
+                    planet int NOT NULL,
+                    gala int NOT NULL,
+                    scanner int NOT NULL REFERENCES TICUser(id),
+                    time timestamp NOT NULL DEFAULT now(),
+                    fleet2 boolean NOT NULL,
+                    erw_scan boolean NOT NULL,
+                    UNIQUE(planet, gala),
+                    FOREIGN KEY (planet, gala) REFERENCES GNPlayer(planet, gala)
+                );',
+                'DROP TABLE MiliScanFleet CASCADE;',
+                'CREATE TABLE MiliScanFleet (
+                    scan_id int NOT NULL REFERENCES MiliScan(id),
+                    fleet int NOT NULL,
+                    jaeger int NOT NULL,
+                    bomber int NOT NULL,
+                    fregatten int NOT NULL,
+                    kreuzer int NOT NULL,
+                    schlachter int NOT NULL,
+                    traeger int NOT NULL,
+                    cancs int NOT NULL,
+                    cleps int NOT NULL,
+                    ziel varchar(50),
+                    UNIQUE(scan_id, fleet),
+                    CHECK(fleet >= 1 AND fleet <= 2)
+                );',
+                'DROP TABLE GScan CASCADE;',
+                'CREATE TABLE GScan (
+                    id serial PRIMARY KEY,
+                    planet int NOT NULL,
+                    gala int NOT NULL,
+                    scanner int NOT NULL REFERENCES TICUser(id),
+                    time timestamp NOT NULL DEFAULT now(),
+                    LO int NOT NULL,
+                    LR int NOT NULL,
+                    MR int NOT NULL,
+                    SR int NOT NULL,
+                    AJ int NOT NULL,
+                    UNIQUE(planet, gala),
+                    FOREIGN KEY (planet, gala) REFERENCES GNPlayer(planet, gala)
+                );',
+                'DROP TABLE NewsScan CASCADE;',
+                'CREATE TABLE NewsScan (
+                    id serial PRIMARY KEY,
+                    planet int NOT NULL,
+                    gala int NOT NULL,
+                    scanner int NOT NULL REFERENCES TICUser(id),
+                    time timestamp NOT NULL DEFAULT now(),
+                    UNIQUE(planet, gala),
+                    FOREIGN KEY (planet, gala) REFERENCES GNPlayer(planet, gala)
+                );',
+                'DROP TABLE NewsScanAkt CASCADE;',
+                'CREATE TABLE NewsScanAkt (
+                    scan_id int NOT NULL REFERENCES NewsScan(id),
+                    nick varchar(50) NOT NULL,
+                    aktion int NOT NULL,
+                    time timestamp NOT NULL,
+                    eta int NOT NULL,
+                    CHECK(aktion >= 0 AND aktion <= 2)
+                );',
+                'DROP TABLE News CASCADE;',
+                'CREATE TABLE News (
+                    id serial PRIMARY KEY,
+                    sender int REFERENCES TICUser(id),       -- darf NULL sein!
+                    time timestamp NOT NULL default now(),
+                    title varchar(100) NOT NULL,
+                    body text NOT NULL
+                );'
+            );
+            break;
+
+        case 'mysql':
+            $qryArr = array(
+                'CREATE TABLE `config` (
+                    `module` VARCHAR (20) NOT NULL,
+                    `key` VARCHAR (20) NOT NULL,
+                    `value` VARCHAR (50) NULL,
+                    PRIMARY KEY (`module` ,`name`)
+                ) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;'
+            );
+            break;
+
+        default:
+            die("RDBMS type not implemented");
+            break;
+        }
+        foreach($qryArr as $qry) {
+            $tic->db->Execute($this->getName(), $qry);
+        }
+    }
+}
+
+class ADOWrapper
+{
+    var $ado = null;
+    var $_queryCount = 0;
+    var $_queryFailedCount = 0;
+    var $_LOG_ALL_QUERYS = false;
+    var $_DEACTIVATE_TRANSLATION = false;
+
+    function ADOWrapper($obj)
+    {
+        $this->ado = $obj;
+        //$this->ado->SetFetchMode(ADODB_FETCH_ASSOC);
+    }
+
+    function Execute($module, $sql, $inputarr=false, $magicquotes='auto')
+    {
+        if ($magicquotes = 'auto')
+            $magicquotes = get_magic_quotes_gpc();
+        $sql2 = $this->_preExec($module, $sql, $inputarr, $magicquotes);
+        $rs = $this->ado->Execute($sql2);
+        $this->_postExec($module, $sql, $sql2, $inputarr, $rs);
+        return $rs;
+    }
+
+    function SelectLimit($module, $sql, $numrows=-1, $offset=-1, $inputarr=false, $magicquotes='auto')
+    {
+        if ($magicquotes = 'auto')
+            $magicquotes = get_magic_quotes_gpc();
+        $sql2 = $this->_preExec($module, $sql, $inputarr, $magicquotes);
+        $rs = $this->ado->SelectLimit($sql2, $numrows, $offset);
+        $this->_postExec($module, $sql, $sql2, $inputarr, $rs);
+        return $rs;
+    }
+
+    function getQueryCounter()
+    {
+        return _queryCount;
+    }
+
+    function getQueryFailedCounter()
+    {
+        return _queryFailedCount;
+    }
+
+    /* alias */
+    function get($module, $key, $value = false)
+    {
+        global $tic;
+        return $tic->mod['ADOdb']->get($module, $key, $value);
+    }
+
+    /* alias */
+    function set($module, $key, $value)
+    {
+        global $tic;
+        return $tic->mod['ADOdb']->set($module, $key, $value);
+    }
+
+
+    function _preExec($module, $sql, $inputarr, $magicquotes)
+    {
+        $this->_querycount++;
+
+        $inputarr = $this->_escapeArray($inputarr, $magicquotes);
+
+        $sql = $this->_translate($module, $sql);
+        if ($inputarr)
+            return vsprintf($sql, $inputarr);
+        else
+            return $sql;
+    }
+
+    function _postExec($module, $sql_orig, $sql, $inputarr, $rs)
+    {
+        if (!$rs)
+            $this->_queryFailedCount++;
+        if ((!$rs || $this->_LOG_ALL_QUERYS))
+            $this->_logError($module, $sql_orig, $sql);
+    }
+
+    /* escape all strings in array for DB */
+    function _escapeArray($arr, $magicquotes)
+    {
+        foreach($arr as $key => $val) {
+            //if (is_string($val)) {
+                $arr[$key] = $this->ado->qstr($val, $magicquotes);
+            //}
+        }
+        return $arr;
+    }
+
+    function _logError($module, $sql_orig, $sql)
+    {
+        global $tic;
+        $module = $tic->db->ado->qstr($module);
+        $sql_orig = $tic->db->ado->qstr($sql_orig);
+        $sql = $tic->db->ado->qstr($sql);
+        $errnum = $tic->db->ado->MetaError();
+        $qry = "INSERT INTO sql_error (module, sql, sql_orig, errnum) VALUES ($module, $sql, $sql_orig, $errnum);";
+        $rs = $this->ado->Execute($qry);
+        if (!$rs)
+            echo("An Error occured in the SQL Error handling routine: $qry<br>");
+    }
+
+    function _translate($module, $sql)
+    {
+        global $tic;
+
+        if ($this->_DEACTIVATE_TRANSLATION)
+            return $sql;
+
+        $file = "$module/sqltrans.php";
+        if (!is_file($file))
+            return $sql;
+
+        $type = $tic->mod['ADOdb']->getDBType();
+        $arr = include($file);
+        if (!$arr)
+            return $sql;
+        else
+            if (array_key_exists($type, $arr) && array_key_exists($sql, $arr[$type]))
+                return $arr[$type][$sql];
+            else
+                return $sql;
+    }
+}
+
+?>

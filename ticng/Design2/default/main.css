@@ -1,0 +1,389 @@
+/*
+*************************************************************************************
+*                                                                                   *
+*  T.I.C. NG - Next Generation of Tactical Information Center                       *
+*  Copyright (C) 2006  Pascal Gollor  <pascal@gollor.org>                           *
+*                                                                                   *
+*  This program is free software; you can redistribute it and/or                    *
+*  modify it under the terms of the GNU General Public License                      *
+*  as published by the Free Software Foundation; either version 2                   *
+*  of the License, or (at your option) any later version.                           *
+*                                                                                   *
+*  This program is distributed in the hope that it will be useful,                  *
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of                   *
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    *
+*  GNU General Public License for more details.                                     *
+*                                                                                   *
+*  You should have received a copy of the GNU General Public License                *
+*  along with this program; if not, write to the Free Software                      *
+*  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.  *
+*                                                                                   *
+*************************************************************************************
+*/
+
+
+/*
+***************************************************************************
+**                              Hauptdesign                              **
+***************************************************************************
+*/
+
+body {
+    background-color: #F0F0F0;
+    color: #000000;
+    font-family : verdana, helvetica, sans-serif;
+    font-size : 13px;
+    margin : 0px;
+    padding: 0px 0px 5px 0px;
+}
+
+/* Box ganz oben */
+div.top {
+    height: 110px;
+    padding: 5px 10px 5px 10px;
+    margin: 5px 5px 0px 5px;
+    border: 1px solid #000000;
+    background: #DCDCDC;
+    text-align: center;
+}
+
+/* Box fuer die Uhr oben rechts */
+div.clock {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background: #DCDCDC;
+    text-align: right;
+    margin: 5px 5px 0px 0px;
+    font-size : 13px;
+}
+
+/* Box fuer das Logo oben links */
+div.logo {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    width: 100px;
+    height: 100px;
+    margin: 10px 10px 10px 10px;
+    margin: 5px 5px 5px 5px;
+    border: 1px solid #000000;
+}
+
+/* Box in der Mitte */
+div.middle {
+    margin: 4px 3px 4px 3px;
+}
+
+/* Tabelle in div.middle */
+table.middle {
+    width: 100%;
+}
+
+/* Navogationsbox in table.middle */
+td.navi {
+    width: 170px;
+    padding: 5px;
+    background: #C0C0C0;
+    border: 1px solid #000000;
+    vertical-align: top;
+}
+
+/* schmale Spalte zwischen div.navi und div.tpl */
+td.smal {
+    background: #F0F0F0;
+    width: 1px;
+}
+
+/* Box fuer die teplates in table.middle */
+td.tpl {
+    padding: 5px;
+    background: #C0C0C0;
+    border: 1px solid #000000;
+    vertical-align: top;
+}
+
+/* Box ganz unten */
+div.bottom {
+    padding: 5px 5px 5px 5px;
+    margin: 0px 5px 0px 5px;
+    border: 1px solid #000000;
+    background: #C0C0C0;
+    text-align: center;
+    font-size : 13px;
+}
+
+/* Menue Eintraege auf drei Ebenen */
+span.menu_lvl_0 {
+    background: #A0A0A0;
+    display: block;
+    border: 1px solid black;
+    border-left-color: white; border-top-color: white;
+    padding: 3px;
+    padding-left: 3px;
+    margin-top: 20px;
+    margin-bottom: 1px;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+/* erster Menue Eintrag, kein Abstand nach oben */
+span.menu_lvl_0_first {
+    background: #A0A0A0;
+    display: block;
+    border: 1px solid black;
+    border-left-color: white; border-top-color: white;
+    padding: 3px;
+    padding-left: 3px;
+    margin-top: 3px;
+    margin-bottom: 1px;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+span.menu_lvl_1 {
+    background: #B0B0B0;
+    display: block;
+    border: 1px solid black;
+    border-left-color: white; border-top-color: white;
+    padding: 1px;
+    padding-left: 3px;
+    margin-left: 15px;
+    margin-top: 7px;
+    margin-bottom: 1px;
+    font-weight: bold;
+}
+
+span.menu_lvl_2 {
+    background: #B0B0B0;
+    border: 1px solid black;
+    border-left-color: white; border-top-color: white;
+    display: block;
+    padding: 1px;
+    padding-left: 3px;
+    margin-left: 30px;
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+/*
+
+/*
+***************************************************************************
+**                              Hauptdesign                              **
+***************************************************************************
+*/
+
+
+/*
+***************************************************************************
+**                            Andere Elemente                            **
+***************************************************************************
+*/
+
+/*
+************************
+** allgemein elemente **
+************************
+*/
+
+/* Foramtieren der Links */
+a:link {
+    color: #0000FF;
+}
+
+a:visited {
+    color: #0000FF;
+}
+
+a:hover {
+    color: #FFFFFF;
+}
+
+a:active {
+    color: #FFD700;
+}
+
+/*
+Festlegen der standart groesen der Ueberschriften,
+damit sie in jedem Browser gleich sind.
+*/
+h1 {
+    font-size: 26px;
+    text-align: center;
+}
+
+h2 {
+    font-size: 20px;
+    text-align: center;
+}
+
+/* die Standart Linie */
+hr {
+    height: 2px;
+}
+
+/* standart Linie nur etwas schmaler */
+hr.smaler {
+    margin: 5px 5px 5px 5px;
+}
+
+/* standart Tabelle */
+table {
+    font-size : 13px;
+    font-family : verdana, helvetica, sans-serif;
+}
+
+/* Titelzeile Grundsaetzlich etwas dunkler */
+th {
+    background-color: #BBBBBB;
+}
+
+/* standart Eigenschaften fuer Auswahlbereiche, Buttons,etc. */
+input, select, textarea {
+    background-color: #F0F0F0;
+    border-color: #BABABA;
+    color: #000000;
+    font-size: 13px;
+    font-family : verdana, helvetica, sans-serif;
+}
+
+/*
+***********************
+** Spezielle Elemente *
+***********************
+*/
+
+.border {
+    border: 1px solid #000000;
+    border-collapse: collapse;
+}
+
+table.border_table {
+    border-collapse: collapse;
+    border: 1px solid;
+    text-align: left;
+}
+
+table.border_table tr td {
+    border-collapse: collapse;
+    border: 1px solid;
+    text-align: left;
+}
+
+table.border_table tr td.center {
+    text-align: center;
+}
+
+table.border_table tr th {
+    border-collapse: collapse;
+    border: 1px solid;
+    text-align: center;
+}
+
+td.center {
+    text-align: center;
+}
+
+input.text:hover {
+    background-color: #DDDDDD;
+    border-color: #848484;
+}
+
+input.button {
+    color: #000000;
+    background-color: #DCDCDC;
+    font-size: 11px;
+    line-height: 10px;
+    border: 1px solid #757981;
+    height: 21px;
+}
+
+input.button:hover {
+    color: #FFFFFF;
+    background-color: #808080;
+}
+
+/* helle Zeilen/Spalten/Zellen */
+.light {
+    background-color: #CCCCCC;
+}
+
+/* normale Zeile/Spalten/Zellen */
+.norm {
+    background-color: #C0C0C0;
+}
+
+/* dunkle Zeilen/Spalten/Zellen */
+.dark {
+    background-color: #BBBBBB;
+}
+
+/* Verschaft dem Inhalt ein wenig Luft zum Nachbern :-) */
+.bigger {
+    padding: 0px 5px 0px 5px;
+}
+
+.title {
+    font-size: 20px;
+}
+
+
+
+/*
+***************************************************************************
+**                            Andere Elemente                            **
+***************************************************************************
+*/
+
+/***************************************************************************
+ **                                 News                                  **
+ ***************************************************************************/
+
+div.news_item {
+    border: 1px solid black;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+table.news_item {
+    width: 100%;
+    border-style: none;
+    border-spacing: 0px;
+}
+table.news_item tr td {
+    border-style: none;
+}
+tr.news_head_read {
+    background: #A0A0A0;
+}
+tr.news_head_unread {
+    background: #FF9090;
+}
+tr.news_body_read {
+    background: #B0B0B0;
+}
+tr.news_body_unread {
+    background: #FFA0A0;
+}
+td.news_subject { 
+    text-align: left;
+    font-weight: bold;
+    font-size: 15px;
+}
+td.news_sender { 
+    text-align: left;
+    font-weight: normal;
+}
+td.news_time { 
+    text-align: right;
+    font-weight: normal;
+}
+td.news_text { 
+    text-align: left;
+    font-weight: normal;
+}
+td.news_delete { 
+    text-align: right;
+}
