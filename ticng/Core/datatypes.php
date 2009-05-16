@@ -270,9 +270,9 @@ class MenuEntry
 class Author
 // --------------------------------------------------------------------------------- //
 {
-    var $Name = '';
-    var $Nick = '';
-    var $Mail = '';
+    private $Name = '';
+    private $Nick = '';
+    private $Mail = '';
     
     function Author($myname, $mynick, $mymail)
     {
@@ -280,6 +280,22 @@ class Author
         $this->Nick = $mynick;
         $this->Mail = $mymail;
     }
+    
+	function getName()
+	{
+	return $this->Name;
+	}
+	
+	function getNick()
+	{
+	return $this->Nick;
+	}
+	
+	function getMail()
+	{
+	return $this->Mail;
+	}
+    
 }
 
 ?>
