@@ -77,11 +77,11 @@ class Attplaner extends TICModule
             if (strlen($tag) == 1) { $tag = "0".$tag; }
             array_push($datum, $tag.date(".m.Y"));
         }
+        //FIXME generierung der User die berechtigt sind
         $attPlaner = array(
-            $tic->mod['UserMan']->getUserByKoords(0, 1),
-            $tic->mod['UserMan']->getUserByKoords(279, 9),
-            $tic->mod['UserMan']->getUserByKoords(279, 7)
+            $tic->mod['UserMan']->getUserByKoords(0, 1)
         );
+        
 
         $this->setVar('attPlaner', $attPlaner);
         $this->setVar('attplanerPfad', $adr."?mod=".$this->getName().'&menu='.$menuentry);

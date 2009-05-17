@@ -20,7 +20,6 @@
  *                                                                                   *
  *************************************************************************************/
 require_once('./Right/Right.iface.php');
-//FIXME getGala hinzufügen ?!
 class NewsItem implements Right_IFace {
     private $_id = null;          //id der nachricht
     private $_sender = null;      //id des sendenden ticusers
@@ -58,7 +57,7 @@ class NewsItem implements Right_IFace {
         switch($this->_audience) {
         case 0:
             $action = NEWS_WRITE_GALA;
-            $this->_audience_id = $sender->getGala();
+            $this->_audience_id = $sender->getGalaxie();
             break;
         case 1:
             $action = NEWS_WRITE_ALLI;
@@ -90,6 +89,7 @@ class NewsItem implements Right_IFace {
         $tic->mod['Logging']->log($action, $this);
         return true;
     }
+    //FIXME richtige rückgabe werte
 	function getGalaxie()
 	{
 		return;
@@ -176,7 +176,7 @@ class NewsItem implements Right_IFace {
         $user = $tic->mod['Auth']->getActiveUser();
         switch ($this->_audience) {
         case 0: // gala
-            return ($user->getGala() == $this->_audience_id);
+            return ($user->getGalaxie() == $this->_audience_id);
         case 1: // alli
             $alli = $user->getAllianz();
             return ($alli->getId() == $this->_audience_id);
