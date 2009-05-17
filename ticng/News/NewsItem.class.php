@@ -90,7 +90,7 @@ class NewsItem implements Right_IFace {
         $tic->mod['Logging']->log($action, $this);
         return true;
     }
-	function getGala()
+	function getGalaxie()
 	{
 		return;
 	} 

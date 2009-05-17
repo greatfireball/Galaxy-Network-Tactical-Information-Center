@@ -300,7 +300,7 @@ class Right extends TICModule
         switch ($action) {
             case PLAYER_CHANGE_NICK:
             case PLAYER_CHANGE_KOORDS:
-                if ($object->getGala() == $user->getGala() && $param->getGala() == $user->getGala()) {
+                if ($object->getGalaxie() == $user->getGalaxie() && $param->getGalaxie() == $user->getGalaxie()) {
                     return $this->testCapability(CAP_MOVE_USER_GALA);
                 } elseif ($object->getAllianz() && $user->getAllianz() && $param->getAllainz() &&
                   $object->getAllianz() == $user->getAllianz() &&
