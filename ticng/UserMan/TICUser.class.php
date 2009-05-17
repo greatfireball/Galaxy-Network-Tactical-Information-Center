@@ -21,8 +21,9 @@
  *************************************************************************************/
 
 // ================================== TICUser =================================
+require_once('./Right/Right.iface.php'); //Rightinface laden 
 
-class TICUser extends GNPlayer {
+class TICUser extends GNPlayer implements Right_IFace {
     // public Konstanten
     public static $timeformatTranslation = array('Ticks' => 0, 'Minuten' => 1, 'Stunden' => 2);
     public static $visibilityTranslation = array('Alle' => 0, 'Meta' => 1, 'Allianz' => 2);
@@ -55,6 +56,21 @@ class TICUser extends GNPlayer {
     public function __toString()
     {
         return $this->uid;
+    }
+    
+    function getGala()
+    {
+    	return $this->getGalaxie();
+    }
+    
+    function getMeta()
+    {
+    	return;
+    }
+    
+    function getAllianz()
+    {
+    	return;
     }
 
     // ================== save / load / create / delete =====================

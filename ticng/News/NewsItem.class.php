@@ -19,17 +19,18 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.  *
  *                                                                                   *
  *************************************************************************************/
+require_once('./Right/Right.iface.php');
 //FIXME getGala hinzuf�gen ?!
-class NewsItem {
-    var $_id = null;          //id der nachricht
-    var $_sender = null;      //id des sendenden ticusers
-    var $_time = null;        //uhrzeit als string
-    var $_subject = null;     //betreff
-    var $_text = null;        //inhalt
-    var $_audience = null;    //nummer die angibt ob die nachricht an gala, alli, meta oder alle geht
-    var $_audience_id = null; //bedeutung abhängig von _audience (gala nr, alli id, meta id, keine)
+class NewsItem implements Right_IFace {
+    private $_id = null;          //id der nachricht
+    private $_sender = null;      //id des sendenden ticusers
+    private $_time = null;        //uhrzeit als string
+    private $_subject = null;     //betreff
+    private $_text = null;        //inhalt
+    private $_audience = null;    //nummer die angibt ob die nachricht an gala, alli, meta oder alle geht
+    private $_audience_id = null; //bedeutung abhängig von _audience (gala nr, alli id, meta id, keine)
 
-    var $_readingNow = false;
+    private $_readingNow = false;
 
     function NewsItem($sender = null, $subject = null, $text = null, $audience = null, $audience_id = null, $time = null, $news_id = null)
     {
@@ -89,7 +90,21 @@ class NewsItem {
         $tic->mod['Logging']->log($action, $this);
         return true;
     }
-
+	function getGala()
+	{
+		return;
+	} 
+	
+	function getMeta()
+	{
+		return;
+	}
+	
+	function getAllianz()
+	{
+		return;
+	}
+	
     function delete()
     {
         global $tic;

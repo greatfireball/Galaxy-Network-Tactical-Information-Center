@@ -22,6 +22,7 @@
  *************************************************************************************/
 /* TODO : IFace für Classen schreiben die Right benutzrn */
 require_once('capabilities.php');
+require_once('Right.iface.php');
 
 class Right extends TICModule
 {
@@ -32,7 +33,7 @@ class Right extends TICModule
             new Author("Andreas Hemel", "daishan", "dai.shan@gmx.net"),
             new Author("Pascal Gollor", "Hugch", "pascal@gollor.org")
         ),
-	"2",
+	"3",
 	"Right",
 	"Rechteverwaltung",
 	array(

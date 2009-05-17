@@ -39,7 +39,8 @@ class News extends TICModule
 	array(
             "Core" => "4",
             "Design" => "2",
-            "ADOdb" => "5"
+            "ADOdb" => "5",
+	    "Right" => "3"
         ));
     
     }
