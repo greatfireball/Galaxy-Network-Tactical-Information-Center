@@ -137,14 +137,19 @@ function processAlliPost()
 function showOverview()
 {
     global $tic;
-
-    $qry =
+//altes qry dessen bedeutung mir unbekannt ist und fehler verursacht
+/*    $qry =
         "SELECT Meta.name as meta, Allianz.name as alli, Galaxie.gala as gala ".
         "FROM Meta ".
             "RIGHT JOIN Allianz USING(meta) ".
             "NATURAL FULL OUTER JOIN Galaxie ".
         "WHERE Galaxie.gala IN ".
             "(SELECT Galaxie.gala FROM TICUser NATURAL JOIN Galaxie GROUP BY Galaxie.gala)";
+*/ 
+    $qry ="SELECT Meta.name as meta, Allianz.name as alli , Galaxie.gala as gala
+FROM Meta 
+RIGHT JOIN Allianz Using(meta) 
+NATURAL LEFT JOIN Galaxie order by meta";
     $rs = $tic->db->Execute('UserMan', $qry);
 
     $meten = array();

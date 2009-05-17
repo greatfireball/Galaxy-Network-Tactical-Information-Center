@@ -62,9 +62,10 @@ class TICUser extends GNPlayer implements Right_IFace {
     {
     	return $this->getGalaxie();
     }
-    
+    //FIXME getAllianz und meta implementieren
     function getMeta()
     {
+    	global $tic;
     	return;
     }
     
