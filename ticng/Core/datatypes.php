@@ -178,11 +178,6 @@ abstract class TICModule
         return $tic->server_root.$this->getName().'/';
     }
     
-    function getNumericVersion()
-    {
-        return $this->getVersion();
-    }
-    
     function setTemplate($filename)
     {
         $this->smarty_template = $filename;
