@@ -214,7 +214,7 @@ class TICUser extends GNPlayer implements Right_IFace {
     {
         return $this->gala;
     }
-
+    
     public function getPwAendern()
     {
         return $this->PwAendern;

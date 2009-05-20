@@ -180,8 +180,7 @@ abstract class TICModule
     
     function getNumericVersion()
     {
-        global $tic;
-        return $tic->getNumericVersion($this->getVersion());
+        return $this->getVersion();
     }
     
     function setTemplate($filename)

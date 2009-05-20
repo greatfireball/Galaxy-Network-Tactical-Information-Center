@@ -65,11 +65,6 @@ class ModuleManager
         return "ModuleManager";
     }
 
-    function getNumericVersion($version_string)
-    {
-        return $version_string;
-    }
-
     function ModuleManager($tic_path)
     // $tic_path erwartet einen Pfad mit abschließendem /
     {
@@ -118,7 +113,7 @@ class ModuleManager
                 //check all dependencies of a module
                 foreach ($deps as $dep_name => $dep_version) {
                     if (in_array($dep_name, $sorted)) {
-                        if ($this->mod[$dep_name]->getNumericVersion() < $this->getNumericVersion($dep_version))
+                        if ($this->mod[$dep_name]->getVersion() < $dep_version)
                             die("Module '$mod' requires '$dep_name' version $dep_version! (version ".$this->mod[$dep_name]->getVersion()." available)");
                     } else {
                         if (!in_array($dep_name, $unsorted))

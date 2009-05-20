@@ -1124,6 +1124,7 @@ class Scan extends TICModule
         global $tic;
 
         if (is_object($gala)) {
+        	echo 'TEST';
             $obj = $gala;
             $gala = $obj->getGalaxie();
             $planet = $obj->getPlanet();
