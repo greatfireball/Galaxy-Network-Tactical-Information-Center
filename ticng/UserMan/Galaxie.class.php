@@ -86,7 +86,7 @@ class Galaxie {
         if ($this->allianz)
             return $tic->mod['UserMan']->getAllianzById($this->allianz);
         else
-            return null;
+            return new Allianz();
     }
 
     public function getMeta()

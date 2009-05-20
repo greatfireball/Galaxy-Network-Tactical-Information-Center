@@ -146,10 +146,12 @@ function showOverview()
         "WHERE Galaxie.gala IN ".
             "(SELECT Galaxie.gala FROM TICUser NATURAL JOIN Galaxie GROUP BY Galaxie.gala)";
 */ 
-    $qry ="SELECT Meta.name as meta, Allianz.name as alli , Galaxie.gala as gala
+    $qry ="SELECT Meta.name as meta, IFNULL(Allianz.name,'No Alli') as alli , Galaxie.gala as gala
 FROM Meta 
 RIGHT JOIN Allianz Using(meta) 
-NATURAL LEFT JOIN Galaxie order by meta";
+RIGHT OUTER JOIN Galaxie
+ON Galaxie.allianz = Allianz.allianz
+order by meta";
     $rs = $tic->db->Execute('UserMan', $qry);
 
     $meten = array();
