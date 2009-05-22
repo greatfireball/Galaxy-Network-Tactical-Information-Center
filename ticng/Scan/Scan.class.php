@@ -70,108 +70,186 @@ class Scan extends TICModule
     	return array_merge($tic->mod['UserMan']->getInstallQueriesMySQL(),
     	array(
             "DROP TABLE IF EXISTS scan_header CASCADE;",
-            "CREATE TABLE scan_header (
-                scan INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-                time INT(10) NOT NULL DEFAULT '-1',
-                percent INT(3) NOT NULL DEFAULT '-1',
-                ziel_gala INT(11) NOT NULL DEFAULT '-1',
-                ziel_planet INT(11) NOT NULL DEFAULT '-1',
-                scanner_gala INT(11) NULL DEFAULT '-1',
-                scanner_planet INT(11) NULL DEFAULT '-1',
-                birth INT(1) NOT NULL DEFAULT '-1',
-                type INT(1) NOT NULL DEFAULT '-1'
-            ) ENGINE = innodb;",
+            "CREATE  TABLE IF NOT EXISTS `scan_header` (
+			  `scan` INT(11) NOT NULL AUTO_INCREMENT ,
+			  `time` INT(10) NOT NULL DEFAULT '-1' ,
+			  `percent` INT(3) NOT NULL DEFAULT '-1' ,
+			  `birth` INT(1) NOT NULL DEFAULT '-1' ,
+			  `type` INT(1) NOT NULL DEFAULT '-1' ,
+			  `ziel_planet` INT(11) NOT NULL ,
+			  `ziel_gala` INT(11) NOT NULL ,
+			  `scanner_gala` INT(11) NULL DEFAULT NULL ,
+			  `scanner_planet` INT(11) NULL DEFAULT NULL ,
+			  PRIMARY KEY (`scan`) ,
+			  INDEX `fk_scan_header_TICUser1` (`scanner_planet` ASC, `scanner_gala` ASC) ,
+			  INDEX `fk_scan_header_gnplayer` (`ziel_planet` ASC, `ziel_gala` ASC) ,
+			  CONSTRAINT `fk_scan_header_TICUser1`
+			    FOREIGN KEY (`scanner_planet` , `scanner_gala` )
+			    REFERENCES `tic_user` (`planet` , `gala` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION,
+			  CONSTRAINT `fk_scan_header_gnplayer`
+			    FOREIGN KEY (`ziel_planet` , `ziel_gala` )
+			    REFERENCES `gnplayer` (`planet` , `gala` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION)
+			ENGINE = InnoDB
+			AUTO_INCREMENT = 1
+			DEFAULT CHARACTER SET = latin1
+			COLLATE = latin1_german1_ci;",
             "DROP TABLE IF EXISTS scan_sek CASCADE;",
-            "CREATE TABLE scan_sek (
-                scan INT(11) NOT NULL,
-                punkte INT(11) NOT NULL DEFAULT '-1',
-                schiffe INT(11) NOT NULL DEFAULT '-1',
-                deff INT(11) NOT NULL DEFAULT '-1',
-                me INT(11) NOT NULL DEFAULT '-1',
-                ke INT(11) NOT NULL DEFAULT '-1',
-                ast INT(11) NOT NULL DEFAULT '-1',
-                PRIMARY KEY (scan)
-            ) ENGINE = innodb;",
+            "CREATE  TABLE IF NOT EXISTS `scan_sek` (
+			  `scan` INT(11) NOT NULL ,
+			  `punkte` INT(11) NOT NULL DEFAULT '-1' ,
+			  `schiffe` INT(11) NOT NULL DEFAULT '-1' ,
+			  `deff` INT(11) NOT NULL DEFAULT '-1' ,
+			  `me` INT(11) NOT NULL DEFAULT '-1' ,
+			  `ke` INT(11) NOT NULL DEFAULT '-1' ,
+			  `ast` INT(11) NOT NULL DEFAULT '-1' ,
+			  PRIMARY KEY (`scan`) ,
+			  INDEX `fk_scan_sek_scan_header` (`scan` ASC) ,
+			  CONSTRAINT `fk_scan_sek_scan_header`
+			    FOREIGN KEY (`scan` )
+			    REFERENCES `scan_header` (`scan` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION)
+			ENGINE = InnoDB
+			DEFAULT CHARACTER SET = latin1
+			COLLATE = latin1_german1_ci;",
             "DROP TABLE IF EXISTS scan_unit CASCADE;",
-            "CREATE TABLE scan_unit (
-                scan INT(11) NOT NULL,
-                jaeger INT(11) NOT NULL DEFAULT '-1',
-                bomber INT(11) NOT NULL DEFAULT '-1',
-                freggs INT(11) NOT NULL DEFAULT '-1',
-                zerris INT(11) NOT NULL DEFAULT '-1',
-                kreuzer INT(11) NOT NULL DEFAULT '-1',
-                schlachter INT(11) NOT NULL DEFAULT '-1',
-                traeger INT(11) NOT NULL DEFAULT '-1',
-                kaper INT(11) NOT NULL DEFAULT '-1',
-                cancs INT(11) NOT NULL DEFAULT '-1',
-                PRIMARY KEY (scan)
-            ) ENGINE = innodb;",
+            "CREATE  TABLE IF NOT EXISTS `scan_unit` (
+			  `scan` INT(11) NOT NULL ,
+			  `jaeger` INT(11) NOT NULL DEFAULT '-1' ,
+			  `bomber` INT(11) NOT NULL DEFAULT '-1' ,
+			  `freggs` INT(11) NOT NULL DEFAULT '-1' ,
+			  `zerris` INT(11) NOT NULL DEFAULT '-1' ,
+			  `kreuzer` INT(11) NOT NULL DEFAULT '-1' ,
+			  `schlachter` INT(11) NOT NULL DEFAULT '-1' ,
+			  `traeger` INT(11) NOT NULL DEFAULT '-1' ,
+			  `kaper` INT(11) NOT NULL DEFAULT '-1' ,
+			  `cancs` INT(11) NOT NULL DEFAULT '-1' ,
+			  PRIMARY KEY (`scan`) ,
+			  INDEX `fk_scan_unit_scan_header` (`scan` ASC) ,
+			  CONSTRAINT `fk_scan_unit_scan_header`
+			    FOREIGN KEY (`scan` )
+			    REFERENCES `scan_header` (`scan` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION)
+			ENGINE = InnoDB
+			DEFAULT CHARACTER SET = latin1
+			COLLATE = latin1_german1_ci;",
             "DROP TABLE IF EXISTS scan_mili CASCADE;",
-            "CREATE TABLE scan_mili (
-                scan INT(11) NOT NULL,
-                jaeger0 INT(11) NOT NULL DEFAULT '-1',
-                bomber0 INT(11) NOT NULL DEFAULT '-1',
-                freggs0 INT(11) NOT NULL DEFAULT '-1',
-                zerris0 INT(11) NOT NULL DEFAULT '-1',
-                kreuzer0 INT(11) NOT NULL DEFAULT '-1',
-                schlachter0 INT(11) NOT NULL DEFAULT '-1',
-                traeger0 INT(11) NOT NULL DEFAULT '-1',
-                kaper0 INT(11) NOT NULL DEFAULT '-1',
-                cancs0 INT(11) NOT NULL DEFAULT '-1',
-                jaeger1 INT(11) NOT NULL DEFAULT '-1',
-                bomber1 INT(11) NOT NULL DEFAULT '-1',
-                freggs1 INT(11) NOT NULL DEFAULT '-1',
-                zerris1 INT(11) NOT NULL DEFAULT '-1',
-                kreuzer1 INT(11) NOT NULL DEFAULT '-1',
-                schlachter1 INT(11) NOT NULL DEFAULT '-1',
-                traeger1 INT(11) NOT NULL DEFAULT '-1',
-                kaper1 INT(11) NOT NULL DEFAULT '-1',
-                cancs1 INT(11) NOT NULL DEFAULT '-1',
-                jaeger2 INT(11) NOT NULL DEFAULT '-1',
-                bomber2 INT(11) NOT NULL DEFAULT '-1',
-                freggs2 INT(11) NOT NULL DEFAULT '-1',
-                zerris2 INT(11) NOT NULL DEFAULT '-1',
-                kreuzer2 INT(11) NOT NULL DEFAULT '-1',
-                schlachter2 INT(11) NOT NULL DEFAULT '-1',
-                traeger2 INT(11) NOT NULL DEFAULT '-1',
-                kaper2 INT(11) NOT NULL DEFAULT '-1',
-                cancs2 INT(11) NOT NULL DEFAULT '-1',
-                flotte1_status INT(11) NOT NULL DEFAULT '-1',
-                flotte1_ziel VARCHAR(50) CHARACTER SET utf8 NOT NULL,
-                flotte2_status INT(11) NULL DEFAULT '-1',
-                flotte2_ziel VARCHAR(50) CHARACTER SET utf8 NOT NULL,
-                PRIMARY KEY (scan)
-            ) ENGINE = innodb;",
+            "CREATE  TABLE IF NOT EXISTS `scan_mili` (
+			  `scan` INT(11) NOT NULL ,
+			  `jaeger0` INT(11) NOT NULL DEFAULT '-1' ,
+			  `bomber0` INT(11) NOT NULL DEFAULT '-1' ,
+			  `freggs0` INT(11) NOT NULL DEFAULT '-1' ,
+			  `zerris0` INT(11) NOT NULL DEFAULT '-1' ,
+			  `kreuzer0` INT(11) NOT NULL DEFAULT '-1' ,
+			  `schlachter0` INT(11) NOT NULL DEFAULT '-1' ,
+			  `traeger0` INT(11) NOT NULL DEFAULT '-1' ,
+			  `kaper0` INT(11) NOT NULL DEFAULT '-1' ,
+			  `cancs0` INT(11) NOT NULL DEFAULT '-1' ,
+			  `jaeger1` INT(11) NOT NULL DEFAULT '-1' ,
+			  `bomber1` INT(11) NOT NULL DEFAULT '-1' ,
+			  `freggs1` INT(11) NOT NULL DEFAULT '-1' ,
+			  `zerris1` INT(11) NOT NULL DEFAULT '-1' ,
+			  `kreuzer1` INT(11) NOT NULL DEFAULT '-1' ,
+			  `schlachter1` INT(11) NOT NULL DEFAULT '-1' ,
+			  `traeger1` INT(11) NOT NULL DEFAULT '-1' ,
+			  `kaper1` INT(11) NOT NULL DEFAULT '-1' ,
+			  `cancs1` INT(11) NOT NULL DEFAULT '-1' ,
+			  `jaeger2` INT(11) NOT NULL DEFAULT '-1' ,
+			  `bomber2` INT(11) NOT NULL DEFAULT '-1' ,
+			  `freggs2` INT(11) NOT NULL DEFAULT '-1' ,
+			  `zerris2` INT(11) NOT NULL DEFAULT '-1' ,
+			  `kreuzer2` INT(11) NOT NULL DEFAULT '-1' ,
+			  `schlachter2` INT(11) NOT NULL DEFAULT '-1' ,
+			  `traeger2` INT(11) NOT NULL DEFAULT '-1' ,
+			  `kaper2` INT(11) NOT NULL DEFAULT '-1' ,
+			  `cancs2` INT(11) NOT NULL DEFAULT '-1' ,
+			  `flotte1_status` INT(11) NOT NULL DEFAULT '-1' ,
+			  `flotte1_ziel` VARCHAR(50) CHARACTER SET 'utf8' NOT NULL ,
+			  `flotte2_status` INT(11) NOT NULL DEFAULT '-1' ,
+			  `flotte2_ziel` VARCHAR(50) CHARACTER SET 'utf8' NOT NULL ,
+			  PRIMARY KEY (`scan`) ,
+			  INDEX `fk_scan_mili_scan_header` (`scan` ASC) ,
+			  CONSTRAINT `fk_scan_mili_scan_header`
+			    FOREIGN KEY (`scan` )
+			    REFERENCES `scan_header` (`scan` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION)
+			ENGINE = InnoDB
+			DEFAULT CHARACTER SET = latin1
+			COLLATE = latin1_german1_ci;",
             "DROP TABLE IF EXISTS scan_gesch CASCADE;",
-            "CREATE TABLE scan_gesch (
-                scan INT(11) NOT NULL,
-                lo INT(11) NOT NULL DEFAULT '-1',
-                lr INT(11) NOT NULL DEFAULT '-1',
-                mr INT(11) NOT NULL DEFAULT '-1',
-                sr INT(11) NOT NULL DEFAULT '-1',
-                aj INT(11) NOT NULL DEFAULT '-1',
-                PRIMARY KEY (scan)
-            ) ENGINE = innodb;",
+            "CREATE  TABLE IF NOT EXISTS `scan_gesch` (
+			  `scan` INT(11) NOT NULL ,
+			  `lo` INT(11) NOT NULL DEFAULT '-1' ,
+			  `lr` INT(11) NOT NULL DEFAULT '-1' ,
+			  `mr` INT(11) NOT NULL DEFAULT '-1' ,
+			  `sr` INT(11) NOT NULL DEFAULT '-1' ,
+			  `aj` INT(11) NOT NULL DEFAULT '-1' ,
+			  PRIMARY KEY (`scan`) ,
+			  INDEX `fk_scan_gesch_scan_header` (`scan` ASC) ,
+			  CONSTRAINT `fk_scan_gesch_scan_header`
+			    FOREIGN KEY (`scan` )
+			    REFERENCES `scan_header` (`scan` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION)
+			ENGINE = InnoDB
+			DEFAULT CHARACTER SET = latin1
+			COLLATE = latin1_german1_ci;",
             "DROP TABLE IF EXISTS scan_news CASCADE;",
-            "CREATE TABLE scan_news (
-                scan INT(11) NOT NULL,
-                type INT(11) NOT NULL DEFAULT '-1',
-                gala INT(11) NOT NULL DEFAULT '-1',
-                planet INT(11) NOT NULL DEFAULT '-1',
-                time INT(10) NOT NULL DEFAULT '-1',
-                fleet INT(11) NOT NULL DEFAULT '-1',
-                eta INT(11) NOT NULL DEFAULT '-1'
-            ) ENGINE = innodb;",
+            "CREATE  TABLE IF NOT EXISTS `scan_news` (
+			  `scan` INT(11) NOT NULL ,
+			  `type` INT(11) NOT NULL DEFAULT '-1' ,
+			  `gala` INT(11) NOT NULL ,
+			  `planet` INT(11) NOT NULL ,
+			  `time` INT(10) NOT NULL DEFAULT '-1' ,
+			  `fleet` INT(11) NOT NULL DEFAULT '-1' ,
+			  `eta` INT(11) NOT NULL DEFAULT '-1' ,
+			  PRIMARY KEY (`scan`) ,
+			  INDEX `fk_scan_news_scan_header` (`scan` ASC) ,
+			  INDEX `fk_scan_news_GNPlayer` (`planet` ASC, `gala` ASC) ,
+			  CONSTRAINT `fk_scan_news_scan_header`
+			    FOREIGN KEY (`scan` )
+			    REFERENCES `scan_header` (`scan` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION,
+			  CONSTRAINT `fk_scan_news_GNPlayer`
+			    FOREIGN KEY (`planet` , `gala` )
+			    REFERENCES `gnplayer` (`planet` , `gala` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION)
+			ENGINE = InnoDB
+			DEFAULT CHARACTER SET = latin1
+			COLLATE = latin1_german1_ci;",
             "DROP TABLE IF EXISTS scan_block CASCADE;",
-            "CREATE TABLE scan_block (
-                userid INT(11) NOT NULL,
-                zeit INT(10) NOT NULL,
-                svs INT(10) NOT NULL,
-                scantyp INT(1),
-                gala INT(4) NOT NULL,
-                planet INT(2) NOT NULL,
-                UNIQUE (scantyp, gala, planet)
-            ) ENGINE = innodb;"
+            "CREATE  TABLE IF NOT EXISTS `scan_block` (
+			  `user_planet` INT(11) NOT NULL ,
+			  `user_gala` INT(11) NOT NULL ,
+			  `zeit` INT(10) NOT NULL ,
+			  `svs` INT(10) NOT NULL ,
+			  `scantyp` INT(1) NULL DEFAULT NULL ,
+			  `planet` INT(11) NOT NULL ,
+			  `gala` INT(11) NOT NULL ,
+			  UNIQUE INDEX `scantyp` (`scantyp` ASC) ,
+			  INDEX `fk_scan_block_TICUser` (`user_planet` ASC, `user_gala` ASC) ,
+			  INDEX `fk_scan_block_GNPlayer` (`planet` ASC, `gala` ASC) ,
+			  CONSTRAINT `fk_scan_block_TICUser`
+			    FOREIGN KEY (`user_planet` , `user_gala` )
+			    REFERENCES `tic_user` (`planet` , `gala` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION,
+			  CONSTRAINT `fk_scan_block_GNPlayer`
+			    FOREIGN KEY (`planet` , `gala` )
+			    REFERENCES `gnplayer` (`planet` , `gala` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION)
+			ENGINE = InnoDB
+			DEFAULT CHARACTER SET = latin1
+			COLLATE = latin1_german1_ci;"
         ));
     }
     public function getInstallQueriesPostgreSQL()
@@ -332,21 +410,22 @@ class Scan extends TICModule
         }
 
         $aktUser = $tic->mod['Auth']->getActiveUser();
-
-        $qry = "SELECT svs FROM scan_block WHERE userid = %s AND scantyp = %s AND gala = %s AND planet = %s;";
-        $rs = $tic->db->Execute($this, $qry, array($aktUser->getId(), $daten['scantyp'], $daten['gala'], $daten['planet']));
+		$Id = $aktUser->getId();
+        $qry = "SELECT svs FROM scan_block WHERE user_gala = %s AND user_planet=%s AND scantyp = %s AND gala = %s AND planet = %s;";
+        $rs = $tic->db->Execute($this, $qry, array($Id[0],$Id[1], $daten['scantyp'], $daten['gala'], $daten['planet']));
         if (!$rs->EOF) {
             if ($rs->fields[0] >= $daten['svs']) {
                 $tic->info($this, "Es gibt schon ein Scanblock mit mehr oder genau so vielen Scanverst&auml;rkern.");
                 return true;
             } else {
-                $qry = "DELETE FROM scan_block WHERE userid = %s AND scantyp = %s AND gala = %s AND planet = %s;";
-                $rs = $tic->db->Execute($this, $qry, array($aktUser->getId(), $daten['scantyp'], $daten['gala'], $daten['planet']));
+                $qry = "DELETE FROM scan_block WHERE user_gala = %s AND user_planet=%s AND scantyp = %s AND gala = %s AND planet = %s;";
+                $rs = $tic->db->Execute($this, $qry, array($Id[0],$Id[1], $daten['scantyp'], $daten['gala'], $daten['planet']));
             }
         }
-
-        $qry = "INSERT INTO scan_block (userid, zeit, svs, scantyp, gala, planet) VALUES ('".$aktUser->getId()."', '".time()."', '".$daten['svs']."', '".$daten['scantyp']."', '".$daten['gala']."', '".$daten['planet']."');";
-        $rs = $tic->db->Execute($this, $qry);
+		$planetObj=new GNPlayer($daten['gala'],$daten['planet']);
+		$planetObj->create();
+        $qry = "INSERT INTO scan_block (user_gala,user_planet, zeit, svs, scantyp, gala, planet) VALUES (%s,%s,%s,%s,%s,%s,%s);";
+        $rs = $tic->db->Execute($this, $qry,array($Id[0],$Id[1],time(),$daten['svs'],$daten['scantyp'],$daten['gala'],$daten['planet']));
 
         return true;
     }
@@ -355,14 +434,14 @@ class Scan extends TICModule
     {
         global $tic;
 
-        $qry = "SELECT userid, zeit, svs, scantyp, gala, planet FROM scan_block ORDER BY gala, planet ASC;";
+        $qry = "SELECT user_gala,user_planet, zeit, svs, scantyp, gala, planet FROM scan_block ORDER BY gala, planet ASC;";
         $rs = $tic->db->Execute($this, $qry);
 
         $blocks = array();
 
         while(!$rs->EOF) {
             $ary = $rs->fields;
-            $ary['user'] = $tic->mod['UserMan']->getUserById($ary['userid']);
+            $ary['user'] = $tic->mod['UserMan']->getUserById(array($ary['user_gala'],$ary['user_planet']));
             $ary['zeit'] = date("H:i:s - d.m.Y", $ary['zeit']);
             $ary['scantyp'] = $this->scanTypToString($ary['scantyp'], true);
             array_push($blocks, $ary);
@@ -411,7 +490,7 @@ class Scan extends TICModule
         global $tic;
 
         if (is_numeric($gala)) {
-            $qry = "DELETE FROM scan_header JOIN scan_sek USING(scan) WHERE ziel_gala = %s";
+            $qry = "DELETE FROM scan_header NATURAL JOIN scan_sek WHERE ziel_gala = %s";
             $rs = $tic->db->Execute($this, $qry, array($gala));
             if (!$rs) {
                 $tic->error($this, "Scans der Gala ".$gala." konnten nicht gel&ouml;scht werden.");
@@ -694,7 +773,7 @@ class Scan extends TICModule
         if (!is_numeric($gala) || !is_numeric($planet)) { return false; }
         $qry = "SELECT scan_header.scan, time, percent, ziel_gala, ziel_planet, scanner_gala, scanner_planet, birth, "
             ."type, punkte, schiffe, deff, me, ke, ast "
-            ."FROM scan_sek JOIN scan_header USING(scan) WHERE ziel_gala = %s AND ziel_planet = %s AND type = 1";
+            ."FROM scan_sek NATURAL JOIN scan_header WHERE ziel_gala = %s AND ziel_planet = %s AND type = 1";
         $rs = $tic->db->Execute($this, $qry, array($gala, $planet));
         if ($rs->EOF) {
             return false;
@@ -719,7 +798,7 @@ class Scan extends TICModule
 
         if (!is_numeric($gala) || !is_numeric($planet)) { return false; }
         $qry = "SELECT scan_header.scan, time, percent, ziel_gala, ziel_planet, scanner_gala, scanner_planet, birth, type, jaeger, bomber, freggs, zerris, kreuzer, schlachter, traeger, kaper, cancs "
-            ."FROM scan_unit JOIN scan_header USING(scan) WHERE ziel_gala = %s AND ziel_planet = %s AND type = 2";
+            ."FROM scan_unit NATURAL JOIN scan_header WHERE ziel_gala = %s AND ziel_planet = %s AND type = 2";
         $rs = $tic->db->Execute($this, $qry, array($gala, $planet));
         if ($rs->EOF) {
             return false;
@@ -747,7 +826,7 @@ class Scan extends TICModule
             ."jaeger0, bomber0, freggs0, zerris0, kreuzer0, schlachter0, traeger0, kaper0, cancs0, "
             ."jaeger1, bomber1, freggs1, zerris1, kreuzer1, schlachter1, traeger1, kaper1, cancs1, flotte1_status, flotte1_ziel, "
             ."jaeger2, bomber2, freggs2, zerris2, kreuzer2, schlachter2, traeger2, kaper2, cancs2, flotte2_status, flotte2_ziel "
-            ."FROM scan_mili JOIN scan_header USING(scan) WHERE ziel_gala = %s AND ziel_planet = %s AND type = 3";
+            ."FROM scan_mili NATURAL JOIN scan_header WHERE ziel_gala = %s AND ziel_planet = %s AND type = 3";
         $rs = $tic->db->Execute($this, $qry, array($gala, $planet));
         if ($rs->EOF) {
             return false;
@@ -772,7 +851,7 @@ class Scan extends TICModule
 
         if (!is_numeric($gala) || !is_numeric($planet)) { return false; }
         $qry = "SELECT scan_header.scan, time, percent, ziel_gala, ziel_planet, scanner_gala, scanner_planet, birth, type, lo, lr, mr, sr, aj "
-            ."FROM scan_gesch JOIN scan_header USING(scan) WHERE ziel_gala = %s AND ziel_planet = %s AND type = 4";
+            ."FROM scan_gesch NATURAL JOIN scan_header WHERE ziel_gala = %s AND ziel_planet = %s AND type = 4";
         $rs = $tic->db->Execute($this, $qry, array($gala, $planet));
         if ($rs->EOF) {
             return false;
@@ -798,7 +877,7 @@ class Scan extends TICModule
         $news = array();
         if (!is_numeric($gala) || !is_numeric($planet)) { return false; }
         $qry = "SELECT h.scan , h.time, percent, ziel_gala, ziel_planet, scanner_gala, scanner_planet, birth, h.type, n.type, gala, planet, n.time, fleet, eta "
-            ."FROM scan_news AS n JOIN scan_header AS h USING(scan) WHERE ziel_gala = %s AND ziel_planet = %s AND h.type = 5";
+            ."FROM scan_news AS n NATURAL JOIN scan_header AS h WHERE ziel_gala = %s AND ziel_planet = %s AND h.type = 5";
         $rs = $tic->db->Execute($this, $qry, array($gala, $planet));
         while (!$rs->EOF) {
             $array = array();
@@ -866,7 +945,8 @@ class Scan extends TICModule
     private function saveHeader($scan, $typ)
     {
         global $tic;
-
+		$planetObj=new GNPlayer($scan['gala'],$scan['planet']);
+		$planetObj->create();
         if ($scan['nick'] == "") {
             $tic->error($this, "Dies ist kein g&uuml;ltiger Nick!!!");
             return false;
@@ -888,7 +968,7 @@ class Scan extends TICModule
             $tic->db->Execute($this, $qry, array($rs->fields[0]));
             $rs->MoveNext();
         }
-
+		
         $qry = "INSERT INTO scan_header (time, percent, ziel_gala, ziel_planet, scanner_gala, scanner_planet, birth, type)"
             ." VALUES (%s, %s, %s, %s, %s, %s, %s, %s)";
         $rs = $tic->db->Execute($this, $qry, array(
