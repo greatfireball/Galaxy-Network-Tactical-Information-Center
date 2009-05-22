@@ -157,7 +157,7 @@ class UserMan extends TICModule
     public function getInstallQueriesMySQL()
     {
     	global $tic;
-        return array_push($tic->mod['Right']->getInstallQueriesMysql(),
+        return array_merge($tic->mod['Right']->getInstallQueriesMysql(),array(
             'DROP TABLE IF EXISTS tic_user CASCADE;',
             'DROP TABLE IF EXISTS gnplayer CASCADE;',
             'DROP TABLE IF EXISTS galaxie CASCADE;',
@@ -281,7 +281,7 @@ class UserMan extends TICModule
 			AUTO_INCREMENT = 5
 			DEFAULT CHARACTER SET = latin1
 			COLLATE = latin1_german1_ci;"
-        );
+        ));
     }
 
     public function execInstall($installdata)

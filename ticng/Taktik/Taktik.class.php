@@ -96,18 +96,25 @@ class Taktik extends TICModule
 			  `bleibedauer` INT(11) NOT NULL ,
 			  `eta` INT(11) NOT NULL ,
 			  `safe` TINYINT(1) NOT NULL ,
-			  `ticuser` INT(11) NULL DEFAULT NULL COMMENT 'start gala / planet = ticuser?' ,
+			  `user_gala` INT(11) NULL DEFAULT NULL ,
+			  `user_planet` INT(11) NULL DEFAULT NULL ,
 			  PRIMARY KEY (`id`) ,
 			  INDEX `fk_Flotten_GNPlayer` (`start_planet` ASC, `start_gala` ASC) ,
 			  INDEX `fk_Flotten_GNPlayer1` (`ziel_gala` ASC, `ziel_planet` ASC) ,
-			  CONSTRAINT `fk_Flotten_GNPlayer`
+			  INDEX `fk_flotten_tic_user` (`user_planet` ASC, `user_gala` ASC) ,
+ 			 CONSTRAINT `fk_Flotten_GNPlayer`
 			    FOREIGN KEY (`start_planet` , `start_gala` )
 			    REFERENCES `gnplayer` (`planet` , `gala` )
 			    ON DELETE NO ACTION
- 			   ON UPDATE NO ACTION,
-			  CONSTRAINT `fk_Flotten_GNPlayer1`
+			    ON UPDATE NO ACTION,
+ 			 CONSTRAINT `fk_Flotten_GNPlayer1`
 			    FOREIGN KEY (`ziel_gala` , `ziel_planet` )
 			    REFERENCES `gnplayer` (`gala` , `planet` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION,
+			  CONSTRAINT `fk_flotten_tic_user`
+			    FOREIGN KEY (`user_planet` , `user_gala` )
+			    REFERENCES `tic_user` (`planet` , `gala` )
 			    ON DELETE NO ACTION
 			    ON UPDATE NO ACTION)
 			ENGINE = InnoDB

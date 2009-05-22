@@ -66,7 +66,9 @@ class Scan extends TICModule
     }
 
     public function getInstallQueriesMySQL() {
-        return array(
+        global $tic;
+    	return array_merge($tic->mod['UserMan']->getInstallQueriesMySQL(),
+    	array(
             "DROP TABLE IF EXISTS scan_header CASCADE;",
             "CREATE TABLE scan_header (
                 scan INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -170,7 +172,7 @@ class Scan extends TICModule
                 planet INT(2) NOT NULL,
                 UNIQUE (scantyp, gala, planet)
             ) ENGINE = innodb;"
-        );
+        ));
     }
     public function getInstallQueriesPostgreSQL()
     {
