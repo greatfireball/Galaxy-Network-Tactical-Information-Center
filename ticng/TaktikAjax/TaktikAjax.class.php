@@ -71,7 +71,7 @@ class TaktikAjax extends TICModule
         $screens = array();
 
         foreach ($galen as $gala) {
-            $qry = "SELECT ticuser, time, now() - time as age FROM TaktikUpdate WHERE galaxie = %s ORDER BY time DESC LIMIT 1";
+            $qry = "SELECT user_gala,user_planet, time, now() - time as age FROM taktik_update WHERE galaxie = %s ORDER BY time DESC LIMIT 1";
             $rs = $tic->db->Execute('Taktik', $qry, array($gala));
 
             $screen = array();
