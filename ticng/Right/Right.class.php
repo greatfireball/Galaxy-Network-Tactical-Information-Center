@@ -33,7 +33,7 @@ class Right extends TICModule
             new Author("Andreas Hemel", "daishan", "dai.shan@gmx.net"),
             new Author("Pascal Gollor", "Hugch", "pascal@gollor.org")
         ),
-	"3",
+	"4",
 	"Right",
 	"Rechteverwaltung",
 	array(
@@ -144,17 +144,30 @@ class Right extends TICModule
         $sql = array(
                 'DROP TABLE IF EXISTS role',
                 'DROP TABLE IF EXISTS role_capability',
-                'CREATE TABLE role (
-                    role int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-                    name varchar(20) NOT NULL UNIQUE,
-                    israng tinyint(1) NOT NULL DEFAULT 0
-                ) TYPE = INNODB',
-                'CREATE TABLE role_capability (
-                    role int NOT NULL REFERENCES role(role),
-                    capability int NOT NULL,
-                    allowed tinyint(1) NOT NULL DEFAULT 0,
-                    UNIQUE(role, capability)
-                ) TYPE = INNODB'
+                "CREATE  TABLE IF NOT EXISTS `role` (
+				  `role` INT(11) NOT NULL AUTO_INCREMENT ,
+				  `name` VARCHAR(20) NOT NULL ,
+				  `israng` TINYINT(1) NOT NULL DEFAULT '0' ,
+				  PRIMARY KEY (`role`) ,
+				  UNIQUE INDEX `name` (`name` ASC) )
+				ENGINE = InnoDB
+				AUTO_INCREMENT = 9
+				DEFAULT CHARACTER SET = latin1
+				COLLATE = latin1_german1_ci;",
+                "CREATE  TABLE IF NOT EXISTS `role_capability` (
+				  `role` INT(11) NOT NULL ,
+				  `capability` INT(11) NOT NULL ,
+				  `allowed` TINYINT(1) NOT NULL DEFAULT '0' ,
+				  UNIQUE INDEX `role` (`role` ASC, `capability` ASC) ,
+				  INDEX `fk_role_capability_role` (`role` ASC) ,
+				  CONSTRAINT `fk_role_capability_role`
+				    FOREIGN KEY (`role` )
+				    REFERENCES `role` (`role` )
+				    ON DELETE NO ACTION
+				    ON UPDATE NO ACTION)
+				ENGINE = InnoDB
+				DEFAULT CHARACTER SET = latin1
+				COLLATE = latin1_german1_ci;"
             );
         $sql2 = $this->createDefaultSQL();
         return array_merge($sql, $sql2);
@@ -332,7 +345,9 @@ class Right extends TICModule
 
             case USER_CHANGE_ROLE:
                 return true;
-
+			
+            case GALA_DELETE: 
+                
             case GALA_CHANGE_ALLI:
                 return $this->testCapability(CAP_DIPLO_GALA);
 

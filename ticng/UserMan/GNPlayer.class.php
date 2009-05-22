@@ -26,13 +26,14 @@ class GNPlayer {
     protected $gala = null;
     protected $planet = null;
     protected $nick = null;
-    protected $id = null;
+    protected $id = array();
 
     public function __construct($gala = null, $planet = null, $nick = null)
     {
         $this->gala = $gala;
         $this->planet = $planet;
         $this->nick = $nick;
+        $this->id=array($gala,$planet);
     }
 
     public function __toString()
@@ -44,8 +45,8 @@ class GNPlayer {
     {
         global $tic;
         assert($this->id !== null);
-        $qry = "UPDATE GNPlayer SET nick = %s, gala = %s, planet = %s WHERE gnplayer = %s";
-        $tic->db->Execute(get_class($this), $qry, array($this->nick, $this->gala, $this->planet, $this->id));
+        $qry = "UPDATE gnplayer SET nick = %s WHERE gala = %s and planet = %s";
+        $tic->db->Execute(get_class($this), $qry, array($this->nick, $this->gala, $this->planet));
     }
 
     public function load($id = false)
@@ -56,13 +57,13 @@ class GNPlayer {
             $id = $this->id;
         assert($id !== null);
 
-        $qry = "SELECT FROM GNPlayer nick, gala, planet WHERE gnplayer = %s";
-        $rs = $tic->db->Execute(get_class($this), $qry, array($this->id));
+        $qry = "SELECT nick FROM gnplayer WHERE gala=%s and planet=%s";
+        $rs = $tic->db->Execute(get_class($this), $qry, $id);
         if ($rs->EOF)
             return false;
         $this->nick = $rs->fields['nick'];
-        $this->gala = $rs->fields['gala'];
-        $this->palnet = $rs->fields['planet'];
+        $this->gala = $id[0];
+        $this->palnet = $id[1];
         $this->id = $id;
         return true;
     }
@@ -76,25 +77,25 @@ class GNPlayer {
         $planet = $this->planet;
 
         //check ob nick *und* koords schon existieren, d.h. player existiert schon, alles in butter
-        $qry = "SELECT gnplayer, nick, gala, planet FROM GNPlayer WHERE nick = %s AND (gala = %s AND planet = %s)";
+        $qry = "SELECT nick, gala, planet FROM gnplayer WHERE nick = %s AND (gala = %s AND planet = %s)";
         $rs = $tic->db->Execute(get_class($this), $qry, array($nick, $gala, $planet));
         if (!$rs->EOF) {
-            $this->id = $rs->fields[0];
+            $this->id = array($rs->fields[1],$rs->fields[2]);
             return true;
         }
 
         //check ob nick *oder* koords schon existieren
-        $qry = "SELECT nick, gala, planet FROM GNPlayer WHERE lower(nick) = %s OR (gala = %s AND planet = %s)";
+        $qry = "SELECT nick, gala, planet FROM gnplayer WHERE lower(nick) = %s OR (gala = %s AND planet = %s)";
         $rs = $tic->db->Execute(get_class($this), $qry, array(strtolower($nick), $gala, $planet));
         if (!$rs->EOF) {
             // es existieren bereits player mit gleichen koords oder nick
-            $qry = "SELECT * FROM GNPlayer JOIN TICUser USING(gala, planet) ".
-                "WHERE nick = %s OR (GNPlayer.gala = %s AND GNPlayer.planet = %s)";
+            $qry = "SELECT * FROM gnplayer NATURAL JOIN TICUser ".
+                "WHERE nick = %s OR (gnplayer.gala = %s AND gnplayer.planet = %s)";
             $rs = $tic->db->Execute(get_class($this), $qry, array($nick, $planet, $gala));
             if ($rs->EOF) {
                 // kein user existiert zu den player mit gleichen koords oder nick
                 // wir koennen die player einfach loeschen
-                $qry = "DELETE FROM GNPlayer WHERE nick = %s OR (gala = %s AND planet = %s)";
+                $qry = "DELETE FROM gnplayer WHERE nick = %s OR (gala = %s AND planet = %s)";
                 $tic->db->Execute(get_class($this), $qry, array($nick, $planet, $gala));
             } else {
                 // es existiert schon ein user, player kann nicht erstellt werden
@@ -104,16 +105,19 @@ class GNPlayer {
         }
         $galaobj = new Galaxie($gala);
         $galaobj->create(); //simply failes if gala already exists
-        $qry = "INSERT INTO GNPlayer (nick, planet, gala) VALUES (%s, %s, %s)";
+        $qry = "INSERT INTO gnplayer (nick, planet, gala) VALUES (%s, %s, %s)";
         $tic->db->Execute(get_class($this), $qry, array($nick, $planet, $gala));
-        $this->id = $tic->db->Insert_ID();
+        $this->id = array($gala,$planet);
         return true;
     }
 
     public function delete()
     {
+    	//FIXME user muss überall vorher gelöscht werden
+    	if($this->checkForUser()==true) return false; //user noch in tic_user vorhanden daher nicht lösch bar
+    	global $tic;
+    	$sql =" Delete FROM gnplayer";
         assert(false);
-        //FIXME
     }
 
 
@@ -152,8 +156,8 @@ class GNPlayer {
     public function getAllianz()
     {
         global $tic;
-        $qry = "SELECT allianz FROM Galaxie NATURAL JOIN GNPlayer ".
-            "WHERE GNPlayer.gala = %s AND GNPlayer.planet = %s";
+        $qry = "SELECT allianz FROM galaxie NATURAL JOIN gnplayer ".
+            "WHERE gnplayer.gala = %s AND gnplayer.planet = %s";
         $rs = $tic->db->Execute(get_class($this), $qry, array($this->gala, $this->planet));
         if ($rs->EOF)
             return false;
@@ -165,8 +169,8 @@ class GNPlayer {
     public function getMeta()
     {
         global $tic;
-        $qry = "SELECT meta FROM Allianz NATURAL JOIN Galaxie NATURAL JOIN GNPlayer ".
-            "WHERE GNPlayer.gala = %s AND GNPlayer.planet = %s";
+        $qry = "SELECT meta FROM allianz NATURAL JOIN galaxie NATURAL JOIN gnplayer ".
+            "WHERE gnplayer.gala = %s AND gnplayer.planet = %s";
         $rs = $tic->db->Execute(get_class($this), $qry, array($this->gala, $this->planet));
         if ($rs->EOF)
             return false;
@@ -211,7 +215,7 @@ class GNPlayer {
     {
         global $tic;
         // gibt true zurÃ¼ck wenn ein user zu diesem player existiert
-        $qry = "SELECT count(*) FROM TICUSER ticuser WHERE gala = %s AND planet = %s";
+        $qry = "SELECT count(*) FROM tic_user ticuser WHERE gala = %s AND planet = %s";
         $rs = $tic->db->Execute(get_class($this), $qry, array($this->gala, $this->planet));
         if ($rs->fields[0] == 0)
             return false;

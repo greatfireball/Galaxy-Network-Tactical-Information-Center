@@ -18,6 +18,7 @@ define('USER_SET_ISBOT',           12);
 define('USER_CHANGE_ROLE',         13);
 
 define('GALA_CHANGE_ALLI',         20); // Allianz object               Allianz object
+define('GALA_DELETE',              21);
 
 define('ALLI_CREATE',              30);
 define('ALLI_DELETE',              31);

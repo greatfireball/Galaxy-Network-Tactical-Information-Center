@@ -92,31 +92,31 @@ class UserMan extends TICModule
     public function getInstallQueriesPostgreSQL()
     {
         return array(
-            'DROP TABLE Meta CASCADE;',
-            'CREATE TABLE Meta (
+            'DROP TABLE meta CASCADE;',
+            'CREATE TABLE meta (
                 meta serial PRIMARY KEY,
                 name varchar(60) NOT NULL UNIQUE,
                 tag varchar(20) NOT NULL UNIQUE
             )',
-            'DROP TABLE Allianz CASCADE;',
-            'CREATE TABLE Allianz (
+            'DROP TABLE allianz CASCADE;',
+            'CREATE TABLE allianz (
                 allianz serial PRIMARY KEY,
                 name varchar(60) NOT NULL UNIQUE,
                 tag varchar(20) NOT NULL UNIQUE,
                 meta int REFERENCES Meta(meta)
             );',
-            'DROP TABLE AllianzBnd CASCADE;',
-            'CREATE TABLE AllianzBnd (
+            'DROP TABLE allianz_bnd CASCADE;',
+            'CREATE TABLE allianz_bnd (
                 a int NOT NULL REFERENCES Allianz(allianz),
                 b int NOT NULL REFERENCES Allianz(allianz)
             );',
-            'DROP TABLE Galaxie CASCADE;',
-            'CREATE TABLE Galaxie (
+            'DROP TABLE galaxie CASCADE;',
+            'CREATE TABLE galaxie (
                 gala int NOT NULL UNIQUE,
                 allianz int REFERENCES Allianz(allianz)
             );',
-            'DROP TABLE GNPlayer CASCADE;',
-            'CREATE TABLE GNPlayer (
+            'DROP TABLE gnplayer CASCADE;',
+            'CREATE TABLE gnplayer (
                 gnplayer serial PRIMARY KEY,
                 nick varchar(50) NOT NULL,
                 planet int NOT NULL,
@@ -124,9 +124,8 @@ class UserMan extends TICModule
                 UNIQUE(nick),
                 UNIQUE(planet, gala)
             );',
-            'DROP TABLE TICUser CASCADE;',
-            'CREATE TABLE TICUser (
-                ticuser serial PRIMARY KEY,
+            'DROP TABLE tic_user CASCADE;',
+            'CREATE TABLE tic_user (
                 planet int NOT NULL,
                 gala int NOT NULL,
                 pw_hash char(32) NOT NULL,
@@ -157,67 +156,131 @@ class UserMan extends TICModule
 
     public function getInstallQueriesMySQL()
     {
-        return array(
-            'DROP TABLE IF EXISTS TICUser CASCADE;',
-            'DROP TABLE IF EXISTS GNPlayer CASCADE;',
-            'DROP TABLE IF EXISTS Galaxie CASCADE;',
-            'DROP TABLE IF EXISTS AllianzBnd CASCADE;',
-            'DROP TABLE IF EXISTS Allianz CASCADE;',
-            'DROP TABLE IF EXISTS Meta CASCADE;',
-            'CREATE TABLE Meta (
-                meta int AUTO_INCREMENT PRIMARY KEY,
-                name varchar(60) NOT NULL UNIQUE,
-                tag varchar(20) NOT NULL UNIQUE
-            ) ENGINE = INNODB;',
-            'CREATE TABLE Allianz (
-                allianz int AUTO_INCREMENT PRIMARY KEY,
-                name varchar(60) NOT NULL UNIQUE,
-                tag varchar(20) NOT NULL UNIQUE,
-                meta int REFERENCES Meta(meta)
-            ) ENGINE = INNODB;',
-            'CREATE TABLE AllianzBnd (
-                a int NOT NULL REFERENCES Allianz(allianz),
-                b int NOT NULL REFERENCES Allianz(allianz)
-            ) ENGINE = INNODB;',
-            'CREATE TABLE Galaxie (
-                gala int NOT NULL UNIQUE,
-                allianz int REFERENCES Allianz(allianz)
-            ) ENGINE = INNODB;',
-            'CREATE TABLE GNPlayer (
-                gnplayer int AUTO_INCREMENT PRIMARY KEY,
-                nick varchar(50) NOT NULL,
-                planet int NOT NULL,
-                gala int NOT NULL REFERENCES galaxie(gala),
-                UNIQUE(nick),
-                UNIQUE(planet, gala)
-            ) ENGINE = INNODB;',
-            'CREATE TABLE TICUser (
-                ticuser int AUTO_INCREMENT PRIMARY KEY,
-                planet int NOT NULL,
-                gala int NOT NULL,
-                pw_hash char(32) NOT NULL,
-                salt varchar(24),
-                pw_aendern tinyint(1) NOT NULL DEFAULT 1,
-                is_bot tinyint(1) NOT NULL DEFAULT 0,
-                gn_rang int NOT NULL DEFAULT 0,
-                role int NOT NULL DEFAULT 5,
-                last_active timestamp,
-                failed_logins int NOT NULL DEFAULT 0,
-                banned tinyint(1) NOT NULL DEFAULT 0,
-                timeformat int NOT NULL DEFAULT 0,
-                authnick varchar(15),
-                highlight varchar(50),
-                scantyp int,
-                svs int,
-                elokas int,
-                telnr varchar(20),
-                telnr_comment varchar(255),
-                telnr_visibility int NOT NULL DEFAULT 0,      -- alli/meta/tic kann die nummer einsehen
-                icq varchar(13),
-                jabber varchar(200),
-                UNIQUE(planet, gala),
-                FOREIGN KEY (planet, gala) REFERENCES GNPlayer(planet, gala)
-            ) ENGINE = INNODB;'
+    	global $tic;
+        return array_push($tic->mod['Right']->getInstallQueriesMysql(),
+            'DROP TABLE IF EXISTS tic_user CASCADE;',
+            'DROP TABLE IF EXISTS gnplayer CASCADE;',
+            'DROP TABLE IF EXISTS galaxie CASCADE;',
+            'DROP TABLE IF EXISTS allianz_bnd CASCADE;',
+            'DROP TABLE IF EXISTS allianz CASCADE;',
+            'DROP TABLE IF EXISTS meta CASCADE;',
+           "CREATE  TABLE IF NOT EXISTS `meta` (
+			  `meta` INT(11) NOT NULL AUTO_INCREMENT ,
+			  `name` VARCHAR(60) NOT NULL ,
+			  `tag` VARCHAR(20) NOT NULL ,
+			  PRIMARY KEY (`meta`) ,
+			  UNIQUE INDEX `name` (`name` ASC) ,
+			  UNIQUE INDEX `tag` (`tag` ASC) )
+			ENGINE = InnoDB
+			AUTO_INCREMENT = 3
+			DEFAULT CHARACTER SET = latin1
+			COLLATE = latin1_german1_ci;",
+            "CREATE  TABLE IF NOT EXISTS `allianz` (
+			  `allianz` INT(11) NOT NULL AUTO_INCREMENT ,
+			  `name` VARCHAR(60) NOT NULL ,
+			  `tag` VARCHAR(20) NOT NULL ,
+			  `meta` INT(11) NULL DEFAULT NULL ,
+			  PRIMARY KEY (`allianz`) ,
+			  UNIQUE INDEX `name` (`name` ASC) ,
+			  UNIQUE INDEX `tag` (`tag` ASC) ,
+			  INDEX `fk_Allianz_Meta` (`meta` ASC) ,
+			  CONSTRAINT `fk_Allianz_Meta`
+			    FOREIGN KEY (`meta` )
+			    REFERENCES `meta` (`meta` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION)
+			ENGINE = InnoDB
+			AUTO_INCREMENT = 6
+			DEFAULT CHARACTER SET = latin1
+			COLLATE = latin1_german1_ci;",
+            "CREATE  TABLE IF NOT EXISTS `allianz_bnd` (
+			  `a` INT(11) NOT NULL ,
+			  `b` INT(11) NOT NULL ,
+			  INDEX `fk_AllianzBnd_Allianz` (`a` ASC) ,
+			  INDEX `fk_AllianzBnd_Allianz1` (`b` ASC) ,
+			  CONSTRAINT `fk_AllianzBnd_Allianz`
+			    FOREIGN KEY (`a` )
+			    REFERENCES `allianz` (`allianz` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION,
+			  CONSTRAINT `fk_AllianzBnd_Allianz1`
+			    FOREIGN KEY (`b` )
+			    REFERENCES `allianz` (`allianz` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION)
+			ENGINE = InnoDB
+			DEFAULT CHARACTER SET = latin1
+			COLLATE = latin1_german1_ci;",
+            "CREATE  TABLE IF NOT EXISTS `galaxie` (
+			  `gala` INT(11) NOT NULL ,
+			  `allianz` INT(11) NULL DEFAULT NULL ,
+			  UNIQUE INDEX `gala` (`gala` ASC, `allianz` ASC) ,
+			  PRIMARY KEY (`gala`) ,
+			  INDEX `fk_Galaxie_Allianz` (`allianz` ASC) ,
+			  CONSTRAINT `fk_Galaxie_Allianz`
+			    FOREIGN KEY (`allianz` )
+			    REFERENCES `allianz` (`allianz` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION)
+			ENGINE = InnoDB
+			DEFAULT CHARACTER SET = latin1
+			COLLATE = latin1_german1_ci;",
+           "CREATE  TABLE IF NOT EXISTS `gnplayer` (
+			  `gala` INT(11) NOT NULL ,
+			  `planet` INT(11) NOT NULL ,
+			  `nick` VARCHAR(50) NULL ,
+			  UNIQUE INDEX `nick` (`nick` ASC) ,
+			  PRIMARY KEY (`planet`, `gala`) ,
+			  INDEX `fk_GNPlayer_Galaxie` (`gala` ASC) ,
+			  CONSTRAINT `fk_GNPlayer_Galaxie`
+			    FOREIGN KEY (`gala` )
+			    REFERENCES `galaxie` (`gala` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION)
+			ENGINE = InnoDB
+			AUTO_INCREMENT = 5
+			DEFAULT CHARACTER SET = latin1
+			COLLATE = latin1_german1_ci;",//Hier konflikt da Role zuvor angelegt werden muss
+            "CREATE  TABLE IF NOT EXISTS `tic_user` (
+ 			 `gala` INT(11) NOT NULL ,
+ 			 `planet` INT(11) NOT NULL ,
+  			`role` INT(11) NOT NULL ,
+  			`pw_hash` CHAR(32) NOT NULL ,
+  			`pw_aendern` TINYINT(1) NOT NULL DEFAULT '1' COMMENT 'geändernt von tinyint auf boolean' ,
+  			`is_bot` TINYINT(1) NOT NULL DEFAULT '0' COMMENT 'geändernt von tinyint auf boolean' ,
+ 			 `gn_rang` INT(11) NOT NULL DEFAULT '0' ,
+  			`last_active` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP ,
+ 			 `failed_logins` INT(4) NOT NULL DEFAULT '0' ,
+ 			 `banned` TINYINT(1) NOT NULL DEFAULT '0' COMMENT 'geändernt von tinyint auf boolean' ,
+ 			 `timeformat` INT(11) NOT NULL DEFAULT '0' ,
+ 			 `telnr_visibility` TINYINT(1) NOT NULL DEFAULT '0' ,
+ 			 `authnick` VARCHAR(15) NULL DEFAULT NULL ,
+  			`salt` VARCHAR(24) NULL DEFAULT NULL ,
+ 			 `highlight` VARCHAR(50) NULL DEFAULT NULL ,
+			  `scantyp` INT(11) NULL DEFAULT NULL ,
+ 			 `svs` INT(11) NULL DEFAULT NULL ,
+ 			 `elokas` INT(11) NULL DEFAULT NULL ,
+ 			 `telnr` VARCHAR(20) NULL DEFAULT NULL ,
+ 			 `telnr_comment` VARCHAR(255) NULL DEFAULT NULL ,
+  			`icq` VARCHAR(13) NULL DEFAULT NULL ,
+  			`jabber` VARCHAR(200) NULL DEFAULT NULL ,
+  			PRIMARY KEY (`planet`, `gala`) ,
+  			INDEX `fk_TICUser_GNPlayer` (`planet` ASC, `gala` ASC) ,
+  			INDEX `fk_TICUser_role` (`role` ASC) ,
+  			CONSTRAINT `fk_TICUser_GNPlayer`
+    			FOREIGN KEY (`planet` , `gala` )
+    			REFERENCES `gnplayer` (`planet` , `gala` )
+    			ON DELETE NO ACTION
+    			ON UPDATE NO ACTION,
+  			CONSTRAINT `fk_TICUser_role`
+    			FOREIGN KEY (`role` )
+    			REFERENCES `role` (`role` )
+    			ON DELETE NO ACTION
+    			ON UPDATE NO ACTION)
+			ENGINE = InnoDB
+			AUTO_INCREMENT = 5
+			DEFAULT CHARACTER SET = latin1
+			COLLATE = latin1_german1_ci;"
         );
     }
 
@@ -248,7 +311,7 @@ class UserMan extends TICModule
     public function getPlayerByNick($nick)
     {
         global $tic;
-        $qry = "SELECT gala, planet, nick, gnplayer FROM GNPlayer WHERE lower(nick) = %s";
+        $qry = "SELECT gala, planet, nick, gnplayer FROM gnplayer WHERE lower(nick) = %s";
         $rs = $tic->db->Execute($this->getName(), $qry, array(strtolower($nick)));
         if ($rs->EOF)
             return false;
@@ -264,7 +327,7 @@ class UserMan extends TICModule
         global $tic;
 
         if (trim($string) == "") { return false; }
-        $qry = "SELECT gala, planet, nick, gnplayer FROM GNPlayer WHERE lower(nick) LIKE %s ORDER BY gala, planet ASC";
+        $qry = "SELECT gala, planet, nick, gnplayer FROM gnplayer WHERE lower(nick) LIKE %s ORDER BY gala, planet ASC";
         $rs = $tic->db->Execute($this->getName(), $qry, array('%'.strtolower($string).'%'));
         if (!$rs) { return false; }
         $erg = array();
@@ -281,13 +344,12 @@ class UserMan extends TICModule
     public function getPlayerByKoords($gala, $planet)
     {
         global $tic;
-        $qry = "SELECT gala, planet, nick, gnplayer FROM GNPlayer WHERE gala = %s AND planet = %s";
+        $qry = "SELECT gala, planet, nick FROM gnplayer WHERE gala = %s AND planet = %s";
         $rs = $tic->db->Execute($this->getName(), $qry, array($gala, $planet));
         if ($rs->EOF)
             return false;
         else {
             $player = new GNPlayer($rs->fields[0], $rs->fields[1], $rs->fields[2]);
-            $player->_id = $rs->fields[3];
             return $player;
         }
     }
@@ -304,28 +366,26 @@ class UserMan extends TICModule
 
     public function getUserByKoords($gala, $planet)
     {
-        $where = ' WHERE TICUser.gala = %s AND TICUser.planet = %s ';
-        $arr = array($gala, $planet);
-        return $this->getUserByX($where, $arr);
+    	$temp=new TICUser();
+        return $temp->load(array($gala,$planet));
     }
 
-    public function getUserById($id)
+    public function getUserById($id) //Neue DB $id ist ein array (gala,planet)
     {
-        $where = ' WHERE TICUser.ticuser = %s';
-        return $this->getUserByX($where, array($id));
+        $where = ' WHERE tic_user.gala = %s and tic_user.planet=%s';
+        return $this->getUserByX($where,$id);
     }
 
     private function getUserByX($where, $arr)
     {
         global $tic;
-        $qry = "SELECT ticuser FROM TICUser JOIN GNPlayer USING(gala, planet) ".$where;
+        $qry = "SELECT gala,planet FROM tic_user NATURAL JOIN gnplayer ".$where;
         $rs = $tic->db->Execute($this->getName(), $qry, $arr);
         if ($rs->EOF)
             return false;
 
         $user = new TICUser();
-        $user->load($rs->fields[0]);
-        return $user;
+        return $user->load(array($rs->field[0],$rs->fiel[1]));
     }
 
     // ================== Galaxie Functions =============================
@@ -342,7 +402,7 @@ class UserMan extends TICModule
     {
         global $tic;
 
-        $qry = "SELECT gala FROM Galaxie WHERE allianz IS NULL ORDER BY gala";
+        $qry = "SELECT gala FROM galaxie WHERE allianz IS NULL ORDER BY gala";
         $rs = $tic->db->Execute($this->getName(), $qry);
         $galen = array();
         for (; !$rs->EOF; $rs->MoveNext()) {
@@ -356,7 +416,7 @@ class UserMan extends TICModule
     public function getAllianzByName($name)
     {
         global $tic;
-        $qry = "SELECT allianz FROM Allianz WHERE name = %s";
+        $qry = "SELECT allianz FROM allianz WHERE name = %s";
         $rs = $tic->db->Execute($this->getName(), $qry, array($name));
         if ($rs->EOF)
             return false;

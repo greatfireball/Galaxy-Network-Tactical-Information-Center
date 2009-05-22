@@ -47,7 +47,7 @@ class Allianz {
             $alli_id = $this->id;
         assert($alli_id !== null);
 
-        $qry = "SELECT allianz, name, tag, meta FROM Allianz WHERE allianz = %s";
+        $qry = "SELECT allianz, name, tag, meta FROM allianz WHERE allianz = %s";
         $rs = $tic->db->Execute(get_class($this), $qry, array($alli_id));
         if ($rs->EOF)
             return false;
@@ -62,7 +62,7 @@ class Allianz {
     {
         global $tic;
         assert($this->id !== null);
-        $qry = "UPDATE Allianz SET name = %s, tag = %s, meta = %s WHERE allianz = %s";
+        $qry = "UPDATE allianz SET name = %s, tag = %s, meta = %s WHERE allianz = %s";
         $tic->db->Execute(get_class($this), $qry, array($this->name, $this->tag, $this->meta, $this->id));
     }
 
@@ -74,7 +74,7 @@ class Allianz {
 
         if ($tic->mod['UserMan']->getAllianzByName($this->name) || $tic->mod['UserMan']->getAllianzByTag($this->tag))
             return false;
-        $qry = "INSERT INTO Allianz (name, tag) VALUES (%s, %s)";
+        $qry = "INSERT INTO allianz (name, tag) VALUES (%s, %s)";
         $tic->db->Execute(get_class($this), $qry, array($this->name, $this->tag));
         $this->id = $tic->db->Insert_ID();
         assert($this->id);
@@ -89,9 +89,9 @@ class Allianz {
         if (!$tic->mod['Right']->isAllowed(ALLI_DELETE, $this))
             return false;
 
-        $qry = "UPDATE Galaxie SET allianz = NULL WHERE allianz = %s";
+        $qry = "UPDATE galaxie SET allianz = NULL WHERE allianz = %s";
         $rs = $tic->db->Execute(get_class($this), $qry, array($this->id));
-        $qry = "DELETE FROM Allianz WHERE allianz = %s";
+        $qry = "DELETE FROM allianz WHERE allianz = %s";
         $rs = $tic->db->Execute(get_class($this), $qry, array($this->id));
         $tic->mod['Logging']->log(ALLI_DELETE, $this);
         return true;
@@ -117,7 +117,7 @@ class Allianz {
     {
         global $tic;
 
-        $qry = "SELECT gala FROM Galaxie WHERE allianz = %s;";
+        $qry = "SELECT gala FROM galaxie WHERE allianz = %s;";
         $rs = $tic->db->Execute(get_class($this), $qry, array($this->id));
         $galaxien = array();
         while (!$rs->EOF) {
@@ -131,7 +131,7 @@ class Allianz {
     {
         global $tic;
 
-        $qry = "SELECT gala FROM Galaxie WHERE allianz = %s;";
+        $qry = "SELECT gala FROM galaxie WHERE allianz = %s;";
         $rs = $tic->db->Execute(get_class($this), $qry, array($this->id));
         $galaxien = array();
         while (!$rs->EOF) {
@@ -167,7 +167,7 @@ class Allianz {
     public function getMemberCount()
     {
         global $tic;
-        $qry = "SELECT count(*) FROM TICUser NATURAL JOIN Galaxie WHERE allianz = %s";
+        $qry = "SELECT count(*) FROM tic_user NATURAL JOIN galaxie WHERE allianz = %s";
         $rs = $tic->db->Execute(get_class($this), $qry, array($this->id));
         assert($rs);
         return $rs->fields[0];
@@ -176,7 +176,7 @@ class Allianz {
     public function getOnlineUserCount()
     {
         global $tic;
-        $qry = "SELECT count(*) FROM TICUser NATURAL JOIN Galaxie WHERE allianz = %s AND last_active + '00:05:00' > now()";
+        $qry = "SELECT count(*) FROM tic_user NATURAL JOIN galaxie WHERE allianz = %s AND last_active + '00:05:00' > now()";
         $rs = $tic->db->Execute(get_class($this), $qry, array($this->id));
         assert($rs);
         return $rs->fields[0];

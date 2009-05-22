@@ -25,12 +25,25 @@
 class Galaxie {
     private $nr = null;
     private $allianz = null;
+    private $anzahlPlanet = null;
 
-    public function __construct($nr)
+    public function __construct($nr,$alli=null)
     {
         $this->nr = $nr;
+        $this->allianz=$alli;
+        $qry = "SELECT count(planet) as count FROM gnplayer WHERE gala = %s";
+        $rs = $tic->db->Execute($this->getName(), $qry, array($nr));
+        $this->anzahlPlanet=$rs->fields['count'];
+        
     }
 
+    
+    
+    function getName()
+    {
+    	return getclass($this);
+    }
+    
     public function __toString()
     {
         return $this->nr;
@@ -42,8 +55,8 @@ class Galaxie {
 
         if ($nr === false)
             $nr = $this->nr;
-        $qry = "SELECT gala, allianz FROM Galaxie WHERE gala = %s";
-        $rs = $tic->db->Execute(get_class($this), $qry, array($nr));
+        $qry = "SELECT gala, allianz FROM galaxie WHERE gala = %s";
+        $rs = $tic->db->Execute($this->getName(), $qry, array($nr));
         if ($rs->EOF)
             return false;
         $this->nr = $rs->fields[0];
@@ -55,25 +68,38 @@ class Galaxie {
     {
         global $tic;
         assert($this->nr !== null);
-        $qry = "UPDATE Galaxie SET allianz = %s WHERE gala = %s";
-        $tic->db->Execute(get_class($this), $qry, array($this->allianz, $this->nr));
+        $qry = "UPDATE galaxie SET allianz = %s WHERE gala = %s";
+        $tic->db->Execute($this->getName(), $qry, array($this->allianz, $this->nr));
     }
 
     public function create()
     {
         global $tic;
 
-        $qry = "SELECT * FROM Galaxie WHERE gala = %s;";
-        $rs = $tic->db->Execute(get_class($this), $qry, array($this->nr));
+        $qry = "SELECT * FROM galaxie WHERE gala = %s;";
+        $rs = $tic->db->Execute($this->getName(), $qry, array($this->nr));
         if ($rs->EOF) {
-            $qry = "INSERT INTO Galaxie (gala) VALUES (%s);";
-            $tic->db->Execute(get_class($this), $qry, array($this->nr));
+            $qry = "INSERT INTO galaxie (gala,allianz) VALUES (%s, %s);";
+            $tic->db->Execute($this->getName(), $qry, array($this->nr,$this->allianz));
             return true;
         }
         return false;
     }
 
-    // FIXME function delete() ???
+    // FIXME Neu 
+    public function delete()
+    {
+    	global $tic;
+   		if (!$tic->mod['Right']->isAllowed(GALA_DELETE, $this)) return false;
+  		//Kontrollieren ob noch user vorhanden sind	
+ 		if($this->anzahlPlanet==0)//wenn nicht dann gala löschen
+		{
+			$qry= "DELETE FROM galaxie where gala = %s ;";
+ 			$rs= $tic->db->Execute($this->getName(),$qry,array($this->nr));
+ 			return true;
+  		}
+		return false; //wenn gnplayer noch exestieren 
+    }
 
     public function getNr()
     {
@@ -92,8 +118,8 @@ class Galaxie {
     public function getMeta()
     {
         global $tic;
-        $qry = "SELECT Allianz.meta FROM Allianz NATURAL JOIN Galaxie WHERE gala = %s";
-        $rs = $tic->db->Execute(get_class($this), $qry, array($this->nr));
+        $qry = "SELECT allianz.meta FROM allianz NATURAL JOIN galaxie WHERE gala = %s";
+        $rs = $tic->db->Execute($this->getName(), $qry, array($this->nr));
         if ($rs->EOF)
             return false;
         return $tic->mod['UserMan']->getMetaById($rs->fields[0]);
@@ -103,12 +129,12 @@ class Galaxie {
     {
         global $tic;
 
-        $qry = "SELECT TICUser.ticuser ".
-            "FROM TICUser JOIN GNPlayer USING(gala, planet) WHERE TICUser.gala = %s ORDER BY planet";
-        $rs = $tic->db->Execute(get_class($this), $qry, array($this->nr));
+        $qry = "SELECT tic_user.ticuser ".
+            "FROM tic_user WHERE tic_user.gala = %s ORDER BY planet";
+        $rs = $tic->db->Execute($this->getName(), $qry, array($this->nr));
         $users = array();
         while (!$rs->EOF) {
-            array_push($users, $tic->mod['UserMan']->getUserById($rs->fields[0]));
+            array_push($users, $tic->mod['UserMan']->getUserById(array($this->nr,$rs->fields[0])));
             $rs->MoveNext();
         }
         return $users;
@@ -117,9 +143,8 @@ class Galaxie {
     public function getPlayer()
     {
         global $tic;
-
-        $qry = "SELECT planet FROM GNPlayer WHERE gala = %s ORDER BY planet;";
-        $rs = $tic->db->Execute(get_class($this), $qry, array($this->nr));
+        $qry = "SELECT planet FROM gnplayer WHERE gala = %s ORDER BY planet;";
+        $rs = $tic->db->Execute($this->getName(), $qry, array($this->nr));
         $player = array();
         while (!$rs->EOF) {
             array_push($player, $tic->mod['UserMan']->getPlayerByKoords($this->nr, $rs->fields[0]));

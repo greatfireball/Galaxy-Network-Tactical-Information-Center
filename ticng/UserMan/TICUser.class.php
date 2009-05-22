@@ -28,7 +28,6 @@ class TICUser extends GNPlayer implements Right_IFace {
     public static $timeformatTranslation = array('Ticks' => 0, 'Minuten' => 1, 'Stunden' => 2);
     public static $visibilityTranslation = array('Alle' => 0, 'Meta' => 1, 'Allianz' => 2);
 
-    private $uid = null;
     private $pwAendern = null;
     private $isBot = null;
     private $gnRang = null;
@@ -55,27 +54,24 @@ class TICUser extends GNPlayer implements Right_IFace {
 
     public function __toString()
     {
-        return $this->uid;
+        return $this->id;
     }
     
 
 
     // ================== save / load / create / delete =====================
 
-    public function load($id = false)
+    public function load($id = array())
     {
-        if ($id === false)
-            $id = $this->uid;
-        assert($id !== null);
 
         global $tic;
 
-        $qry = "SELECT TICUser.gala as gala, TICUser.planet as planet, nick, ticuser, pw_aendern, ".
+        $qry = "SELECT tic_user.gala as gala, tic_user.planet as planet, nick, pw_aendern, ".
             "is_bot, gn_rang, role, last_active, failed_logins, banned, ".
             "timeformat, highlight, scantyp, svs, elokas, authnick, telnr, ".
             "telnr_comment, telnr_visibility, icq, jabber ".
-            "FROM TICUser JOIN GNPlayer USING(gala, planet) WHERE ticuser = %s";
-        $rs = $tic->db->Execute(get_class($this), $qry, array($id));
+            "FROM tic_user NATURAL JOIN gnplayer";
+        $rs = $tic->db->Execute(get_class($this), $qry);
         if ($rs->EOF)
             return false;
         $arr = $rs->FetchRow();
@@ -83,7 +79,7 @@ class TICUser extends GNPlayer implements Right_IFace {
         $this->gala =          $arr['gala'];
         $this->planet =        $arr['planet'];
         $this->nick =          $arr['nick'];
-        $this->uid =           $arr['ticuser'];
+        $this->id =           $id;
         $this->pwAendern =     $arr['pw_aendern'];
         $this->isBot =         $arr['is_bot'];
         $this->gnRang =        $arr['gn_rang'];
@@ -107,9 +103,9 @@ class TICUser extends GNPlayer implements Right_IFace {
     public function save()
     {
         global $tic;
-        assert($this->uid !== null);
+        assert($this->id !== null);
 
-        $qry = "UPDATE TICUser SET ".
+        $qry = "UPDATE tic_user SET ".
             "pw_aendern = %s, ".
             "is_bot = %s, ".
             "gn_rang = %s, ".
@@ -127,7 +123,7 @@ class TICUser extends GNPlayer implements Right_IFace {
             "telnr_visibility = %s, ".
             "icq = %s, ".
             "jabber = %s ".
-            "WHERE ticuser = %s, ";
+            "WHERE gala = %s and planet = %s, ";
         $arr = array($this->pwAendern,
                      $this->isBot,
                      $this->gnRang,
@@ -144,7 +140,8 @@ class TICUser extends GNPlayer implements Right_IFace {
                      $this->telnrVisibility,
                      $this->icq,
                      $this->jabber,
-                     $this->uid);
+                     $this->id[0],
+                     $this->id[1]);
         $rs = $tic->db->Execute(get_class($this), $qry, $arr);
     }
 
@@ -154,8 +151,8 @@ class TICUser extends GNPlayer implements Right_IFace {
 
         if (!$tic->isAllowed(USER_DELETE, $this))
             return false;
-        $qry = "DELETE FROM TICUser WHERE ticuser = %s";
-        $rs = $tic->db->Execute(get_class($this), $qry, array($this->uid));
+        $qry = "DELETE FROM tic_user WHERE gala = %s and planet=%s ";
+        $rs = $tic->db->Execute(get_class($this), $qry, $id);
         if (!$rs)
             return false;
         else {
@@ -183,16 +180,16 @@ class TICUser extends GNPlayer implements Right_IFace {
 
         $gala = new Galaxie($this->gala);
         $gala->create(); // fails if gala already exists
-
-        $qry = "DELETE FROM GNPlayer WHERE nick = %s OR (gala = %s AND planet = %s)";
+//FIXME sehr gefährlich
+        $qry = "DELETE FROM gnplayer WHERE nick = %s OR (gala = %s AND planet = %s)";
+        $tic->db->Execute(get_class($this), $qry, array($this->nick, $this->gala, $this->planet));
+//FIXME on duplicate wäre bessere lösung
+        $qry = "INSERT INTO gnplayer (nick, gala, planet) VALUES (%s, %s, %s)";
         $tic->db->Execute(get_class($this), $qry, array($this->nick, $this->gala, $this->planet));
 
-        $qry = "INSERT INTO GNPlayer (nick, gala, planet) VALUES (%s, %s, %s)";
-        $tic->db->Execute(get_class($this), $qry, array($this->nick, $this->gala, $this->planet));
-
-        $qry = "INSERT INTO TICUser (gala, planet, pw_hash, salt) VALUES (%s, %s, %s, %s)";
+        $qry = "INSERT INTO tic_user (gala, planet, pw_hash, salt) VALUES (%s, %s, %s, %s)";
         $tic->db->Execute(get_class($this), $qry, array($this->gala, $this->planet, $pw_hash, $salt));
-        $this->uid = $tic->db->Insert_ID();
+        $this->id = array($this->gala,$this->planet);
         if (!$tic->disableSecurity)
             $tic->mod['Logging']->log(USER_CREATE, $this);
         return true;
@@ -202,7 +199,7 @@ class TICUser extends GNPlayer implements Right_IFace {
 
     public function getId()
     {
-        return $this->uid;
+        return $this->id;
     }
 
     public function getPlanet()
@@ -333,9 +330,8 @@ class TICUser extends GNPlayer implements Right_IFace {
         if ($tic->mod['UserMan']->getUserByKoords($gala, $planet))
             return false;
 
-        assert($this->uid !== null);
-        $qry = "UPDATE TICUser SET gala = %s, planet = %s WHERE ticuser = %s;";
-        $tic->db->Execute(get_class($this), $qry, array($gala, $planet, $this->uid));
+        $qry = "UPDATE tic_user SET gala = %s, planet = %s WHERE gala=%s and planet=%s ;";
+        $tic->db->Execute(get_class($this), $qry, array($gala, $planet, $this->id[0],$this->id[1]));
         $r = $rs ? true : false;
         $tic->mod['Logging']->log(USER_CHANGE_KOORDS, $this, array($gala, $planet));
         return $r;
@@ -443,16 +439,16 @@ class TICUser extends GNPlayer implements Right_IFace {
     public function setLastActive()
     {
         global $tic;
-        $qry = "UPDATE TICUser SET last_active = now(), failed_logins = 0 WHERE ticuser = %s;";
-        $tic->db->Execute(get_class($this), $qry, array($this->uid));
+        $qry = "UPDATE tic_user SET last_active = now(), failed_logins = 0 WHERE gala=%s and planet=%s;";
+        $tic->db->Execute(get_class($this), $qry, $id);
     }
 
     // nur fÃ¼r auth modul
     public function incrementFailedLogins()
     {
         global $tic;
-        $qry = "UPDATE TICUser SET failed_logins = failed_logins + 1 WHERE ticuser = %s;";
-        $tic->db->Execute(get_class($this), $qry, array($this->uid));
+        $qry = "UPDATE tic_user SET failed_logins = failed_logins + 1 WHERE gala = %s and planet=%s;";
+        $tic->db->Execute(get_class($this), $qry, $id);
     }
 
     /*public function resetFailedLogins()
@@ -622,9 +618,9 @@ class TICUser extends GNPlayer implements Right_IFace {
     private function setField($field, $val)
     {
         global $tic;
-        assert($this->uid !== null);
-        $qry = "UPDATE TICUser SET $field = %s WHERE ticuser = %s;";
-        $tic->db->Execute(get_class($this), $qry, array($val, $this->uid));
+        assert($this->id !== null);
+        $qry = "UPDATE tic_user SET $field = %s WHERE gala = %s and planet=%s;";
+        $tic->db->Execute(get_class($this), $qry, $id);
     }
 
     private function gnRangToStr($val)

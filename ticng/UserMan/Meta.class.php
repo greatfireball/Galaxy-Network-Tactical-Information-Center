@@ -45,7 +45,7 @@ class Meta {
             $id = $this->id;
         assert($id !== null);
 
-        $qry = "SELECT meta, name, tag FROM Meta WHERE meta = %s";
+        $qry = "SELECT meta, name, tag FROM meta WHERE meta = %s";
         $rs = $tic->db->Execute(get_class($this), $qry, array($id));
         if ($rs->EOF)
             return false;
@@ -59,7 +59,7 @@ class Meta {
     {
         global $tic;
         assert($this->id !== null);
-        $qry = "UPDATE Meta SET name = %s, tag = %s WHERE meta = %s";
+        $qry = "UPDATE meta SET name = %s, tag = %s WHERE meta = %s";
         $rs = $tic->db->Execute(get_class($this), $qry, array($this->name, $this->tag, $this->id));
     }
 
@@ -71,7 +71,7 @@ class Meta {
 
         if ($tic->mod['UserMan']->getMetaByName($this->name) || $tic->mod['UserMan']->getMetaByTag($this->tag))
             return false;
-        $qry = "INSERT INTO Meta (name, tag) VALUES (%s, %s)";
+        $qry = "INSERT INTO meta (name, tag) VALUES (%s, %s)";
         $tic->db->Execute($this->getName(), $qry, array($this->name, $this->tag));
         $this->id = $tic->db->Insert_ID();
         $tic->mod['Logging']->log(META_CREATE, $this);
@@ -83,9 +83,9 @@ class Meta {
         global $tic;
         if (!$tic->mod['Right']->isAllowed(META_DELETE, $this))
             return false;
-        $qry = "UPDATE Allianz SET meta = NULL WHERE meta = %s";
+        $qry = "UPDATE allianz SET meta = NULL WHERE meta = %s";
         $rs = $tic->db->Execute(get_class($this), $qry, array($this->id));
-        $qry = "DELETE FROM Meta WHERE meta = %s";
+        $qry = "DELETE FROM meta WHERE meta = %s";
         $rs = $tic->db->Execute(get_class($this), $qry, array($this->id));
         $tic->mod['Logging']->log(META_DELETE, $this);
     }
@@ -109,7 +109,7 @@ class Meta {
     public function getAllianzen()
     {
         global $tic;
-        $qry = "SELECT allianz FROM Allianz WHERE meta = %s";
+        $qry = "SELECT allianz FROM allianz WHERE meta = %s";
         $rs = $tic->db->Execute(get_class($this), $qry, array($this->id));
         $allies = array();
         for (; !$rs->EOF; $rs->moveNext()) {
