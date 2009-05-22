@@ -81,31 +81,46 @@ class Logging extends TICModule
             assert(false);
             break;
         }
-        $qry = "SELECT ticuser, action, object, param, time FROM log $where ORDER BY time DESC LIMIT 50";
+        $qry = "SELECT gala,planet, action, object, param, time FROM log $where ORDER BY time DESC LIMIT 50";
         $rs = $tic->db->Execute($this->getName(), $qry, $arr);
         $logs = array();
         for (; !$rs->EOF; $rs->MoveNext()) {
-            $str = $this->_logToString($rs->fields[1], $rs->fields[2], $rs->fields[3]);
-            array_push($logs, array($rs->fields[4], $rs->fields[0], $str));
+            $str = $this->_logToString($rs->fields[2], $rs->fields[3], $rs->fields[4]);
+            array_push($logs, array($rs->fields[5], array($rs->fields[0],$rs->fields[1]), $str));
         }
-        $this->setVar('logs', $logs);
+        $this->setVar('logs', $logs); //FIXME da id nun ein array ist könnte es hier zu fehler kommen
         $this->setVar('type', $type);
         $this->setTemplate('logging.tpl');
     }
 
     function getInstallQueriesMySQL()
     {
-        return array(
+    	global $tic;
+    	
+        return array_merge($tic->mod['UserMan']->getInstallQueriesMySQL(),
+        array(
             'DROP TABLE IF EXISTS log',
-            'CREATE TABLE log (
-                id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                ticuser varchar(100) NOT NULL,
-                action int NOT NULL,
-                object varchar(100) NOT NULL,
-                param varchar(200),
-                time TIMESTAMP
-            ) TYPE = INNODB'
-        );
+            "CREATE  TABLE IF NOT EXISTS `log` (
+			  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+			  `gala` INT(11) NOT NULL ,
+			  `planet` INT(11) NOT NULL ,
+			  `action` INT(11) NOT NULL ,
+			  `object` VARCHAR(100) NOT NULL ,
+			  `param` VARCHAR(200) NULL DEFAULT NULL ,
+			  `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP ,
+			  PRIMARY KEY (`id`) ,
+			  INDEX `fk_log_TICUser` (`planet` ASC, `gala` ASC) ,
+			  CONSTRAINT `fk_log_TICUser`
+			    FOREIGN KEY (`planet` , `gala` )
+			    REFERENCES `tic_user` (`planet` , `gala` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION)
+			ENGINE = InnoDB
+			AUTO_INCREMENT = 49
+			DEFAULT CHARACTER SET = latin1
+			COLLATE = latin1_german1_ci
+			COMMENT = 'ticuser gegn planet und gala ausgetauscht';"
+        ));
     }
 
     function getInstallQueriesPostgreSQL()
@@ -145,8 +160,9 @@ class Logging extends TICModule
         $user = $tic->mod['Auth']->getActiveUser();
         if (!$user)
             return;
-        $qry = "INSERT INTO log (ticuser, action, object, param) VALUES (%s, %s, %s, %s)";
-        $arr = array($user->toString(), $action, $object, $param);
+        $userid=$user->getId();
+        $qry = "INSERT INTO log (gala,planet, action, object, param) VALUES (%s, %s, %s, %s)";
+        $arr = array($userid[0],$userid[1], $action, $object, $param);
         $tic->db->Execute($this->getName(), $qry, $arr);
     }
 
