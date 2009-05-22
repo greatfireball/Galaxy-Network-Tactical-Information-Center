@@ -117,31 +117,73 @@ class Attplaner extends TICModule
 
     public function getInstallQueriesMySQL() {
         return array(
-            "DROP TABLE IF EXISTS Attplaner_ziele CASCADE;",
-            "CREATE TABLE Attplaner_ziele (
-                id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                ma INT(11) NOT NULL DEFAULT '-1',
-                ziel_gala INT(4) NOT NULL DEFAULT '-1',
-                ziel_planet INT(2) NOT NULL DEFAULT '-1',
-                freigabe INT(10) NOT NULL DEFAULT '-1',
-                abflug INT(10) NOT NULL DEFAULT '-1',
-                text VARCHAR(150) NULL,
-                UNIQUE(ma, ziel_gala, ziel_planet)
-            ) ENGINE = innodb;",
-            "DROP TABLE IF EXISTS Attplaner_ma CASCADE;",
-            "CREATE TABLE Attplaner_ma (
-                ma INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                planer INT(11) NOT NULL DEFAULT '-1',
-                attTyp INT(1) NOT NULL DEFAULT '-1',
-                auswahl INT(1) NOT NULL DEFAULT '-1'
-            ) ENGINE = innodb;",
-            "DROP TABLE IF EXISTS Attplaner_flotten CASCADE;",
-            "CREATE TABLE Attplaner_flotten (
-                ziel_id INT(11) NOT NULL,
-                ticuser INT(11) NOT NULL,
-                flotte INT(1) NOT NULL,
-                UNIQUE(ziel_id, ticuser, flotte)
-            ) ENGINE = innodb;"
+            "DROP TABLE IF EXISTS attplaner_ma CASCADE;",
+            "CREATE  TABLE IF NOT EXISTS `attplaner_ma` (
+			  `ma` INT(11) NOT NULL AUTO_INCREMENT ,
+			  `planer_gala` INT(11) NOT NULL ,
+			  `planer_planet` INT(11) NOT NULL ,
+			  `att_typ` INT(1) NOT NULL DEFAULT '-1' ,
+			  `auswahl` INT(1) NOT NULL DEFAULT '-1' ,
+			  PRIMARY KEY (`ma`) ,
+			  INDEX `fk_Attplaner_ma_TICUser` (`planer_planet` ASC, `planer_gala` ASC) ,
+			  CONSTRAINT `fk_Attplaner_ma_TICUser`
+			    FOREIGN KEY (`planer_planet` , `planer_gala` )
+			    REFERENCES `tic_user` (`planet` , `gala` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION)
+			ENGINE = InnoDB
+			AUTO_INCREMENT = 2
+			DEFAULT CHARACTER SET = latin1
+			COLLATE = latin1_german1_ci;",
+            "DROP TABLE IF EXISTS attplaner_ziele CASCADE;",
+            "CREATE  TABLE IF NOT EXISTS `attplaner_ziele` (
+			  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+			  `ma` INT(11) NOT NULL ,
+			  `ziel_gala` INT(11) NOT NULL ,
+			  `ziel_planet` INT(11) NOT NULL ,
+			  `freigabe` INT(10) NOT NULL DEFAULT '-1' ,
+			  `abflug` INT(10) NOT NULL DEFAULT '-1' ,
+			  `text` VARCHAR(150) NULL DEFAULT NULL ,
+			  PRIMARY KEY (`id`) ,
+			  INDEX `fk_Attplaner_ziele_GNPlayer` (`ziel_planet` ASC, `ziel_gala` ASC) ,
+			  INDEX `fk_Attplaner_ziele_Attplaner_ma` (`ma` ASC) ,
+			  CONSTRAINT `fk_Attplaner_ziele_GNPlayer`
+			    FOREIGN KEY (`ziel_planet` , `ziel_gala` )
+			    REFERENCES `gnplayer` (`planet` , `gala` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION,
+			  CONSTRAINT `fk_Attplaner_ziele_Attplaner_ma`
+			    FOREIGN KEY (`ma` )
+			    REFERENCES `attplaner_ma` (`ma` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION)
+			ENGINE = InnoDB
+			AUTO_INCREMENT = 2
+			DEFAULT CHARACTER SET = latin1
+			COLLATE = latin1_german1_ci;",
+            "DROP TABLE IF EXISTS attplaner_flotten CASCADE;",
+            "CREATE  TABLE IF NOT EXISTS `attplaner_flotten` (
+			  `flotte` INT(1) NOT NULL ,
+			  `planet` INT(11) NOT NULL ,
+			  `gala` INT(11) NOT NULL ,
+			  `ziele_id` INT(11) NOT NULL ,
+			  UNIQUE INDEX `ziel_id` (`flotte` ASC, `planet` ASC, `gala` ASC, `ziele_id` ASC) ,
+			  PRIMARY KEY (`planet`, `gala`, `ziele_id`) ,
+			  INDEX `fk_Attplaner_flotten_TICUser` (`planet` ASC, `gala` ASC) ,
+			  INDEX `fk_Attplaner_flotten_Attplaner_ziele` (`ziele_id` ASC) ,
+			  CONSTRAINT `fk_Attplaner_flotten_TICUser`
+			    FOREIGN KEY (`planet` , `gala` )
+			    REFERENCES `tic_user` (`planet` , `gala` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION,
+			  CONSTRAINT `fk_Attplaner_flotten_Attplaner_ziele`
+			    FOREIGN KEY (`ziele_id` )
+			    REFERENCES `attplaner_ziele` (`id` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION)
+			ENGINE = InnoDB
+			DEFAULT CHARACTER SET = latin1
+			COLLATE = latin1_german1_ci;"
         );
     }
 
@@ -201,18 +243,18 @@ class Attplaner extends TICModule
     {
         global $tic;
 
-        $qry = "SELECT ma, planer, attTyp, auswahl FROM Attplaner_ma ORDER BY ma ASC;";
+        $qry = "SELECT ma, planer_gala,planer_palnet, attTyp, auswahl FROM attplaner_ma ORDER BY ma ASC;";
         $rs = $tic->db->Execute($this->getName(), $qry);
         $user = $tic->mod['Auth']->getActiveUser();
         $ma = array();
         while (!$rs->EOF) {
-            $planer = $tic->mod['UserMan']->getUserByID($rs->fields[1]);
+            $planer = $tic->mod['UserMan']->getUserByID(array($rs->fields[1],$rs->fields[2]));
             if ($user->getId() == $planer->getId()) { $aendern = true; } else { if ($break) { break; } }
             array_push($ma, array(
                 'id' => $rs->fields[0],
                 'planer' => $planer,
-                'attTyp' => $this->attTypToString($rs->fields[2]),
-                'auswahl' => $this->auswahlToString($rs->fields[3]),
+                'attTyp' => $this->attTypToString($rs->fields[3]),
+                'auswahl' => $this->auswahlToString($rs->fields[4]),
                 'aendern' => $aendern
             ));
             $rs->MoveNext();
@@ -241,9 +283,9 @@ class Attplaner extends TICModule
             $tic->error($this->getName(), "Deine Allianz geh&ouml;rt keiner Meta an.");
             return false;
         }
-
-        $qry = "INSERT INTO Attplaner_ma (planer, attTyp, auswahl) VALUES (%s, %s, %s);";
-        $rs = $tic->db->Execute($this->getName(), $qry, array($daten['planer'], $daten['attTyp'], $daten['auswahl']));
+		$userid=$daten['planer'];
+        $qry = "INSERT INTO attplaner_ma (planer_gala,planer_planet, attTyp, auswahl) VALUES (%s,%s, %s, %s);";
+        $rs = $tic->db->Execute($this->getName(), $qry, array($userid[0],$userid[1], $daten['attTyp'], $daten['auswahl']));
         if (!$rs) {
             $tic->error($this->getName(), "Problem beim speichern des Massenatts.");
             return false;
@@ -254,11 +296,11 @@ class Attplaner extends TICModule
     {
         global $tic;
 
-        $qry = "DELETE FROM Attplaner_ma WHERE ma = %s;";
+        $qry = "DELETE FROM attplaner_ma WHERE ma = %s;";
         $rs0 = $tic->db->Execute($this->getName(), $qry, array($daten['ma']));
-        $qry = "DELETE F FROM Attplaner_ziele AS Z, Attplaner_flotten AS F WHERE Z.id = F.ziel_id AND Z.ma = %s;";
+        $qry = "DELETE F FROM attplaner_ziele AS Z, attplaner_flotten AS F WHERE Z.id = F.ziel_id AND Z.ma = %s;";
         $rs1 = $tic->db->Execute($this->getName(), $qry, array($daten['ma']));
-        $qry = "DELETE FROM Attplaner_ziele WHERE ma = %s;";
+        $qry = "DELETE FROM attplaner_ziele WHERE ma = %s;";
         $rs2 = $tic->db->Execute($this->getName(), $qry, array($daten['ma']));
         if (!$rs0 || !$rs1 || !$rs2) {
             $tic->error($this->getName(), "Problem beim l&ouml;schen des Massenatts.");
@@ -308,7 +350,8 @@ class Attplaner extends TICModule
         $daten['abflugZeit'] = preg_split('/:/', $daten['abflugZeit']);
         $freigabe = mktime($daten['freigabeZeit'][0], $daten['freigabeZeit'][1], 0, $daten['freigabeDatum'][1], $daten['freigabeDatum'][0], $daten['freigabeDatum'][2]);
         $abflug = mktime($daten['abflugZeit'][0], $daten['abflugZeit'][1], 0, $daten['abflugDatum'][1], $daten['abflugDatum'][0], $daten['abflugDatum'][2]);
-
+		$planetObj=new GNPlayer($daten['zielGala'],$daten['zielPlanet']);// Vorsichtshalber anlegen 
+		$planetObj->create();
         $qry = "INSERT INTO Attplaner_ziele (ma, ziel_gala, ziel_planet, freigabe, abflug) VALUES (%s, %s, %s, %s, %s)";
         $rs = $tic->db->Execute($this->getName(), $qry, array($daten['ma'], $daten['zielGala'], $daten['zielPlanet'], $freigabe, $abflug));
 
@@ -324,7 +367,7 @@ class Attplaner extends TICModule
     {
         global $tic;
 
-        $qry = 'SELECT Z.id,Z.ma,Z.ziel_gala,Z.ziel_planet,Z.freigabe,Z.abflug,Z.text,M.planer,M.attTyp,M.auswahl FROM '.
+        $qry = 'SELECT Z.id,Z.ma,Z.ziel_gala,Z.ziel_planet,Z.freigabe,Z.abflug,Z.text,M.planer_gala,M.planer_planet,M.attTyp,M.auswahl FROM '.
             'Attplaner_ziele AS Z JOIN Attplaner_ma AS M USING(ma) ORDER BY Z.ziel_gala,Z.ziel_planet ASC;';
         $rs = $tic->db->Execute($this->getName(), $qry);
 
@@ -341,14 +384,14 @@ class Attplaner extends TICModule
 
         while (!$rs->EOF) {
             $daten = $rs->fields;
-            $planer = $tic->mod['UserMan']->getUserById($daten[7]);
+            $planer = $tic->mod['UserMan']->getUserById(array($daten[7],$daten[8]));
             $daten['planer'] = $planer;
             $daten['isAllowed'] = false;
 
             $daten['isAllowed'] = $this->isAllowed($daten[0]);
             if ($aktUser->getId() != $planer->getId() && $daten['freigabe'] > time()) { $rs->MoveNext(); continue; }
 
-            if ($daten[9] == 1 && $aktUser->getId() == $planer->getId()) { $daten['isAllowed'] = true; }
+            if ($daten[10] == 1 && $aktUser->getId() == $planer->getId()) { $daten['isAllowed'] = true; }
             $erg = $this->getFlotteByZielId($daten[0]);
             if ($erg === false) {
                 $tic->error($this->getName(), "Fehler in der Abfrage der Flotten.");
@@ -403,7 +446,7 @@ class Attplaner extends TICModule
 
         if ($this->isAllowed($daten['ziel_id']) == 0) { return false; }
 
-        $qry = "UPDATE Attplaner_ziele SET text = %s WHERE id = %s;";
+        $qry = "UPDATE attplaner_ziele SET text = %s WHERE id = %s;";
         $rs = $tic->db->Execute($this->getName(), $qry, array($daten['text'], $daten['ziel_id']));
         if (!$rs) { $tic->error($this->getName(), "Fehler beim speichern des Texts."); return false; }
 
@@ -418,24 +461,24 @@ class Attplaner extends TICModule
         if (!is_object($user)) { $user = $tic->mod['Auth']->getActiveUser(); }
         $isAllowed = false;
 
-        $qry = "SELECT planer,AttTyp,auswahl FROM Attplaner_ma JOIN Attplaner_ziele USING(ma) WHERE id = %s;";
+        $qry = "SELECT planer_gala,planer_planet,AttTyp,auswahl FROM attplaner_ma JOIN attplaner_ziele USING(ma) WHERE id = %s;";
         $rs = $tic->db->Execute($this->getName(), $qry, array($ziel));
         if (!$rs) { $tic->error($this->getName(), "Fehler bei der Abfrage."); return false; }
-        $planer = $tic->mod['UserMan']->getUserById($rs->fields[0]);
+        $planer = $tic->mod['UserMan']->getUserById(array($rs->fields[0],$rs->fields[1]));
 
         $planerGala = $tic->mod['UserMan']->getGalaxie($planer->getGalaxie());
         $userGala = $tic->mod['UserMan']->getGalaxie($user->getGalaxie());
-        if ($rs->fields[1] >= ATTPLANER_TYP_ALLIANZ) {
+        if ($rs->fields[2] >= ATTPLANER_TYP_ALLIANZ) {
             $planerAllianz = $planerGala->getAllianz();
             $userAllianz = $userGala->getAllianz();
         }
-        if ($rs->fields[1] == ATTPLANER_TYP_META) {
+        if ($rs->fields[2] == ATTPLANER_TYP_META) {
             $planerMeta = $planerAllianz->GetMeta();
             $userMeta = $userAllianz->GetMeta();
         }
 
-        if ($rs->fields[2] == 0) {
-            switch ($rs->fields[1]) {
+        if ($rs->fields[3] == 0) {
+            switch ($rs->fields[2]) {
                 case ATTPLANER_TYP_GALA:
                     if ($userGala->getNr() == $planerGala->getNr()) { $isAllowed = 1; }
                     break;
@@ -460,9 +503,9 @@ class Attplaner extends TICModule
 
         if ($this->isAllowed($daten['ziel_id']) == 0) { return false; }
 
-        $qry = "DELETE FROM Attplaner_ziele WHERE id = %s";
+        $qry = "DELETE FROM attplaner_ziele WHERE id = %s";
         $rs0 = $tic->db->Execute($this->getName(), $qry, array($daten['ziel_id']));
-        $qry = "DELETE FROM Attplaner_flotten WHERE ziel_id = %s";
+        $qry = "DELETE FROM attplaner_flotten WHERE ziel_id = %s";
         $rs1 = $tic->db->Execute($this->getName(), $qry, array($daten['ziel_id']));
         if (!$rs0 || !$rs1) { $tic->error($this->getName(), "Fehler beim l&ouml;schen des Ziels."); return false; }
 
@@ -475,9 +518,10 @@ class Attplaner extends TICModule
 
         if ($this->getFlotteByZielId($daten['zielId'])) { return false; }
         $aktUser = $tic->mod['Auth']->getActiveUser();
+        $userid= $aktUser->getId();
         $flotte = preg_replace('/\D/', '', $daten['flotte']);
-        $qry = "INSERT INTO Attplaner_flotten (ziel_id, ticuser, flotte) VALUES (%s, %s, %s)";
-        $rs = $tic->db->Execute($this, $qry, array($daten['zielId'], $aktUser, $flotte));
+        $qry = "INSERT INTO attplaner_flotten (ziel_id, gala,planet, flotte) VALUES (%s,%s, %s, %s)";
+        $rs = $tic->db->Execute($this, $qry, array($daten['zielId'], $userid[0],$userid[1], $flotte));
         
         //print_r($this->getZielById($daten['zielID']));
     }
@@ -486,7 +530,7 @@ class Attplaner extends TICModule
     {
         global $tic;
 
-        $qry = "SELECT id, ma, ziel_gala, ziel_planet, freigabe, abflug, text FROM Attplaner_ziele WHERE id = %s";
+        $qry = "SELECT id, ma, ziel_gala, ziel_planet, freigabe, abflug, text FROM attplaner_ziele WHERE id = %s";
         $rs = $tic->db->Execute($this->getName(), $qry, array($id));
         if (!$rs || $rs->EOF) { return false; }
         return $rs->fields;
@@ -495,13 +539,13 @@ class Attplaner extends TICModule
     private function getFlotteByZielId($zielId)
     {
         global $tic;
-
-        $qry = "SELECT ziel_id, ticuser, flotte FROM Attplaner_flotten WHERE ziel_id = %s ORDER BY ticuser ASC";
+		//FIXME neue fehler quele da id nun ein array ist
+        $qry = "SELECT ziel_id, gala,planet, flotte FROM attplaner_flotten WHERE ziel_id = %s ORDER BY ticuser ASC";
         $rs = $tic->db->Execute($this->getName(), $qry, array($zielId));
         if (!$rs) { return false; }
         $array = array();
         while (!$rs->EOF) {
-            array_push($array, $rs->fields);
+            array_push($array, $rs->fields[0],array($rs->fields['gala'],$rs->fields['planet']),$rs->fields['flotte']);
             $rs->movenext();
         }
         return $array;
