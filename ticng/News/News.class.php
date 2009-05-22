@@ -75,24 +75,54 @@ class News extends TICModule
 
     function getInstallQueriesMySQL()
     {
-        return array(
+    	global $tic;
+    	
+        return array_merge($tic->mod['UserMan']->getInstallQueriesMySQL(),
+        array(
             'DROP TABLE IF EXISTS news',
             'DROP TABLE IF EXISTS news_read',
-            'CREATE TABLE news (
-                news int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                sender int NOT NULL REFERENCES TICUser(ticuser),
-                time timestamp,         -- mysql ist doof
-                subject varchar(256) NOT NULL,
-                text text NOT NULL,
-                audience int NOT NULL,
-                audience_id int
-            ) ENGINE = INNODB;',
-            'CREATE TABLE news_read (
-                news int NOT NULL REFERENCES news(news),
-                ticuser int NOT NULL REFERENCES TICUser(ticuser),
-                UNIQUE(news, ticuser)
-            ) ENGINE = INNODB;'
-        );
+            "CREATE  TABLE IF NOT EXISTS `news` (
+			  `news` INT(11) NOT NULL AUTO_INCREMENT ,
+			  `sender_gala` INT(11) NOT NULL ,
+			  `sender_planet` INT(11) NOT NULL ,
+			  `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP ,
+			  `subject` VARCHAR(256) NOT NULL ,
+			  `text` TEXT NOT NULL ,
+			  `audience` INT(11) NOT NULL ,
+			  `audience_id` INT(11) NULL DEFAULT NULL ,
+			  PRIMARY KEY (`news`) ,
+			  INDEX `fk_news_tic_user` (`sender_planet` ASC, `sender_gala` ASC) ,
+			  CONSTRAINT `fk_news_tic_user`
+			    FOREIGN KEY (`sender_planet` , `sender_gala` )
+			    REFERENCES `tic_user` (`planet` , `gala` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION)
+			ENGINE = InnoDB
+			AUTO_INCREMENT = 6
+			DEFAULT CHARACTER SET = latin1
+			COLLATE = latin1_german1_ci;
+            ",
+            "CREATE  TABLE IF NOT EXISTS `news_read` (
+			  `news` INT(11) NOT NULL ,
+			  `gala` INT(11) NOT NULL ,
+			  `planet` INT(11) NOT NULL ,
+			  PRIMARY KEY (`planet`, `gala`, `news`) ,
+			  INDEX `fk_news_read_TICUser` (`planet` ASC, `gala` ASC) ,
+			  INDEX `fk_news_read_news` (`news` ASC) ,
+			  CONSTRAINT `fk_news_read_TICUser`
+			    FOREIGN KEY (`planet` , `gala` )
+			    REFERENCES `tic_user` (`planet` , `gala` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION,
+			  CONSTRAINT `fk_news_read_news`
+			    FOREIGN KEY (`news` )
+			    REFERENCES `news` (`news` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION)
+			ENGINE = InnoDB
+			DEFAULT CHARACTER SET = latin1
+			COLLATE = latin1_german1_ci;"
+        ));
     }
 
 	function getInstallQueriesPostgreSQL()
@@ -123,10 +153,10 @@ class News extends TICModule
 
         $newsItems = array();
         $user = $tic->mod['Auth']->getActiveUser();
-        $qry = "SELECT sender, subject, text, audience, audience_id, time, news FROM news ORDER BY time DESC"; // WHERE clause, die die visibilty direkt ueberprueft??
+        $qry = "SELECT sender_gala, sender_planet , subject, text, audience, audience_id, time, news FROM news ORDER BY time DESC"; // WHERE clause, die die visibilty direkt ueberprueft??
         $rs = $tic->db->Execute($this->getName(), $qry);
         for (; !$rs->EOF; $rs->MoveNext()) {
-            $item = new NewsItem($rs->fields[0], $rs->fields[1], $rs->fields[2], $rs->fields[3], $rs->fields[4], $rs->fields[5], $rs->fields[6]);
+            $item = new NewsItem(array($rs->fields[0], $rs->fields[1]), $rs->fields[2], $rs->fields[3], $rs->fields[4], $rs->fields[5], $rs->fields[6], $rs->fields[7]);
             if ($item->isVisible()) {
                 array_push($newsItems, $item);
                 $item->markAsRead();

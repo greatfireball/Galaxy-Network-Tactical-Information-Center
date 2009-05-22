@@ -22,7 +22,7 @@
 require_once('./Right/Right.iface.php');
 class NewsItem implements Right_IFace {
     private $_id = null;          //id der nachricht
-    private $_sender = null;      //id des sendenden ticusers
+    private $_sender = array();      //id des sendenden array(sender_gala,sender_planet)
     private $_time = null;        //uhrzeit als string
     private $_subject = null;     //betreff
     private $_text = null;        //inhalt
@@ -31,7 +31,7 @@ class NewsItem implements Right_IFace {
 
     private $_readingNow = false;
 
-    function NewsItem($sender = null, $subject = null, $text = null, $audience = null, $audience_id = null, $time = null, $news_id = null)
+    function NewsItem($sender = array(), $subject = null, $text = null, $audience = null, $audience_id = null, $time = null, $news_id = null)
     {
         $this->_id = $news_id;
         if (is_object($sender))
@@ -82,8 +82,8 @@ class NewsItem implements Right_IFace {
         }
         if (!$tic->mod['Right']->isAllowed($action, $this))
             return false;
-        $qry = "INSERT INTO news (sender, subject, text, audience, audience_id) VALUES (%s, %s, %s, %s, %s)";
-        $tic->db->Execute(get_class($this), $qry, array($this->_sender, $this->_subject, $this->_text, $this->_audience, $this->_audience_id));
+        $qry = "INSERT INTO news (sender_gala, sender_planet, subject, text, audience, audience_id) VALUES (%s, %s, %s, %s, %s)";
+        $tic->db->Execute(get_class($this), $qry, array($this->_sender[0],$this->_sender[1], $this->_subject, $this->_text, $this->_audience, $this->_audience_id));
         $this->_id = $tic->db->Insert_ID();
         //FIXME get time from DB ??
         $tic->mod['Logging']->log($action, $this);
@@ -123,17 +123,17 @@ class NewsItem implements Right_IFace {
     function load($id)
     {
         global $tic;
-        $qry = "SELECT news, sender, subject, text, audience, audience_id, time FROM news WHERE news = %s";
+        $qry = "SELECT news, sender_gala, sender_planet, subject, text, audience, audience_id, time FROM news WHERE news = %s";
         $rs = $tic->db->Execute(get_class($this), $qry, array($id));
         if ($rs->EOF)
             return false;
         $this->_id = $rs->fields[0];
-        $this->_sender = $rs->fields[1];
-        $this->_subject = $rs->fields[2];
-        $this->_text = $rs->fields[3];
-        $this->_audience = $rs->fields[4];
-        $this->_audience_id = $rs->fields[5];
-        $this->_time = $rs->fields[6];
+        $this->_sender = array($rs->fields[1],$rs->fields[2]);
+        $this->_subject = $rs->fields[3];
+        $this->_text = $rs->fields[4];
+        $this->_audience = $rs->fields[5];
+        $this->_audience_id = $rs->fields[6];
+        $this->_time = $rs->fields[7];
         return true;
     }
 
@@ -198,8 +198,8 @@ class NewsItem implements Right_IFace {
             return false;
         $user = $tic->mod['Auth']->getActiveUser();
         $user_id = $user->getId();
-        $qry = "SELECT * FROM news_read WHERE news = %s AND ticuser = %s";
-        $rs = $tic->db->Execute(get_class($this), $qry, array($this->_id, $user_id));
+        $qry = "SELECT * FROM news_read WHERE news = %s AND gala = %s and planet= %s";
+        $rs = $tic->db->Execute(get_class($this), $qry, array($this->_id, $user_id[0], $user_id[1]));
         if ($rs->EOF)
             return false;
         else
@@ -214,8 +214,8 @@ class NewsItem implements Right_IFace {
             return true;
         $user = $tic->mod['Auth']->getActiveUser();
         $user_id = $user->getId();
-        $qry = "INSERT INTO news_read (news, ticuser) VALUES (%s, %s)";
-        $tic->db->Execute(get_class($this), $qry, array($this->_id, $user_id));
+        $qry = "INSERT INTO news_read (news, gala,planet) VALUES (%s, %s, %s)";
+        $tic->db->Execute(get_class($this), $qry, array($this->_id, $user_id[0],$user_id[1]));
         $this->_readingNow = true;
         return true;
     }

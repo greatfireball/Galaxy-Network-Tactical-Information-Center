@@ -332,13 +332,20 @@ COMMENT = 'ticuser gegn planet und gala ausgetauscht';
 -- -----------------------------------------------------
 CREATE  TABLE IF NOT EXISTS `ticngtest`.`news` (
   `news` INT(11) NOT NULL AUTO_INCREMENT ,
-  `sender` INT(11) NOT NULL ,
+  `sender_gala` INT(11) NOT NULL ,
+  `sender_planet` INT(11) NOT NULL ,
   `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP ,
   `subject` VARCHAR(256) NOT NULL ,
   `text` TEXT NOT NULL ,
   `audience` INT(11) NOT NULL ,
   `audience_id` INT(11) NULL DEFAULT NULL ,
-  PRIMARY KEY (`news`) )
+  PRIMARY KEY (`news`) ,
+  INDEX `fk_news_tic_user` (`sender_planet` ASC, `sender_gala` ASC) ,
+  CONSTRAINT `fk_news_tic_user`
+    FOREIGN KEY (`sender_planet` , `sender_gala` )
+    REFERENCES `ticngtest`.`tic_user` (`planet` , `gala` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 AUTO_INCREMENT = 6
 DEFAULT CHARACTER SET = latin1
