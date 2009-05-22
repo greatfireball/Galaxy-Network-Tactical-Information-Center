@@ -137,14 +137,21 @@ class Flottenbewegung
         }
 
         if ($this->_delete) {
-            $qry = "DELETE FROM Flotten WHERE id = %s";
+            $qry = "DELETE FROM flotten WHERE id = %s";
             $tic->db->Execute(get_class($this), $qry, array($this->_id));
         }
-
+        // planet anlegen wenn nicht vorhaden
+		$gala=new Galaxie($this->_start_gala,$this->_start_planet);
+        $gala->create();
+        $gala=new Galaxie($this->_ziel_gala,$this->_ziel_planet);
+        $gala->create();
         if ($this->_id === null) {
-            $qry_ins = "INSERT INTO Flotten (start_gala, start_planet, flotte, ".
+        	
+        	
+        	
+            $qry_ins = "INSERT INTO flotten (start_gala, start_planet, flotte, ".
                 "ziel_gala, ziel_planet, angriff, rueckflug, flugdauer, ".
-                "bleibedauer, eta, safe, ticuser) ".
+                "bleibedauer, eta, safe, user_gala,user_planet) ".
                 "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)";
             $data = array($this->_start_gala,
                           $this->_start_planet,
@@ -156,15 +163,16 @@ class Flottenbewegung
                           $this->_flugdauer,
                           $this->_bleibedauer,
                           $this->_eta,
-                          $this->_safe,
-                          $userid);
+                          $this->_safe,//FIXME hier weiter machen
+                          $userid[0],
+                          $userid[1]);
             $tic->db->Execute('Taktik', $qry_ins, $data);
             $this->_id = $tic->db->Insert_ID();
             return true;
         } else {
-            $qry_upd = "UPDATE Flotten SET start_gala = %s, start_planet = %s, flotte = %s, ".
+            $qry_upd = "UPDATE flotten SET start_gala = %s, start_planet = %s, flotte = %s, ".
                 "ziel_gala = %s, ziel_planet = %s, angriff = %s, rueckflug = %s, flugdauer = %s, ".
-                "bleibedauer = %s, eta = %s, safe = %s, ticuser = %s WHERE id = %s";
+                "bleibedauer = %s, eta = %s, safe = %s, user_gala = %s, user_planet=%s WHERE id = %s";
             $data = array($this->_start_gala,
                           $this->_start_planet,
                           $this->_flotte,
@@ -176,7 +184,8 @@ class Flottenbewegung
                           $this->_bleibedauer,
                           $this->_eta,
                           $this->_safe,
-                          $userid,
+                          $userid[0],
+                          $userid[1],
                           $this->_id);
             $tic->db->Execute('Taktik', $qry_upd, $data);
             return true;
@@ -186,7 +195,7 @@ class Flottenbewegung
     function delete()
     {
         global $tic;
-        $qry = "DELETE FROM Flotten WHERE id = %s";
+        $qry = "DELETE FROM flotten WHERE id = %s";
         if ($this->_id !== null)
             $tic->db->Execute('Taktik', $qry, array($this->_id));
     }

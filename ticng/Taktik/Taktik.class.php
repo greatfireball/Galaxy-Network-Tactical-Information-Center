@@ -79,39 +79,73 @@ class Taktik extends TICModule
 
     public function getInstallQueriesMySQL()
     {
-        return array(
-            'DROP TABLE IF EXISTS Flotten',
-            'DROP TABLE IF EXISTS TaktikUpdate',
-            'CREATE TABLE Flotten (
-                id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                start_gala int NOT NULL,
-                start_planet int NOT NULL,
-                flotte tinyint NOT NULL,
-                ziel_gala int NOT NULL,
-                ziel_planet int NOT NULL,
-                angriff tinyint(1) NOT NULL,
-                rueckflug tinyint(1) NOT NULL,
-                flugdauer int NOT NULL,
-                bleibedauer int NOT NULL,
-                eta int NOT NULL,
-                safe tinyint(1) NOT NULL,
-                ticuser int
-            ) ENGINE = INNODB;',
-            'CREATE TABLE TaktikUpdate (
-                id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                ticuser int,
-                galaxie int NOT NULL UNIQUE,
-                time timestamp NOT NULL
-            ) ENGINE = INNODB;'
-        );
+        return array_merge($tic->mod['UserMan']->getInstallQueriesMysql(),
+        array(
+            'DROP TABLE IF EXISTS flotten',
+            'DROP TABLE IF EXISTS taktik_update',
+            "CREATE  TABLE IF NOT EXISTS `flotten` (
+			  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+			  `start_gala` INT(11) NOT NULL ,
+			  `start_planet` INT(11) NOT NULL ,
+			  `flotte` TINYINT(4) NOT NULL ,
+			  `ziel_gala` INT(11) NOT NULL ,
+			  `ziel_planet` INT(11) NOT NULL ,
+			  `angriff` TINYINT(1) NOT NULL ,
+			  `rueckflug` TINYINT(1) NOT NULL ,
+			  `flugdauer` INT(11) NOT NULL ,
+			  `bleibedauer` INT(11) NOT NULL ,
+			  `eta` INT(11) NOT NULL ,
+			  `safe` TINYINT(1) NOT NULL ,
+			  `ticuser` INT(11) NULL DEFAULT NULL COMMENT 'start gala / planet = ticuser?' ,
+			  PRIMARY KEY (`id`) ,
+			  INDEX `fk_Flotten_GNPlayer` (`start_planet` ASC, `start_gala` ASC) ,
+			  INDEX `fk_Flotten_GNPlayer1` (`ziel_gala` ASC, `ziel_planet` ASC) ,
+			  CONSTRAINT `fk_Flotten_GNPlayer`
+			    FOREIGN KEY (`start_planet` , `start_gala` )
+			    REFERENCES `gnplayer` (`planet` , `gala` )
+			    ON DELETE NO ACTION
+ 			   ON UPDATE NO ACTION,
+			  CONSTRAINT `fk_Flotten_GNPlayer1`
+			    FOREIGN KEY (`ziel_gala` , `ziel_planet` )
+			    REFERENCES `gnplayer` (`gala` , `planet` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION)
+			ENGINE = InnoDB
+			AUTO_INCREMENT = 1
+			DEFAULT CHARACTER SET = latin1
+			COLLATE = latin1_german1_ci;",
+            "CREATE  TABLE IF NOT EXISTS `taktik_update` (
+			  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+			  `user_planet` INT(11) NULL ,
+			  `user_gala` INT(11) NULL ,
+			  `galaxie` INT(11) NOT NULL ,
+			  `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP ,
+			  PRIMARY KEY (`id`) ,
+			  INDEX `fk_TaktikUpdate_Galaxie` (`galaxie` ASC) ,
+			  INDEX `fk_TaktikUpdate_TICUser` (`user_planet` ASC, `user_gala` ASC) ,
+			  CONSTRAINT `fk_TaktikUpdate_Galaxie`
+			    FOREIGN KEY (`galaxie` )
+			    REFERENCES `galaxie` (`gala` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION,
+			  CONSTRAINT `fk_TaktikUpdate_TICUser`
+			    FOREIGN KEY (`user_planet` , `user_gala` )
+			    REFERENCES `tic_user` (`planet` , `gala` )
+			    ON DELETE NO ACTION
+			    ON UPDATE NO ACTION)
+			ENGINE = InnoDB
+			AUTO_INCREMENT = 1
+			DEFAULT CHARACTER SET = latin1
+			COLLATE = latin1_german1_ci;"
+        ));
     }
 
 	public function getInstallQueriesPostgreSQL()
 	{
         return array(
-            'DROP TABLE Flotten CASCADE',
-            'DROP TABLE TaktikUpdate CASCADE',
-            'CREATE TABLE Flotten (
+            'DROP TABLE flotten CASCADE',
+            'DROP TABLE taktik_update CASCADE',
+            'CREATE TABLE flotten (
                 id serial NOT NULL PRIMARY KEY,
                 start_gala int NOT NULL,
                 start_planet int NOT NULL,
@@ -129,7 +163,7 @@ class Taktik extends TICModule
                 --FOREIGN KEY (start_gala, start_planet) REFERENCES GNPlayer(planet, gala),
                 --FOREIGN KEY (ziel_gala, ziel_planet) REFERENCES GNPlayer(planet, gala)
             );',
-            'CREATE TABLE TaktikUpdate (
+            'CREATE TABLE taktik_update (
                 id serial NOT NULL PRIMARY KEY,
                 ticuser int,
                 galaxie int NOT NULL UNIQUE,
@@ -159,7 +193,7 @@ class Taktik extends TICModule
 
         $qry = "SELECT start_gala, start_planet, flotte, ziel_gala, ziel_planet, ".
             "angriff, rueckflug, flugdauer, bleibedauer, eta, safe, id ".
-            "FROM Flotten ";
+            "FROM flotten ";
 
         $args = array();
         $first = true;
@@ -217,25 +251,25 @@ class Taktik extends TICModule
         global $tic;
         switch ($type) {
         case 'open':
-            $qry = "SELECT count(*) FROM Flotten JOIN TICUser ".
+            $qry = "SELECT count(*) FROM flotten JOIN tic_user ".
                    "ON(gala = ziel_gala AND planet = ziel_planet) ".
-                   "NATURAL JOIN Galaxie ".
+                   "NATURAL JOIN galaxie ".
                    "WHERE rueckflug = '0' AND angriff = '1' AND safe = '0' AND eta >= 14 ".
-                   "AND Galaxie.allianz = %s";
+                   "AND galaxie.allianz = %s";
             break;
         case 'undertime':
-            $qry = "SELECT count(*) FROM Flotten JOIN TICUser ".
+            $qry = "SELECT count(*) FROM flotten JOIN tic_user ".
                    "ON(gala = ziel_gala AND planet = ziel_planet) ".
-                   "NATURAL JOIN Galaxie ".
+                   "NATURAL JOIN galaxie ".
                    "WHERE rueckflug = '0' AND angriff = '1' AND safe = '0' AND eta < 14 ".
-                   "AND Galaxie.allianz = %s";
+                   "AND galaxie.allianz = %s";
             break;
         case 'safe':
-            $qry = "SELECT count(*) FROM Flotten JOIN TICUser ".
+            $qry = "SELECT count(*) FROM flotten JOIN tic_user ".
                    "ON(gala = ziel_gala AND planet = ziel_planet) ".
-                   "NATURAL JOIN Galaxie ".
+                   "NATURAL JOIN galaxie ".
                    "WHERE rueckflug = '0' AND angriff = '1' AND safe = '1' AND eta >= 14 ".
-                   "AND Galaxie.allianz = %s";
+                   "AND galaxie.allianz = %s";
             break;
         default:
             assert(false);
@@ -254,11 +288,11 @@ class Taktik extends TICModule
 
         $tic->db->StartTrans();
 
-        $qry = "DELETE FROM TaktikUpdate WHERE galaxie = %s";
+        $qry = "DELETE FROM taktik_update WHERE galaxie = %s";
         $tic->db->Execute($this->getName(), $qry, array($gala));
 
-        $qry = "INSERT INTO TaktikUpdate (ticuser, galaxie) VALUES (%s, %s)";
-        $tic->db->Execute($this->getName(), $qry, array($user->getId(), $gala));
+        $qry = "INSERT INTO taktik_update (user_gala,user_planet, galaxie) VALUES (%s, %s, %s)";
+        $tic->db->Execute($this->getName(), $qry, array_merge($user->getId(),array($gala)));
 
         $arr1 = $this->findFlotten(array('start_gala' => $gala));
         $arr2 = $this->findFlotten(array('ziel_gala' => $gala));

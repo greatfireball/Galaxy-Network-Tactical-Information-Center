@@ -58,14 +58,14 @@ function showTaktikScreens($galen)
     $screens = array();
 
     foreach ($galen as $gala) {
-        $qry = "SELECT ticuser, time, now() - time as age FROM TaktikUpdate WHERE galaxie = %s ORDER BY time DESC LIMIT 1";
+        $qry = "SELECT user_gala, user_planet, time, now() - time as age FROM taktik_update WHERE galaxie = %s ORDER BY time DESC LIMIT 1";
         $rs = $tic->db->Execute('Taktik', $qry, array($gala));
 
         $screen = array();
         $screen['gala'] = $gala;
 
         if (!$rs->EOF) {
-            $user = $tic->mod['UserMan']->getUserById($rs->fields['ticuser']);
+            $user = $tic->mod['UserMan']->getUserById(array($rs->fields['user_gala'],$rs->fiels['user_planet']));
             $screen['user'] = "{$user->getNick()} ({$user->getKoords()})";
             $screen['date'] = $rs->fields['time'];
             $screen['show_age'] = true;
