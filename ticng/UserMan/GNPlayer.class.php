@@ -162,7 +162,7 @@ class GNPlayer {
         if ($rs->EOF)
             return false;
         if (!is_numeric($rs->fields[0]))
-            return false;
+            return new Allianz();
         return $tic->mod['UserMan']->getAllianzById($rs->fields[0]);
     }
 

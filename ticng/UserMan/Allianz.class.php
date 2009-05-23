@@ -68,6 +68,7 @@ class Allianz {
 
     public function create()
     {
+    	if($this->name === null ||$this->tag === null) return false;
         global $tic;
         if (!$tic->mod['Right']->isAllowed(ALLI_CREATE, $this))
             return false;

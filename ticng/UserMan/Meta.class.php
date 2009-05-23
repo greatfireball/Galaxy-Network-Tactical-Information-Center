@@ -65,6 +65,7 @@ class Meta {
 
     public function create()
     {
+    	if($this->name === null ||$this->tag === null) return false;
         global $tic;
         if (!$tic->mod['Right']->isAllowed(META_CREATE, $this))
             return false;

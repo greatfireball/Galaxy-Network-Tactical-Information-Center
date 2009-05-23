@@ -130,7 +130,7 @@ class Galaxie {
     {
         global $tic;
 
-        $qry = "SELECT tic_user.ticuser ".
+        $qry = "SELECT tic_user.planet ".
             "FROM tic_user WHERE tic_user.gala = %s ORDER BY planet";
         $rs = $tic->db->Execute($this->getName(), $qry, array($this->nr));
         $users = array();
