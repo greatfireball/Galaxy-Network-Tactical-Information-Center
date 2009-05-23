@@ -245,7 +245,7 @@ class Attplaner extends TICModule
     {
         global $tic;
 
-        $qry = "SELECT ma, planer_gala,planer_palnet, attTyp, auswahl FROM attplaner_ma ORDER BY ma ASC;";
+        $qry = "SELECT ma, planer_gala,planer_planet, attTyp, auswahl FROM attplaner_ma ORDER BY ma ASC;";
         $rs = $tic->db->Execute($this->getName(), $qry);
         $user = $tic->mod['Auth']->getActiveUser();
         $ma = array();

@@ -428,7 +428,7 @@ class UserMan extends TICModule
     public function getAllianzByTag($tag)
     {
         global $tic;
-        $qry = "SELECT allianz FROM Allianz WHERE tag = %s";
+        $qry = "SELECT allianz FROM allianz WHERE tag = %s";
         $rs = $tic->db->Execute($this->getName(), $qry, array($tag));
         if ($rs->EOF)
             return false;
@@ -450,7 +450,7 @@ class UserMan extends TICModule
     {
         global $tic;
 
-        $qry = "SELECT allianz FROM Allianz ORDER BY allianz";
+        $qry = "SELECT allianz FROM allianz ORDER BY allianz";
         $rs = $tic->db->Execute($this->getName(), $qry);
         $allis = array();
         for (; !$rs->EOF; $rs->MoveNext()) {
@@ -463,7 +463,7 @@ class UserMan extends TICModule
     {
         global $tic;
 
-        $qry = "SELECT allianz FROM Allianz WHERE meta IS NULL ORDER BY allianz";
+        $qry = "SELECT allianz FROM allianz WHERE meta IS NULL ORDER BY allianz";
         $rs = $tic->db->Execute($this->getName(), $qry);
         $allis = array();
         for (; !$rs->EOF; $rs->MoveNext()) {
@@ -487,7 +487,7 @@ class UserMan extends TICModule
     public function getMetaByTag($tag)
     {
         global $tic;
-        $qry = "SELECT meta FROM Meta WHERE tag = %s;";
+        $qry = "SELECT meta FROM meta WHERE tag = %s;";
         $rs = $tic->db->Execute($this->getName(), $qry, array($tag));
         if ($rs->EOF)
             return false;
@@ -498,7 +498,7 @@ class UserMan extends TICModule
     public function getMetaByName($name)
     {
         global $tic;
-        $qry = "SELECT meta FROM Meta WHERE name = %s;";
+        $qry = "SELECT meta FROM meta WHERE name = %s;";
         $rs = $tic->db->Execute($this->getName(), $qry, array($name));
         if ($rs->EOF)
             return false;
@@ -509,7 +509,7 @@ class UserMan extends TICModule
     public function getAllMeten()
     {
         global $tic;
-        $qry = "SELECT meta FROM Meta ORDER BY meta";
+        $qry = "SELECT meta FROM meta ORDER BY meta";
         $rs = $tic->db->Execute($this->getName(), $qry);
         $meten = array();
         for (; !$rs->EOF; $rs->MoveNext()) {
