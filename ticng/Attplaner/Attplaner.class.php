@@ -116,7 +116,9 @@ class Attplaner extends TICModule
     }
 
     public function getInstallQueriesMySQL() {
-        return array(
+        global $tic;
+    	return array_merge($tic->mod['UserMan']->getInstallQueriesMySQL(),
+        array(
             "DROP TABLE IF EXISTS attplaner_ma CASCADE;",
             "CREATE  TABLE IF NOT EXISTS `attplaner_ma` (
 			  `ma` INT(11) NOT NULL AUTO_INCREMENT ,
@@ -184,7 +186,7 @@ class Attplaner extends TICModule
 			ENGINE = InnoDB
 			DEFAULT CHARACTER SET = latin1
 			COLLATE = latin1_german1_ci;"
-        );
+        ));
     }
 
     public function getInstallQueriesPostgreSQL() {

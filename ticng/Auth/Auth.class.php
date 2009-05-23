@@ -175,16 +175,14 @@ class Auth extends TICModule
         unset($_SESSION['change_password']);
         unset($_SESSION['username']);
 
-        $qry = "SELECT salt, pw_hash, pw_aendern FROM GNPlayer NATURAL JOIN TICUser ".
+        $qry = "SELECT salt, pw_hash, pw_aendern FROM gnplayer NATURAL JOIN tic_user ".
             "WHERE lower(nick) = %s";
         $rs = $tic->db->Execute($this->getName(), $qry, array(strtolower($username)), false);
         if ($rs->EOF) {
             $this->loginFailed(false);
             return false;
         }
-        
         $user = $tic->mod['UserMan']->getUserByNick($username);
-        
         $salt = $rs->fields['salt'];
         $hash = $this->hashPassword($pw, $salt);
         if ($hash == $rs->fields['pw_hash']) {

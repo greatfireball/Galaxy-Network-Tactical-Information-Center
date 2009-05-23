@@ -66,12 +66,12 @@ class TICUser extends GNPlayer implements Right_IFace {
 
         global $tic;
 
-        $qry = "SELECT tic_user.gala as gala, tic_user.planet as planet, nick, pw_aendern, ".
+        $qry = "SELECT tic_user.gala as gala, tic_user.planet as planet, gnplayer.nick as nick, pw_aendern, ".
             "is_bot, gn_rang, role, last_active, failed_logins, banned, ".
             "timeformat, highlight, scantyp, svs, elokas, authnick, telnr, ".
             "telnr_comment, telnr_visibility, icq, jabber ".
-            "FROM tic_user NATURAL JOIN gnplayer";
-        $rs = $tic->db->Execute(get_class($this), $qry);
+            "FROM tic_user NATURAL JOIN gnplayer where tic_user.gala=%s and tic_user.planet=%s";
+        $rs = $tic->db->Execute(get_class($this), $qry,$id);
         if ($rs->EOF)
             return false;
         $arr = $rs->FetchRow();
@@ -104,7 +104,7 @@ class TICUser extends GNPlayer implements Right_IFace {
     {
         global $tic;
         assert($this->id !== null);
-
+		$userid = $this->id;
         $qry = "UPDATE tic_user SET ".
             "pw_aendern = %s, ".
             "is_bot = %s, ".
@@ -140,8 +140,8 @@ class TICUser extends GNPlayer implements Right_IFace {
                      $this->telnrVisibility,
                      $this->icq,
                      $this->jabber,
-                     $this->id[0],
-                     $this->id[1]);
+                     $userid[0],
+                     $userid[1]);
         $rs = $tic->db->Execute(get_class($this), $qry, $arr);
     }
 
@@ -440,7 +440,7 @@ class TICUser extends GNPlayer implements Right_IFace {
     {
         global $tic;
         $qry = "UPDATE tic_user SET last_active = now(), failed_logins = 0 WHERE gala=%s and planet=%s;";
-        $tic->db->Execute(get_class($this), $qry, $id);
+        $tic->db->Execute(get_class($this), $qry, $this->id);
     }
 
     // nur für auth modul
@@ -448,7 +448,7 @@ class TICUser extends GNPlayer implements Right_IFace {
     {
         global $tic;
         $qry = "UPDATE tic_user SET failed_logins = failed_logins + 1 WHERE gala = %s and planet=%s;";
-        $tic->db->Execute(get_class($this), $qry, $id);
+        $tic->db->Execute(get_class($this), $qry, $this->id);
     }
 
     /*public function resetFailedLogins()
@@ -618,9 +618,11 @@ class TICUser extends GNPlayer implements Right_IFace {
     private function setField($field, $val)
     {
         global $tic;
+        $userid=$this->id;
+        $ary = array($val,$userid[0],$userid[1]);
         assert($this->id !== null);
         $qry = "UPDATE tic_user SET $field = %s WHERE gala = %s and planet=%s;";
-        $tic->db->Execute(get_class($this), $qry, $id);
+        $tic->db->Execute(get_class($this), $qry, $ary);
     }
 
     private function gnRangToStr($val)

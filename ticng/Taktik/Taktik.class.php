@@ -79,7 +79,8 @@ class Taktik extends TICModule
 
     public function getInstallQueriesMySQL()
     {
-        return array_merge($tic->mod['UserMan']->getInstallQueriesMysql(),
+    	global $tic;
+        return array_merge($tic->mod['UserMan']->getInstallQueriesMySQL(),
         array(
             'DROP TABLE IF EXISTS flotten',
             'DROP TABLE IF EXISTS taktik_update',

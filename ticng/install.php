@@ -90,7 +90,8 @@ echo "<h3>T.I.C. NG Ausgabe:</h3>";
 echo "<hr width=100%>";
 $tic->modsInitialize($installdata);
 echo "<hr width=100%>";
-
+$qry="DELETE FROM sql_error;";//installation verursacht error bei insert und drope die aber unrelevant sind
+$tic->db->Execute("install",$qry);
 $tic->modsUnload();
 echo "<h2>T.I.C. NG successfully installed!</h2>";
 

@@ -29,6 +29,7 @@ class Galaxie {
 
     public function __construct($nr,$alli=null)
     {
+    	global $tic;
         $this->nr = $nr;
         $this->allianz=$alli;
         $qry = "SELECT count(planet) as count FROM gnplayer WHERE gala = %s";
@@ -41,7 +42,7 @@ class Galaxie {
     
     function getName()
     {
-    	return getclass($this);
+    	return get_class($this);
     }
     
     public function __toString()

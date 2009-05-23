@@ -51,7 +51,7 @@ class TaktikAjax extends TICModule
         $taktik->addChild(new MenuEntry("Ajax", 4, $this->getName(), "ajax"));
     }
 
-    public function getInstallQueriesMySQL() {}
+    public function getInstallQueriesMySQL() {return array();}
 	public function getInstallQueriesPostgreSQL() {}
 
     public function onExecute($menuentry)

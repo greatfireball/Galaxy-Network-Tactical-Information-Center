@@ -157,7 +157,7 @@ class UserMan extends TICModule
     public function getInstallQueriesMySQL()
     {
     	global $tic;
-        return array_merge($tic->mod['Right']->getInstallQueriesMysql(),array(
+        return array_merge($tic->mod['Right']->getInstallQueriesMySQL(),array(
             'DROP TABLE IF EXISTS tic_user CASCADE;',
             'DROP TABLE IF EXISTS gnplayer CASCADE;',
             'DROP TABLE IF EXISTS galaxie CASCADE;',
@@ -359,7 +359,7 @@ class UserMan extends TICModule
 
     public function getUserByNick($nick)
     {
-        $where = ' WHERE lower(nick) = %s ';
+        $where = ' WHERE lower(gnplayer.nick) = %s ';
         $arr = array(strtolower($nick));
         return $this->getUserByX($where, $arr);
     }
@@ -379,13 +379,14 @@ class UserMan extends TICModule
     private function getUserByX($where, $arr)
     {
         global $tic;
-        $qry = "SELECT gala,planet FROM tic_user NATURAL JOIN gnplayer ".$where;
+        $qry = "SELECT tic_user.gala as gala,tic_user.planet as planet FROM tic_user NATURAL JOIN gnplayer ".$where;
         $rs = $tic->db->Execute($this->getName(), $qry, $arr);
         if ($rs->EOF)
             return false;
 
         $user = new TICUser();
-        return $user->load(array($rs->field[0],$rs->fiel[1]));
+        $user->load(array($rs->fields['gala'],$rs->fields['planet']));
+        return $user;
     }
 
     // ================== Galaxie Functions =============================

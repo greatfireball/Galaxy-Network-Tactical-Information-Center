@@ -253,6 +253,10 @@ class ModuleManager
                         //ignore the error if we just tried to DROP a table, that probably doesn't exist anyway
                         if (strncasecmp($sqlqueries[$mod][$n], 'DROP', 4) == 0)
                             continue;
+                        if (strncasecmp($sqlqueries[$mod][$n], 'INSERT', 5) == 0)
+                            continue;
+                            echo 'ende?';
+                            var_dump($sqlqueries[$mod][$n]);
                         die("failed\n");
                     }
                 }
