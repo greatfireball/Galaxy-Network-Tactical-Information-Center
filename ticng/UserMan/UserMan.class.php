@@ -311,13 +311,12 @@ class UserMan extends TICModule
     public function getPlayerByNick($nick)
     {
         global $tic;
-        $qry = "SELECT gala, planet, nick, gnplayer FROM gnplayer WHERE lower(nick) = %s";
+        $qry = "SELECT gala, planet, nick FROM gnplayer WHERE lower(nick) = %s";
         $rs = $tic->db->Execute($this->getName(), $qry, array(strtolower($nick)));
         if ($rs->EOF)
             return false;
         else {
             $player = new GNPlayer($rs->fields[0], $rs->fields[1], $rs->fields[2]);
-            $player->_id = $rs->fields[3];
             return $player;
         }
     }
@@ -327,13 +326,12 @@ class UserMan extends TICModule
         global $tic;
 
         if (trim($string) == "") { return false; }
-        $qry = "SELECT gala, planet, nick, gnplayer FROM gnplayer WHERE lower(nick) LIKE %s ORDER BY gala, planet ASC";
+        $qry = "SELECT gala, planet, nick FROM gnplayer WHERE lower(nick) LIKE %s ORDER BY gala, planet ASC";
         $rs = $tic->db->Execute($this->getName(), $qry, array('%'.strtolower($string).'%'));
         if (!$rs) { return false; }
         $erg = array();
         while (!$rs->EOF) {
             $player = new GNPlayer($rs->fields[0], $rs->fields[1], $rs->fields[2]);
-            $player->_id = $rs->fields[3];
             array_push($erg, $player);
             $rs->movenext();
         }
@@ -367,7 +365,8 @@ class UserMan extends TICModule
     public function getUserByKoords($gala, $planet)
     {
     	$temp=new TICUser();
-        return $temp->load(array($gala,$planet));
+    	$temp->load(array($gala,$planet));
+        return $temp;
     }
 
     public function getUserById($id) //Neue DB $id ist ein array (gala,planet)

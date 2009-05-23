@@ -14,7 +14,7 @@
         </tr>
         <tr>
             <td class="bigger">
-                <select name="attTyp" size="1">
+                <select name="att_typ" size="1">
 {foreach key=key item=value from=$attTyp}
                     <option value="{$key}">{$value}</option>
 {/foreach}
@@ -28,10 +28,10 @@
                 </select>
             </td>
             <td class="bigger">
-                <!--<input type="hidden" name="planer" value="{$user->getID()}">{$user->getNick()} ({$user->getKoords()})-->
+                <!--<input type="hidden" name="planer" value="{$user->getKoords()}">{$user->getNick()} ({$user->getKoords()})-->
                 <select name="planer" size="1">
 {foreach key=key item=value from=$attPlaner}
-                    <option value="{$value->getID()}">{$value->getNick()} ({$value->getKoords()})</option>
+                    <option value="{$value->getKoords()}">{$value->getNick()} ({$value->getKoords()})</option>
 {/foreach}
                 </select>
             </td>

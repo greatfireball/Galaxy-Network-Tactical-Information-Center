@@ -79,7 +79,7 @@ class Attplaner extends TICModule
         }
         //FIXME generierung der User die berechtigt sind
         $attPlaner = array(
-            $tic->mod['UserMan']->getUserByKoords(0, 1)
+            $tic->mod['UserMan']->getUserByKoords('0', '1')
         );
         
 
@@ -275,17 +275,17 @@ class Attplaner extends TICModule
             ['attTyp'] 0 => Gala; 1 => Ally; 2 => Meta; 3 => alle
             ['auswahl'] 0 => freie Wahl; 1 => zugeteilte Ziele
         */
-
-        $planer = $tic->mod['UserMan']->getUserByID($daten['planer']);
+		$userid=split(':',$daten['planer']);
+        $planer = $tic->mod['UserMan']->getUserById($userid);
         $planerAllianz = $planer->getAllianz();
-        if ($daten['attTyp'] == 1 && $planerAllianz === false) {
+        if ($daten['att_typ'] == 1 && $planerAllianz === false) {
             $tic->error($this->getName(), "Du geh&ouml;rst keiner Allianz an.");
             return false;
-        } elseif ($daten['attTyp'] == 2 && $planerAllianz->getMeta() === false) {
+        } elseif ($daten['att_typ'] == 2 && $planerAllianz->getMeta() === false) {
             $tic->error($this->getName(), "Deine Allianz geh&ouml;rt keiner Meta an.");
             return false;
         }
-		$userid=$daten['planer'];
+		$userid=split(':',$daten['planer']);
         $qry = "INSERT INTO attplaner_ma (planer_gala,planer_planet, att_typ, auswahl) VALUES (%s,%s, %s, %s);";
         $rs = $tic->db->Execute($this->getName(), $qry, array($userid[0],$userid[1], $daten['att_typ'], $daten['auswahl']));
         if (!$rs) {

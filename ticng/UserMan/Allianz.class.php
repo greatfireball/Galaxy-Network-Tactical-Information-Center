@@ -100,7 +100,7 @@ class Allianz {
 
     public function getId()
     {
-        assert($this->id);
+      //  assert($this->id);
         return $this->id;
     }
 
