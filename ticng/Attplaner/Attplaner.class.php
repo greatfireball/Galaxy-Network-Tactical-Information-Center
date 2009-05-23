@@ -245,7 +245,7 @@ class Attplaner extends TICModule
     {
         global $tic;
 
-        $qry = "SELECT ma, planer_gala,planer_planet, attTyp, auswahl FROM attplaner_ma ORDER BY ma ASC;";
+        $qry = "SELECT ma, planer_gala,planer_planet, att_typ, auswahl FROM attplaner_ma ORDER BY ma ASC;";
         $rs = $tic->db->Execute($this->getName(), $qry);
         $user = $tic->mod['Auth']->getActiveUser();
         $ma = array();
@@ -286,8 +286,8 @@ class Attplaner extends TICModule
             return false;
         }
 		$userid=$daten['planer'];
-        $qry = "INSERT INTO attplaner_ma (planer_gala,planer_planet, attTyp, auswahl) VALUES (%s,%s, %s, %s);";
-        $rs = $tic->db->Execute($this->getName(), $qry, array($userid[0],$userid[1], $daten['attTyp'], $daten['auswahl']));
+        $qry = "INSERT INTO attplaner_ma (planer_gala,planer_planet, att_typ, auswahl) VALUES (%s,%s, %s, %s);";
+        $rs = $tic->db->Execute($this->getName(), $qry, array($userid[0],$userid[1], $daten['att_typ'], $daten['auswahl']));
         if (!$rs) {
             $tic->error($this->getName(), "Problem beim speichern des Massenatts.");
             return false;
@@ -369,7 +369,7 @@ class Attplaner extends TICModule
     {
         global $tic;
 
-        $qry = 'SELECT Z.id,Z.ma,Z.ziel_gala,Z.ziel_planet,Z.freigabe,Z.abflug,Z.text,M.planer_gala,M.planer_planet,M.attTyp,M.auswahl FROM '.
+        $qry = 'SELECT Z.id,Z.ma,Z.ziel_gala,Z.ziel_planet,Z.freigabe,Z.abflug,Z.text,M.planer_gala,M.planer_planet,M.att_typ,M.auswahl FROM '.
             'Attplaner_ziele AS Z JOIN Attplaner_ma AS M USING(ma) ORDER BY Z.ziel_gala,Z.ziel_planet ASC;';
         $rs = $tic->db->Execute($this->getName(), $qry);
 
@@ -463,7 +463,7 @@ class Attplaner extends TICModule
         if (!is_object($user)) { $user = $tic->mod['Auth']->getActiveUser(); }
         $isAllowed = false;
 
-        $qry = "SELECT planer_gala,planer_planet,AttTyp,auswahl FROM attplaner_ma JOIN attplaner_ziele USING(ma) WHERE id = %s;";
+        $qry = "SELECT planer_gala,planer_planet,Att_typ,auswahl FROM attplaner_ma JOIN attplaner_ziele USING(ma) WHERE id = %s;";
         $rs = $tic->db->Execute($this->getName(), $qry, array($ziel));
         if (!$rs) { $tic->error($this->getName(), "Fehler bei der Abfrage."); return false; }
         $planer = $tic->mod['UserMan']->getUserById(array($rs->fields[0],$rs->fields[1]));

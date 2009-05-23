@@ -82,7 +82,7 @@ class NewsItem implements Right_IFace {
         }
         if (!$tic->mod['Right']->isAllowed($action, $this))
             return false;
-        $qry = "INSERT INTO news (sender_gala, sender_planet, subject, text, audience, audience_id) VALUES (%s, %s, %s, %s, %s)";
+        $qry = "INSERT INTO news (sender_gala, sender_planet, subject, text, audience, audience_id) VALUES (%s, %s, %s, %s, %s,%s)";
         $tic->db->Execute(get_class($this), $qry, array($this->_sender[0],$this->_sender[1], $this->_subject, $this->_text, $this->_audience, $this->_audience_id));
         $this->_id = $tic->db->Insert_ID();
         //FIXME get time from DB ??

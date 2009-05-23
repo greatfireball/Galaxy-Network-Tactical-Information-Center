@@ -161,7 +161,7 @@ class Logging extends TICModule
         if (!$user)
             return;
         $userid=$user->getId();
-        $qry = "INSERT INTO log (gala,planet, action, object, param) VALUES (%s, %s, %s, %s)";
+        $qry = "INSERT INTO log (gala,planet, action, object, param) VALUES (%s, %s, %s, %s,%s)";
         $arr = array($userid[0],$userid[1], $action, $object, $param);
         $tic->db->Execute($this->getName(), $qry, $arr);
     }
