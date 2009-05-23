@@ -71,6 +71,7 @@ class GNPlayer {
     public function create()
     {
         global $tic;
+        echo
         assert($this->nick !== null && $this->gala !== null && $this->planet !== null && $this->id === null);
         $nick = $this->nick;
         $gala = $this->gala;
@@ -89,7 +90,7 @@ class GNPlayer {
         $rs = $tic->db->Execute(get_class($this), $qry, array(strtolower($nick), $gala, $planet));
         if (!$rs->EOF) {
             // es existieren bereits player mit gleichen koords oder nick
-            $qry = "SELECT * FROM gnplayer NATURAL JOIN TICUser ".
+            $qry = "SELECT * FROM gnplayer NATURAL JOIN tic_user ".
                 "WHERE nick = %s OR (gnplayer.gala = %s AND gnplayer.planet = %s)";
             $rs = $tic->db->Execute(get_class($this), $qry, array($nick, $planet, $gala));
             if ($rs->EOF) {

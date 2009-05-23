@@ -354,7 +354,7 @@ class Attplaner extends TICModule
         $abflug = mktime($daten['abflugZeit'][0], $daten['abflugZeit'][1], 0, $daten['abflugDatum'][1], $daten['abflugDatum'][0], $daten['abflugDatum'][2]);
 		$planetObj=new GNPlayer($daten['zielGala'],$daten['zielPlanet']);// Vorsichtshalber anlegen 
 		$planetObj->create();
-        $qry = "INSERT INTO Attplaner_ziele (ma, ziel_gala, ziel_planet, freigabe, abflug) VALUES (%s, %s, %s, %s, %s)";
+        $qry = "INSERT INTO attplaner_ziele (ma, ziel_gala, ziel_planet, freigabe, abflug) VALUES (%s, %s, %s, %s, %s)";
         $rs = $tic->db->Execute($this->getName(), $qry, array($daten['ma'], $daten['zielGala'], $daten['zielPlanet'], $freigabe, $abflug));
 
         if (!$rs) {
@@ -370,7 +370,7 @@ class Attplaner extends TICModule
         global $tic;
 
         $qry = 'SELECT Z.id,Z.ma,Z.ziel_gala,Z.ziel_planet,Z.freigabe,Z.abflug,Z.text,M.planer_gala,M.planer_planet,M.att_typ,M.auswahl FROM '.
-            'Attplaner_ziele AS Z JOIN Attplaner_ma AS M USING(ma) ORDER BY Z.ziel_gala,Z.ziel_planet ASC;';
+            'attplaner_ziele AS Z JOIN attplaner_ma AS M USING(ma) ORDER BY Z.ziel_gala,Z.ziel_planet ASC;';
         $rs = $tic->db->Execute($this->getName(), $qry);
 
         $aktUser = $tic->mod['Auth']->getActiveUser();
