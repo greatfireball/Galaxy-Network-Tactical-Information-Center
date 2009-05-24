@@ -86,7 +86,7 @@ class Logging extends TICModule
         $logs = array();
         for (; !$rs->EOF; $rs->MoveNext()) {
             $str = $this->_logToString($rs->fields[2], $rs->fields[3], $rs->fields[4]);
-            array_push($logs, array($rs->fields[5], array($rs->fields[0],$rs->fields[1]), $str));
+            array_push($logs, array($rs->fields[5], $rs->fields[0].':'.$rs->fields[1], $str));
         }
         $this->setVar('logs', $logs); //FIXME da id nun ein array ist könnte es hier zu fehler kommen
         $this->setVar('type', $type);
