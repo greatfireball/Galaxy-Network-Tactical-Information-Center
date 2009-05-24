@@ -37,8 +37,9 @@ class Core extends TICModule
     function Core()
     {
 	parent::__construct(
-	array(new Author("Tobias Sarnowski", "NataS", "sarnowski@new-thoughts.org")),
-	"5",
+	array(new Author("Tobias Sarnowski", "NataS", "sarnowski@new-thoughts.org"),
+	new Author("AlbertLast","AlbertLast","#tic-progger@quakenet")),
+	"10",
 	"Core",
 	"Verwaltet alle T.I.C. NG Module.",
 	array());

@@ -33,15 +33,16 @@ class TechStats extends TICModule
     function TechStats()
     {
 	parent::__construct(
-	array(new Author("Tobias Sarnowski", "NataS", "sarnowski@new-thoughts.org")),
-	"3",
+	array(new Author("Tobias Sarnowski", "NataS", "sarnowski@new-thoughts.org"),
+	new Author("AlbertLast","AlbertLast","#tic-progger@quakenet")),
+	"10",
 	"TechStats",
 	"Macht eine Zusammenfassung aller interessanten technischen Daten",
 	array(
-        	"Core" => "1",
-        	"Ticker" => "2",
-        	"ADOdb" => "1",
-        	"Design" => "2"
+        	"Core" => "10",
+        	"Ticker" => "10",
+        	"ADOdb" => "10",
+        	"Design" => "10"
         ));
     
     }

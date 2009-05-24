@@ -28,15 +28,16 @@ class Auth extends TICModule
     function Auth()
     {
 	parent::__construct(
-	array(new Author("Andreas Hemel", "daishan", "dai.shan@gmx.net")),
-	"2",
+	array(new Author("Andreas Hemel", "daishan", "dai.shan@gmx.net"),
+	new Author("AlbertLast","AlbertLast","#tic-progger@quakenet")),
+	"10",
 	"Auth",
 	"Authentication backend",
 	array(
-            "Core" => "4",
-            "Design" => "2",
-            "ADOdb" => "5",
-            "UserMan" => "1"
+            "Core" => "10",
+            "Design" => "10",
+            "ADOdb" => "10",
+            "UserMan" => "10"
         ));
     
     }

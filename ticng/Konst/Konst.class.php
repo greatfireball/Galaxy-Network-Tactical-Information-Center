@@ -35,12 +35,13 @@ class Konst extends TICModule
    function Konst()
    {
 	parent::__construct(
-	array(new Author("Pascal Gollor", "Hugch", "pascal@gollor.org")),
-	"2",
+	array(new Author("Pascal Gollor", "Hugch", "pascal@gollor.org"),
+	new Author("AlbertLast","AlbertLast","#tic-progger@quakenet")),
+	"10",
 	"Konst",
 	"Stellt Konstanten zur Verfuegung",
 	array(
-            "Core" => "5",
+            "Core" => "10",
           ));
    }
 

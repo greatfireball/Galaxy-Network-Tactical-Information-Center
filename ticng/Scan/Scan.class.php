@@ -41,16 +41,17 @@ class Scan extends TICModule
    function Scan()
     {
 	parent::__construct(
-	array(new Author("Pascal Gollor", "Hugch", "pascal@gollor.org")),
-	"2",
+	array(new Author("Pascal Gollor", "Hugch", "pascal@gollor.org"),
+	new Author("AlbertLast","AlbertLast","#tic-progger@quakenet")),
+	"10",
 	"Scan",
 	"API zum Verwalten aller Galaxy-Network Scans und URL Schnellanzeige",
 	array(
-            "Core" => "5",
-            "ADOdb" => "2",
-            "Design" => "2",
-            "Konst" => "1",
-            "UserMan" => "2"
+            "Core" => "10",
+            "ADOdb" => "10",
+            "Design" => "10",
+            "Konst" => "10",
+            "UserMan" => "10"
         ));
     
     }

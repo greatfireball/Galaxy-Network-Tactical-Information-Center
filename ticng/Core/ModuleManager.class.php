@@ -57,7 +57,7 @@ class ModuleManager
 
     function getVersion()
     {
-        return '6';
+        return '10';
     }
 
     function getName()

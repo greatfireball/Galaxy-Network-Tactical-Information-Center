@@ -34,14 +34,15 @@ class UserMan extends TICModule
     function UserMan()
     {
 	parent::__construct(
-	array(new Author("Andreas Hemel", "daishan", "dai.shan@gmx.net")),
-	"3",
+	array(new Author("Andreas Hemel", "daishan", "dai.shan@gmx.net"),
+	new Author("AlbertLast","AlbertLast","#tic-progger@quakenet")),
+	"10",
 	"UserMan",
 	"Benutzer und Diplomatie Verwaltung",
 	array(
-            "Core" => "4",
-            "Design" => "2",
-            "ADOdb" => "5"
+            "Core" => "10",
+            "Design" => "10",
+            "ADOdb" => "10"
         ));
     
     }

@@ -32,12 +32,13 @@ class Tools extends TICModule
     function Tools()
     {
 	parent::__construct(
-	array(new Author("Pascal Gollor", "Hugch", "pascal@gollor.org")),
-	"2",
+	array(new Author("Pascal Gollor", "Hugch", "pascal@gollor.org"),
+	new Author("AlbertLast","AlbertLast","#tic-progger@quakenet")),
+	"10",
 	"Tools",
 	"Einige n&uuml;tzliche Tools",
 	array(
-            "Core" => "5"
+            "Core" => "10"
         ));
     
     }

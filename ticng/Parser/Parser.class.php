@@ -46,17 +46,18 @@ class Parser extends TICModule
     function Parser()
     {
 	parent::__construct(
-	array(new Author("Pascal Gollor", "Hugch", "pascal@gollor.org")),
-	"2",
+	array(new Author("Pascal Gollor", "Hugch", "pascal@gollor.org"),
+	new Author("AlbertLast","AlbertLast","#tic-progger@quakenet")),
+	"10",
 	"Parser",
 	"Einf&uuml;gen der Scans, Taktik, usw.",
 	array(
-            "Core" => "5",
-            "Design" => "2",
-            "UserMan" => "2",
-            "Konst" => "1",
-            "Scan" => "1",
-            "Logging" => "1"
+            "Core" => "10",
+            "Design" => "10",
+            "UserMan" => "10",
+            "Konst" => "10",
+            "Scan" => "10",
+            "Logging" => "10"
           ));
     
     }

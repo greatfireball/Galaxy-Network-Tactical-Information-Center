@@ -28,15 +28,16 @@ class Taktik extends TICModule
     function Taktik()
     {
 	parent::__construct(
-	array(new Author("Andreas Hemel", "daishan", "dai.shan@gmx.net")),
-	"2",
+	array(new Author("Andreas Hemel", "daishan", "dai.shan@gmx.net"),
+	new Author("AlbertLast","AlbertLast","#tic-progger@quakenet")),
+	"10",
 	"Taktik",
 	"Taktik Modul",
 	array(
-            "Core" => "4",
-            "Design" => "2",
-            "ADOdb" => "5",
-            "UserMan" => "2"
+            "Core" => "10",
+            "Design" => "10",
+            "ADOdb" => "10",
+            "UserMan" => "10"
         ));
     
     }

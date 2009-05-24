@@ -42,12 +42,13 @@ class Design extends TICModule
     function Design()
     {
 	parent::__construct(
-	array(new Author("Tobias Sarnowski", "NataS", "sarnowski@new-thoughts.org")),
-	"4",
+	array(new Author("Tobias Sarnowski", "NataS", "sarnowski@new-thoughts.org"),
+	new Author("AlbertLast","AlbertLast","#tic-progger@quakenet")),
+	"10",
 	"Design",
 	"Template Manager",
 	array(
-            "Core" => "1"
+            "Core" => "10"
         ));
     }
     

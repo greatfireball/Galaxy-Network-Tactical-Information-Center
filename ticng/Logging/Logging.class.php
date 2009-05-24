@@ -25,13 +25,14 @@ class Logging extends TICModule
     function Logging()
     {
 	parent::__construct(
-	array(new Author("Andreas Hemel", "daishan", "dai.shan@gmx.net")),
-	"2",
+	array(new Author("Andreas Hemel", "daishan", "dai.shan@gmx.net"),
+	new Author("AlbertLast","AlbertLast","#tic-progger@quakenet")),
+	"10",
 	"Logging",
 	"Logging System fuer Useraktionen",
 	array(
-            "Core" => "4",
-            "Konst" => "1",
+            "Core" => "10",
+            "Konst" => "10",
         ));
     
     }

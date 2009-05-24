@@ -32,15 +32,16 @@ class News extends TICModule
     function News()
     {
 	parent::__construct(
-	array(new Author("Andreas Hemel", "daishan", "dai.shan@gmx.net")),
-	"2",
+	array(new Author("Andreas Hemel", "daishan", "dai.shan@gmx.net"),
+	new Author("AlbertLast","AlbertLast","#tic-progger@quakenet")),
+	"10",
 	"News",
 	"Nachrichten System",
 	array(
-            "Core" => "4",
-            "Design" => "2",
-            "ADOdb" => "5",
-	    "Right" => "3"
+            "Core" => "10",
+            "Design" => "10",
+            "ADOdb" => "10",
+	    "Right" => "10"
         ));
     
     }

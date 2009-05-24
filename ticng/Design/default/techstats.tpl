@@ -15,8 +15,8 @@
             <td>{$mod.desc}</td>
             <td>
             {foreach item=author from=$mod.authors name=authors}
-                {$author->Name} ({$author->Nick})<br>
-                <a href="mailto:{$author->Mail}">{$author->Mail}</a>{if !$smarty.foreach.authors.last}<br>{/if}
+                {$author->getName()} ({$author->getNick()})<br>
+                <a href="mailto:{$author->getMail()}">{$author->getMail()}</a>{if !$smarty.foreach.authors.last}<br>{/if}
             {/foreach}
             </td>
         </tr>

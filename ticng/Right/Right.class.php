@@ -31,15 +31,15 @@ class Right extends TICModule
 	parent::__construct(
 	array(
             new Author("Andreas Hemel", "daishan", "dai.shan@gmx.net"),
-            new Author("Pascal Gollor", "Hugch", "pascal@gollor.org")
-        ),
-	"4",
+            new Author("Pascal Gollor", "Hugch", "pascal@gollor.org"),
+	new Author("AlbertLast","AlbertLast","#tic-progger@quakenet")),
+	"10",
 	"Right",
 	"Rechteverwaltung",
 	array(
-            "Core" => "4",
-            "Auth" => "1",
-            "Konst" => "1"
+            "Core" => "10",
+            "Auth" => "10",
+            "Konst" => "10"
         ));
     
     }

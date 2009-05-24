@@ -53,12 +53,13 @@ class Ticker extends TICModule
     function Ticker()
     {
 	parent::__construct(
-	array(new Author("Tobias Sarnowski", "NataS", "sarnowski@new-thoughts.org")),
-	"5",
+	array(new Author("Tobias Sarnowski", "NataS", "sarnowski@new-thoughts.org"),
+	new Author("AlbertLast","AlbertLast","#tic-progger@quakenet")),
+	"10",
 	"Ticker",
 	"Führt alle Ticks aus",
 	array(
-            "Core" => "4"
+            "Core" => "10"
         ));
     
     }

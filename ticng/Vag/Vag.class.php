@@ -32,14 +32,15 @@ class Vag extends TICModule
     function Vag()
     {
 	parent::__construct(
-	array(new Author("Andreas Hemel", "daishan", "dai.shan@gmx.net")),
-	"3",
+	array(new Author("Andreas Hemel", "daishan", "dai.shan@gmx.net"),
+	new Author("AlbertLast","AlbertLast","#tic-progger@quakenet")),
+	"10",
 	"Vag",
 	"Berechnen des Verlustausgleiches",
 	array(
-            "Core" => "5",
-            "Design" => "2",
-            "Konst" => "1"
+            "Core" => "10",
+            "Design" => "10",
+            "Konst" => "10"
           ));
     
     }

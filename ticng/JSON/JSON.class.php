@@ -27,13 +27,14 @@ class JSON extends TICModule
    function JSON()
    {
 	parent::__construct(
-	array(new Author("Andreas Hemel", "daishan", "dai.shan@gmx.net")),
-	"2",
+	array(new Author("Andreas Hemel", "daishan", "dai.shan@gmx.net"),
+	new Author("AlbertLast","AlbertLast","#tic-progger@quakenet")),
+	"10",
 	"JSON",
 	"AJAX Backend für JSON output",
 	array(
-            "Core" => "4",
-            "Taktik" => "1"
+            "Core" => "10",
+            "Taktik" => "10"
         ));
    
    }

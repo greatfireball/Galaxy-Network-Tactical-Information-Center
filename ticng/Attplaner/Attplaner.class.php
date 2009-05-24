@@ -35,13 +35,14 @@ class Attplaner extends TICModule
     function Attplaner()
     {
 	parent::__construct(
-	array(new Author("Pascal Gollor", "Hugch", "pascal@gollor.org")),
-	"2",
+	array(new Author("Pascal Gollor", "Hugch", "pascal@gollor.org"),
+	new Author("AlbertLast","AlbertLast","#tic-progger@quakenet")),
+	"10",
 	"Attplaner",
 	"Um die Atts zu planen",
 	array(
-            "Core" => "5",
-            "Design" => "2"
+            "Core" => "10",
+            "Design" => "10"
           ));
     }
 
