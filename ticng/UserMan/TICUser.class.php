@@ -173,11 +173,10 @@ class TICUser extends GNPlayer implements Right_IFace {
             $tic->error('UserMan','Nick schon vorhanden, er hat die Koords: '.$user->getKoords());
             return false;
         }
-        elseif ($user=$tic->mod['UserMan']->getUserByKoords($this->gala, $this->planet)){
-        	$tic->error('UserMan','Koords schon vergeben, der User hat den Nick: '.$user->getNick());
+        elseif ($tic->mod['UserMan']->getUserByKoords($this->gala, $this->planet)->getGalaxie()!==null){
+        	$tic->error('UserMan','Koords schon vergeben, der User hat den Nick: '.$tic->mod['UserMan']->getUserByKoords($this->gala, $this->planet)->getNick());
         	return false;
         }
-
         $gala = new Galaxie($this->gala);
         $gala->create(); // fails if gala already exists
 //FIXME sehr gefährlich

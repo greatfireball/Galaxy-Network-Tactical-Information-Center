@@ -364,9 +364,9 @@ class UserMan extends TICModule
 
     public function getUserByKoords($gala, $planet)
     {
-    	$temp=new TICUser();
-    	$temp->load(array($gala,$planet));
-        return $temp;
+    	$ticObj=new TICUser();
+    	$ticObj->load(array($gala,$planet));
+        return $ticObj;
     }
 
     public function getUserById($id) //Neue DB $id ist ein array (gala,planet)
