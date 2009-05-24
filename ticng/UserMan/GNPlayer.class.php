@@ -67,22 +67,29 @@ class GNPlayer {
         $this->id = $id;
         return true;
     }
+    public function torelocate($gala,$planet) // wenn planet geändert soll
+    {
+    	
+    	return;
+    }
 
     public function create()
     {
         global $tic;
-        echo
-        assert($this->nick !== null && $this->gala !== null && $this->planet !== null && $this->id === null);
+        // ist nicht mehr zeit gemaess assert($this->nick !== null && $this->gala !== null && $this->planet !== null && $this->id === null);
         $nick = $this->nick;
         $gala = $this->gala;
         $planet = $this->planet;
 
         //check ob nick *und* koords schon existieren, d.h. player existiert schon, alles in butter
-        $qry = "SELECT nick, gala, planet FROM gnplayer WHERE nick = %s AND (gala = %s AND planet = %s)";
+        $qry = "SELECT nick, gala, planet FROM gnplayer WHERE nick = %s or (gala = %s AND planet = %s)";
         $rs = $tic->db->Execute(get_class($this), $qry, array($nick, $gala, $planet));
-        if (!$rs->EOF) {
+        if ($rs->RecordCount()==1 && $nick==$rs->fields[0]) {
             $this->id = array($rs->fields[1],$rs->fields[2]);
             return true;
+        }else if($rs->RecordCount()==2)
+        {
+        	return false; //nick und Koords in anderen Rows  vorhanden sind
         }
 
         //check ob nick *oder* koords schon existieren
@@ -106,8 +113,13 @@ class GNPlayer {
         }
         $galaobj = new Galaxie($gala);
         $galaobj->create(); //simply failes if gala already exists
+        if($nick===null){ // wenn der nick in der DB schon richtig drin steht um dsa er nicht ueberchrieben wird
+        	$qry = "INSERT INTO gnplayer (planet, gala) VALUES (%s, %s)";
+       		$tic->db->Execute(get_class($this), $qry, array($planet, $gala));
+        }else{
         $qry = "INSERT INTO gnplayer (nick, planet, gala) VALUES (%s, %s, %s)";
         $tic->db->Execute(get_class($this), $qry, array($nick, $planet, $gala));
+        }
         $this->id = array($gala,$planet);
         return true;
     }
@@ -179,7 +191,7 @@ class GNPlayer {
             return false;
         return $tic->mod['UserMan']->getMetaById($rs->fields[0]);
     }
-
+//FIXME ist die funktion noch sinvoll ?
     public function setKoords($gala, $planet)
     {
         global $tic;
@@ -216,7 +228,7 @@ class GNPlayer {
     {
         global $tic;
         // gibt true zurÃ¼ck wenn ein user zu diesem player existiert
-        $qry = "SELECT count(*) FROM tic_user ticuser WHERE gala = %s AND planet = %s";
+        $qry = "SELECT count(*) FROM tic_user WHERE gala = %s AND planet = %s";
         $rs = $tic->db->Execute(get_class($this), $qry, array($this->gala, $this->planet));
         if ($rs->fields[0] == 0)
             return false;

@@ -6,9 +6,9 @@ CREATE SCHEMA IF NOT EXISTS `ticngtest` DEFAULT CHARACTER SET latin1 COLLATE lat
 USE `ticngtest`;
 
 -- -----------------------------------------------------
--- Table `ticngtest`.`meta`
+-- Table `meta`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `ticngtest`.`meta` (
+CREATE  TABLE IF NOT EXISTS `meta` (
   `meta` INT(11) NOT NULL AUTO_INCREMENT ,
   `name` VARCHAR(60) NOT NULL ,
   `tag` VARCHAR(20) NOT NULL ,
@@ -22,9 +22,9 @@ COLLATE = latin1_german1_ci;
 
 
 -- -----------------------------------------------------
--- Table `ticngtest`.`allianz`
+-- Table `allianz`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `ticngtest`.`allianz` (
+CREATE  TABLE IF NOT EXISTS `allianz` (
   `allianz` INT(11) NOT NULL AUTO_INCREMENT ,
   `name` VARCHAR(60) NOT NULL ,
   `tag` VARCHAR(20) NOT NULL ,
@@ -35,7 +35,7 @@ CREATE  TABLE IF NOT EXISTS `ticngtest`.`allianz` (
   INDEX `fk_Allianz_Meta` (`meta` ASC) ,
   CONSTRAINT `fk_Allianz_Meta`
     FOREIGN KEY (`meta` )
-    REFERENCES `ticngtest`.`meta` (`meta` )
+    REFERENCES `meta` (`meta` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -45,21 +45,21 @@ COLLATE = latin1_german1_ci;
 
 
 -- -----------------------------------------------------
--- Table `ticngtest`.`allianz_bnd`
+-- Table `allianz_bnd`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `ticngtest`.`allianz_bnd` (
+CREATE  TABLE IF NOT EXISTS `allianz_bnd` (
   `a` INT(11) NOT NULL ,
   `b` INT(11) NOT NULL ,
   INDEX `fk_AllianzBnd_Allianz` (`a` ASC) ,
   INDEX `fk_AllianzBnd_Allianz1` (`b` ASC) ,
   CONSTRAINT `fk_AllianzBnd_Allianz`
     FOREIGN KEY (`a` )
-    REFERENCES `ticngtest`.`allianz` (`allianz` )
+    REFERENCES `allianz` (`allianz` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_AllianzBnd_Allianz1`
     FOREIGN KEY (`b` )
-    REFERENCES `ticngtest`.`allianz` (`allianz` )
+    REFERENCES `allianz` (`allianz` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -68,9 +68,9 @@ COLLATE = latin1_german1_ci;
 
 
 -- -----------------------------------------------------
--- Table `ticngtest`.`galaxie`
+-- Table `galaxie`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `ticngtest`.`galaxie` (
+CREATE  TABLE IF NOT EXISTS `galaxie` (
   `gala` INT(11) NOT NULL ,
   `allianz` INT(11) NULL DEFAULT NULL ,
   UNIQUE INDEX `gala` (`gala` ASC, `allianz` ASC) ,
@@ -78,7 +78,7 @@ CREATE  TABLE IF NOT EXISTS `ticngtest`.`galaxie` (
   INDEX `fk_Galaxie_Allianz` (`allianz` ASC) ,
   CONSTRAINT `fk_Galaxie_Allianz`
     FOREIGN KEY (`allianz` )
-    REFERENCES `ticngtest`.`allianz` (`allianz` )
+    REFERENCES `allianz` (`allianz` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -87,9 +87,9 @@ COLLATE = latin1_german1_ci;
 
 
 -- -----------------------------------------------------
--- Table `ticngtest`.`gnplayer`
+-- Table `gnplayer`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `ticngtest`.`gnplayer` (
+CREATE  TABLE IF NOT EXISTS `gnplayer` (
   `gala` INT(11) NOT NULL ,
   `planet` INT(11) NOT NULL ,
   `nick` VARCHAR(50) NULL ,
@@ -98,7 +98,7 @@ CREATE  TABLE IF NOT EXISTS `ticngtest`.`gnplayer` (
   INDEX `fk_GNPlayer_Galaxie` (`gala` ASC) ,
   CONSTRAINT `fk_GNPlayer_Galaxie`
     FOREIGN KEY (`gala` )
-    REFERENCES `ticngtest`.`galaxie` (`gala` )
+    REFERENCES `galaxie` (`gala` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -108,9 +108,9 @@ COLLATE = latin1_german1_ci;
 
 
 -- -----------------------------------------------------
--- Table `ticngtest`.`role`
+-- Table `role`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `ticngtest`.`role` (
+CREATE  TABLE IF NOT EXISTS `role` (
   `role` INT(11) NOT NULL AUTO_INCREMENT ,
   `name` VARCHAR(20) NOT NULL ,
   `israng` TINYINT(1) NOT NULL DEFAULT '0' ,
@@ -123,9 +123,9 @@ COLLATE = latin1_german1_ci;
 
 
 -- -----------------------------------------------------
--- Table `ticngtest`.`tic_user`
+-- Table `tic_user`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `ticngtest`.`tic_user` (
+CREATE  TABLE IF NOT EXISTS `tic_user` (
   `gala` INT(11) NOT NULL ,
   `planet` INT(11) NOT NULL ,
   `role` INT(11) NOT NULL ,
@@ -153,12 +153,12 @@ CREATE  TABLE IF NOT EXISTS `ticngtest`.`tic_user` (
   INDEX `fk_TICUser_role` (`role` ASC) ,
   CONSTRAINT `fk_TICUser_GNPlayer`
     FOREIGN KEY (`planet` , `gala` )
-    REFERENCES `ticngtest`.`gnplayer` (`planet` , `gala` )
+    REFERENCES `gnplayer` (`planet` , `gala` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_TICUser_role`
     FOREIGN KEY (`role` )
-    REFERENCES `ticngtest`.`role` (`role` )
+    REFERENCES `role` (`role` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -168,9 +168,9 @@ COLLATE = latin1_german1_ci;
 
 
 -- -----------------------------------------------------
--- Table `ticngtest`.`attplaner_ma`
+-- Table `attplaner_ma`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `ticngtest`.`attplaner_ma` (
+CREATE  TABLE IF NOT EXISTS `attplaner_ma` (
   `ma` INT(11) NOT NULL AUTO_INCREMENT ,
   `planer_gala` INT(11) NOT NULL ,
   `planer_planet` INT(11) NOT NULL ,
@@ -180,7 +180,7 @@ CREATE  TABLE IF NOT EXISTS `ticngtest`.`attplaner_ma` (
   INDEX `fk_Attplaner_ma_TICUser` (`planer_planet` ASC, `planer_gala` ASC) ,
   CONSTRAINT `fk_Attplaner_ma_TICUser`
     FOREIGN KEY (`planer_planet` , `planer_gala` )
-    REFERENCES `ticngtest`.`tic_user` (`planet` , `gala` )
+    REFERENCES `tic_user` (`planet` , `gala` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -190,9 +190,9 @@ COLLATE = latin1_german1_ci;
 
 
 -- -----------------------------------------------------
--- Table `ticngtest`.`attplaner_ziele`
+-- Table `attplaner_ziele`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `ticngtest`.`attplaner_ziele` (
+CREATE  TABLE IF NOT EXISTS `attplaner_ziele` (
   `id` INT(11) NOT NULL AUTO_INCREMENT ,
   `ma` INT(11) NOT NULL ,
   `ziel_gala` INT(11) NOT NULL ,
@@ -205,12 +205,12 @@ CREATE  TABLE IF NOT EXISTS `ticngtest`.`attplaner_ziele` (
   INDEX `fk_Attplaner_ziele_Attplaner_ma` (`ma` ASC) ,
   CONSTRAINT `fk_Attplaner_ziele_GNPlayer`
     FOREIGN KEY (`ziel_planet` , `ziel_gala` )
-    REFERENCES `ticngtest`.`gnplayer` (`planet` , `gala` )
+    REFERENCES `gnplayer` (`planet` , `gala` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Attplaner_ziele_Attplaner_ma`
     FOREIGN KEY (`ma` )
-    REFERENCES `ticngtest`.`attplaner_ma` (`ma` )
+    REFERENCES `attplaner_ma` (`ma` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -220,25 +220,25 @@ COLLATE = latin1_german1_ci;
 
 
 -- -----------------------------------------------------
--- Table `ticngtest`.`attplaner_flotten`
+-- Table `attplaner_flotten`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `ticngtest`.`attplaner_flotten` (
+CREATE  TABLE IF NOT EXISTS `attplaner_flotten` (
   `flotte` INT(1) NOT NULL ,
   `planet` INT(11) NOT NULL ,
   `gala` INT(11) NOT NULL ,
-  `ziele_id` INT(11) NOT NULL ,
-  UNIQUE INDEX `ziel_id` (`flotte` ASC, `planet` ASC, `gala` ASC, `ziele_id` ASC) ,
-  PRIMARY KEY (`planet`, `gala`, `ziele_id`) ,
+  `ziel_id` INT(11) NOT NULL ,
+  UNIQUE INDEX `ziel_id` (`flotte` ASC, `planet` ASC, `gala` ASC, `ziel_id` ASC) ,
+  PRIMARY KEY (`planet`, `gala`, `ziel_id`) ,
   INDEX `fk_Attplaner_flotten_TICUser` (`planet` ASC, `gala` ASC) ,
-  INDEX `fk_Attplaner_flotten_Attplaner_ziele` (`ziele_id` ASC) ,
+  INDEX `fk_Attplaner_flotten_Attplaner_ziele` (`ziel_id` ASC) ,
   CONSTRAINT `fk_Attplaner_flotten_TICUser`
     FOREIGN KEY (`planet` , `gala` )
-    REFERENCES `ticngtest`.`tic_user` (`planet` , `gala` )
+    REFERENCES `tic_user` (`planet` , `gala` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Attplaner_flotten_Attplaner_ziele`
-    FOREIGN KEY (`ziele_id` )
-    REFERENCES `ticngtest`.`attplaner_ziele` (`id` )
+    FOREIGN KEY (`ziel_id` )
+    REFERENCES `attplaner_ziele` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -247,9 +247,9 @@ COLLATE = latin1_german1_ci;
 
 
 -- -----------------------------------------------------
--- Table `ticngtest`.`config`
+-- Table `config`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `ticngtest`.`config` (
+CREATE  TABLE IF NOT EXISTS `config` (
   `module` VARCHAR(20) NOT NULL ,
   `_key_` VARCHAR(20) NOT NULL ,
   `value` VARCHAR(50) NULL DEFAULT NULL ,
@@ -260,9 +260,9 @@ COLLATE = latin1_german1_ci;
 
 
 -- -----------------------------------------------------
--- Table `ticngtest`.`flotten`
+-- Table `flotten`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `ticngtest`.`flotten` (
+CREATE  TABLE IF NOT EXISTS `flotten` (
   `id` INT(11) NOT NULL AUTO_INCREMENT ,
   `start_gala` INT(11) NOT NULL ,
   `start_planet` INT(11) NOT NULL ,
@@ -283,17 +283,17 @@ CREATE  TABLE IF NOT EXISTS `ticngtest`.`flotten` (
   INDEX `fk_flotten_tic_user` (`user_planet` ASC, `user_gala` ASC) ,
   CONSTRAINT `fk_Flotten_GNPlayer`
     FOREIGN KEY (`start_planet` , `start_gala` )
-    REFERENCES `ticngtest`.`gnplayer` (`planet` , `gala` )
+    REFERENCES `gnplayer` (`planet` , `gala` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Flotten_GNPlayer1`
     FOREIGN KEY (`ziel_gala` , `ziel_planet` )
-    REFERENCES `ticngtest`.`gnplayer` (`gala` , `planet` )
+    REFERENCES `gnplayer` (`gala` , `planet` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_flotten_tic_user`
     FOREIGN KEY (`user_planet` , `user_gala` )
-    REFERENCES `ticngtest`.`tic_user` (`planet` , `gala` )
+    REFERENCES `tic_user` (`planet` , `gala` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -303,9 +303,9 @@ COLLATE = latin1_german1_ci;
 
 
 -- -----------------------------------------------------
--- Table `ticngtest`.`log`
+-- Table `log`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `ticngtest`.`log` (
+CREATE  TABLE IF NOT EXISTS `log` (
   `id` INT(11) NOT NULL AUTO_INCREMENT ,
   `gala` INT(11) NOT NULL ,
   `planet` INT(11) NOT NULL ,
@@ -317,7 +317,7 @@ CREATE  TABLE IF NOT EXISTS `ticngtest`.`log` (
   INDEX `fk_log_TICUser` (`planet` ASC, `gala` ASC) ,
   CONSTRAINT `fk_log_TICUser`
     FOREIGN KEY (`planet` , `gala` )
-    REFERENCES `ticngtest`.`tic_user` (`planet` , `gala` )
+    REFERENCES `tic_user` (`planet` , `gala` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -328,9 +328,9 @@ COMMENT = 'ticuser gegn planet und gala ausgetauscht';
 
 
 -- -----------------------------------------------------
--- Table `ticngtest`.`news`
+-- Table `news`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `ticngtest`.`news` (
+CREATE  TABLE IF NOT EXISTS `news` (
   `news` INT(11) NOT NULL AUTO_INCREMENT ,
   `sender_gala` INT(11) NOT NULL ,
   `sender_planet` INT(11) NOT NULL ,
@@ -343,7 +343,7 @@ CREATE  TABLE IF NOT EXISTS `ticngtest`.`news` (
   INDEX `fk_news_tic_user` (`sender_planet` ASC, `sender_gala` ASC) ,
   CONSTRAINT `fk_news_tic_user`
     FOREIGN KEY (`sender_planet` , `sender_gala` )
-    REFERENCES `ticngtest`.`tic_user` (`planet` , `gala` )
+    REFERENCES `tic_user` (`planet` , `gala` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -353,9 +353,9 @@ COLLATE = latin1_german1_ci;
 
 
 -- -----------------------------------------------------
--- Table `ticngtest`.`news_read`
+-- Table `news_read`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `ticngtest`.`news_read` (
+CREATE  TABLE IF NOT EXISTS `news_read` (
   `news` INT(11) NOT NULL ,
   `gala` INT(11) NOT NULL ,
   `planet` INT(11) NOT NULL ,
@@ -364,12 +364,12 @@ CREATE  TABLE IF NOT EXISTS `ticngtest`.`news_read` (
   INDEX `fk_news_read_news` (`news` ASC) ,
   CONSTRAINT `fk_news_read_TICUser`
     FOREIGN KEY (`planet` , `gala` )
-    REFERENCES `ticngtest`.`tic_user` (`planet` , `gala` )
+    REFERENCES `tic_user` (`planet` , `gala` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_news_read_news`
     FOREIGN KEY (`news` )
-    REFERENCES `ticngtest`.`news` (`news` )
+    REFERENCES `news` (`news` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -378,9 +378,9 @@ COLLATE = latin1_german1_ci;
 
 
 -- -----------------------------------------------------
--- Table `ticngtest`.`role_capability`
+-- Table `role_capability`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `ticngtest`.`role_capability` (
+CREATE  TABLE IF NOT EXISTS `role_capability` (
   `role` INT(11) NOT NULL ,
   `capability` INT(11) NOT NULL ,
   `allowed` TINYINT(1) NOT NULL DEFAULT '0' ,
@@ -388,7 +388,7 @@ CREATE  TABLE IF NOT EXISTS `ticngtest`.`role_capability` (
   INDEX `fk_role_capability_role` (`role` ASC) ,
   CONSTRAINT `fk_role_capability_role`
     FOREIGN KEY (`role` )
-    REFERENCES `ticngtest`.`role` (`role` )
+    REFERENCES `role` (`role` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -397,9 +397,9 @@ COLLATE = latin1_german1_ci;
 
 
 -- -----------------------------------------------------
--- Table `ticngtest`.`scan_block`
+-- Table `scan_block`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `ticngtest`.`scan_block` (
+CREATE  TABLE IF NOT EXISTS `scan_block` (
   `user_planet` INT(11) NOT NULL ,
   `user_gala` INT(11) NOT NULL ,
   `zeit` INT(10) NOT NULL ,
@@ -412,12 +412,12 @@ CREATE  TABLE IF NOT EXISTS `ticngtest`.`scan_block` (
   INDEX `fk_scan_block_GNPlayer` (`planet` ASC, `gala` ASC) ,
   CONSTRAINT `fk_scan_block_TICUser`
     FOREIGN KEY (`user_planet` , `user_gala` )
-    REFERENCES `ticngtest`.`tic_user` (`planet` , `gala` )
+    REFERENCES `tic_user` (`planet` , `gala` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_scan_block_GNPlayer`
     FOREIGN KEY (`planet` , `gala` )
-    REFERENCES `ticngtest`.`gnplayer` (`planet` , `gala` )
+    REFERENCES `gnplayer` (`planet` , `gala` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -426,9 +426,9 @@ COLLATE = latin1_german1_ci;
 
 
 -- -----------------------------------------------------
--- Table `ticngtest`.`scan_header`
+-- Table `scan_header`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `ticngtest`.`scan_header` (
+CREATE  TABLE IF NOT EXISTS `scan_header` (
   `scan` INT(11) NOT NULL AUTO_INCREMENT ,
   `time` INT(10) NOT NULL DEFAULT '-1' ,
   `percent` INT(3) NOT NULL DEFAULT '-1' ,
@@ -443,12 +443,12 @@ CREATE  TABLE IF NOT EXISTS `ticngtest`.`scan_header` (
   INDEX `fk_scan_header_gnplayer` (`ziel_planet` ASC, `ziel_gala` ASC) ,
   CONSTRAINT `fk_scan_header_TICUser1`
     FOREIGN KEY (`scanner_planet` , `scanner_gala` )
-    REFERENCES `ticngtest`.`tic_user` (`planet` , `gala` )
+    REFERENCES `tic_user` (`planet` , `gala` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_scan_header_gnplayer`
     FOREIGN KEY (`ziel_planet` , `ziel_gala` )
-    REFERENCES `ticngtest`.`gnplayer` (`planet` , `gala` )
+    REFERENCES `gnplayer` (`planet` , `gala` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -458,9 +458,9 @@ COLLATE = latin1_german1_ci;
 
 
 -- -----------------------------------------------------
--- Table `ticngtest`.`scan_gesch`
+-- Table `scan_gesch`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `ticngtest`.`scan_gesch` (
+CREATE  TABLE IF NOT EXISTS `scan_gesch` (
   `scan` INT(11) NOT NULL ,
   `lo` INT(11) NOT NULL DEFAULT '-1' ,
   `lr` INT(11) NOT NULL DEFAULT '-1' ,
@@ -471,7 +471,7 @@ CREATE  TABLE IF NOT EXISTS `ticngtest`.`scan_gesch` (
   INDEX `fk_scan_gesch_scan_header` (`scan` ASC) ,
   CONSTRAINT `fk_scan_gesch_scan_header`
     FOREIGN KEY (`scan` )
-    REFERENCES `ticngtest`.`scan_header` (`scan` )
+    REFERENCES `scan_header` (`scan` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -480,9 +480,9 @@ COLLATE = latin1_german1_ci;
 
 
 -- -----------------------------------------------------
--- Table `ticngtest`.`scan_mili`
+-- Table `scan_mili`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `ticngtest`.`scan_mili` (
+CREATE  TABLE IF NOT EXISTS `scan_mili` (
   `scan` INT(11) NOT NULL ,
   `jaeger0` INT(11) NOT NULL DEFAULT '-1' ,
   `bomber0` INT(11) NOT NULL DEFAULT '-1' ,
@@ -519,7 +519,7 @@ CREATE  TABLE IF NOT EXISTS `ticngtest`.`scan_mili` (
   INDEX `fk_scan_mili_scan_header` (`scan` ASC) ,
   CONSTRAINT `fk_scan_mili_scan_header`
     FOREIGN KEY (`scan` )
-    REFERENCES `ticngtest`.`scan_header` (`scan` )
+    REFERENCES `scan_header` (`scan` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -528,9 +528,9 @@ COLLATE = latin1_german1_ci;
 
 
 -- -----------------------------------------------------
--- Table `ticngtest`.`scan_news`
+-- Table `scan_news`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `ticngtest`.`scan_news` (
+CREATE  TABLE IF NOT EXISTS `scan_news` (
   `scan` INT(11) NOT NULL ,
   `type` INT(11) NOT NULL DEFAULT '-1' ,
   `gala` INT(11) NOT NULL ,
@@ -543,12 +543,12 @@ CREATE  TABLE IF NOT EXISTS `ticngtest`.`scan_news` (
   INDEX `fk_scan_news_GNPlayer` (`planet` ASC, `gala` ASC) ,
   CONSTRAINT `fk_scan_news_scan_header`
     FOREIGN KEY (`scan` )
-    REFERENCES `ticngtest`.`scan_header` (`scan` )
+    REFERENCES `scan_header` (`scan` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_scan_news_GNPlayer`
     FOREIGN KEY (`planet` , `gala` )
-    REFERENCES `ticngtest`.`gnplayer` (`planet` , `gala` )
+    REFERENCES `gnplayer` (`planet` , `gala` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -557,9 +557,9 @@ COLLATE = latin1_german1_ci;
 
 
 -- -----------------------------------------------------
--- Table `ticngtest`.`scan_sek`
+-- Table `scan_sek`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `ticngtest`.`scan_sek` (
+CREATE  TABLE IF NOT EXISTS `scan_sek` (
   `scan` INT(11) NOT NULL ,
   `punkte` INT(11) NOT NULL DEFAULT '-1' ,
   `schiffe` INT(11) NOT NULL DEFAULT '-1' ,
@@ -571,7 +571,7 @@ CREATE  TABLE IF NOT EXISTS `ticngtest`.`scan_sek` (
   INDEX `fk_scan_sek_scan_header` (`scan` ASC) ,
   CONSTRAINT `fk_scan_sek_scan_header`
     FOREIGN KEY (`scan` )
-    REFERENCES `ticngtest`.`scan_header` (`scan` )
+    REFERENCES `scan_header` (`scan` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -580,9 +580,9 @@ COLLATE = latin1_german1_ci;
 
 
 -- -----------------------------------------------------
--- Table `ticngtest`.`scan_unit`
+-- Table `scan_unit`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `ticngtest`.`scan_unit` (
+CREATE  TABLE IF NOT EXISTS `scan_unit` (
   `scan` INT(11) NOT NULL ,
   `jaeger` INT(11) NOT NULL DEFAULT '-1' ,
   `bomber` INT(11) NOT NULL DEFAULT '-1' ,
@@ -597,7 +597,7 @@ CREATE  TABLE IF NOT EXISTS `ticngtest`.`scan_unit` (
   INDEX `fk_scan_unit_scan_header` (`scan` ASC) ,
   CONSTRAINT `fk_scan_unit_scan_header`
     FOREIGN KEY (`scan` )
-    REFERENCES `ticngtest`.`scan_header` (`scan` )
+    REFERENCES `scan_header` (`scan` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -606,9 +606,9 @@ COLLATE = latin1_german1_ci;
 
 
 -- -----------------------------------------------------
--- Table `ticngtest`.`sql_error`
+-- Table `sql_error`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `ticngtest`.`sql_error` (
+CREATE  TABLE IF NOT EXISTS `sql_error` (
   `module` VARCHAR(20) NOT NULL ,
   `sql_exec` TEXT NOT NULL ,
   `sql_orig` TEXT NOT NULL ,
@@ -620,9 +620,9 @@ COLLATE = latin1_german1_ci;
 
 
 -- -----------------------------------------------------
--- Table `ticngtest`.`taktik_update`
+-- Table `taktik_update`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `ticngtest`.`taktik_update` (
+CREATE  TABLE IF NOT EXISTS `taktik_update` (
   `id` INT(11) NOT NULL AUTO_INCREMENT ,
   `user_gala` INT(11) NULL ,
   `user_planet` INT(11) NULL ,
@@ -633,12 +633,12 @@ CREATE  TABLE IF NOT EXISTS `ticngtest`.`taktik_update` (
   INDEX `fk_TaktikUpdate_TICUser` (`user_planet` ASC, `user_gala` ASC) ,
   CONSTRAINT `fk_TaktikUpdate_Galaxie`
     FOREIGN KEY (`galaxie` )
-    REFERENCES `ticngtest`.`galaxie` (`gala` )
+    REFERENCES `galaxie` (`gala` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_TaktikUpdate_TICUser`
     FOREIGN KEY (`user_planet` , `user_gala` )
-    REFERENCES `ticngtest`.`tic_user` (`planet` , `gala` )
+    REFERENCES `tic_user` (`planet` , `gala` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB

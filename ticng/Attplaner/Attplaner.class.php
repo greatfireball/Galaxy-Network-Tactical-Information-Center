@@ -168,18 +168,18 @@ class Attplaner extends TICModule
 			  `flotte` INT(1) NOT NULL ,
 			  `planet` INT(11) NOT NULL ,
 			  `gala` INT(11) NOT NULL ,
-			  `ziele_id` INT(11) NOT NULL ,
-			  UNIQUE INDEX `ziel_id` (`flotte` ASC, `planet` ASC, `gala` ASC, `ziele_id` ASC) ,
-			  PRIMARY KEY (`planet`, `gala`, `ziele_id`) ,
+			  `ziel_id` INT(11) NOT NULL ,
+			  UNIQUE INDEX `ziel_id` (`flotte` ASC, `planet` ASC, `gala` ASC, `ziel_id` ASC) ,
+			  PRIMARY KEY (`planet`, `gala`, `ziel_id`) ,
 			  INDEX `fk_Attplaner_flotten_TICUser` (`planet` ASC, `gala` ASC) ,
-			  INDEX `fk_Attplaner_flotten_Attplaner_ziele` (`ziele_id` ASC) ,
+			  INDEX `fk_Attplaner_flotten_Attplaner_ziele` (`ziel_id` ASC) ,
 			  CONSTRAINT `fk_Attplaner_flotten_TICUser`
 			    FOREIGN KEY (`planet` , `gala` )
 			    REFERENCES `tic_user` (`planet` , `gala` )
 			    ON DELETE NO ACTION
 			    ON UPDATE NO ACTION,
 			  CONSTRAINT `fk_Attplaner_flotten_Attplaner_ziele`
-			    FOREIGN KEY (`ziele_id` )
+			    FOREIGN KEY (`ziel_id` )
 			    REFERENCES `attplaner_ziele` (`id` )
 			    ON DELETE NO ACTION
 			    ON UPDATE NO ACTION)
@@ -542,7 +542,7 @@ class Attplaner extends TICModule
     {
         global $tic;
 		//FIXME neue fehler quele da id nun ein array ist
-        $qry = "SELECT ziel_id, gala,planet, flotte FROM attplaner_flotten WHERE ziel_id = %s ORDER BY ticuser ASC";
+        $qry = "SELECT ziel_id, gala,planet, flotte FROM attplaner_flotten WHERE ziel_id = %s ORDER BY gala,planet";
         $rs = $tic->db->Execute($this->getName(), $qry, array($zielId));
         if (!$rs) { return false; }
         $array = array();
