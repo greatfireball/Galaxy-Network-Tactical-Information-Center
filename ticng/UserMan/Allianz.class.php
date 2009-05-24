@@ -177,6 +177,7 @@ class Allianz {
     public function getOnlineUserCount()
     {
         global $tic;
+        //FIXME flexiebel machen ?
         $min = 5;
         $qry = "SELECT count(*) FROM tic_user NATURAL JOIN galaxie WHERE allianz = %s AND (last_active + '5'*'.$min.') > now()";
         $rs = $tic->db->Execute(get_class($this), $qry, array($this->id));
