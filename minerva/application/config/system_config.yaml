@@ -1,0 +1,10 @@
+production:
+ 
+staging:
+  _extends: production
+ 
+testing:
+  _extends: production
+ 
+development:
+  _extends: production
