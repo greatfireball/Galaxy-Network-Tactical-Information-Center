@@ -2,7 +2,7 @@
 class SessionHandler {
 	private $handler = null;
 	public function __construct($handler = null) {
-		$this->handler = ServiceProvider::getInstance ()->getService ( 'NativeSessionsHandler' );
+		$this->handler = ServiceProvider::getInstance ()->getService ( 'SessionHandler' );
 		$this->handler->init ();
 	}
 	

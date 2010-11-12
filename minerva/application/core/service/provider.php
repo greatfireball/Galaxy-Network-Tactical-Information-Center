@@ -17,7 +17,7 @@ class ServiceProvider {
 	private function __clone() {
 	}
 	
-	public function loadConfig($ConfigPath) {
+	private function loadConfig($ConfigPath) {
 		if (! is_file ( $ConfigPath )) {
 			return;
 		}
@@ -34,6 +34,9 @@ class ServiceProvider {
 	 * :)
 	 */
 	public function getService($service_name) {
+		if (empty ( $this->config )) {
+			$this->loadConfig ( SERVICE_CONFIG );
+		}
 		if (empty ( $this->config [$service_name] )) {
 			return false;
 		}
@@ -42,7 +45,7 @@ class ServiceProvider {
 				return call_user_func_array ( array ($this->config [$service_name] ['class'], $this->config [$service_name] ['method'] ), $this->config [$service_name] ['args'] );
 			}
 			
-			if (false === method_exists ( $this->config [$service_name] ['class'], (! empty ( $this->config [$service_name] ['method'] ) ? $this->config [$service_name] ['method'] : '__construct'))) {
+			if (false === method_exists ( $this->config [$service_name] ['class'], (! empty ( $this->config [$service_name] ['method'] ) ? $this->config [$service_name] ['method'] : '__construct') )) {
 				exit ( "Constructor for the class <strong>$service_name</strong> does not exist, you should not pass arguments to the constructor of this class!" );
 			}
 			$refMethod = new ReflectionMethod ( $this->config [$service_name] ['class'], '__construct' );

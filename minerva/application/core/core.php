@@ -54,7 +54,8 @@ class Core {
 		}
 		return require_once (self::$AutoloaderPathcache [$classname]);
 	}
+	
+	/** * Autoloader Crap ends here */
 	static public function setupRoutes($route_file) {
 	}
-/** * Autoloader Crap ends here */
 }

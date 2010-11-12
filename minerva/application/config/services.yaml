@@ -7,7 +7,7 @@
 "SessionProvider":
   "class": "SessionHandler"
     
-"NativeSessionsHandler":
+"SessionHandler":
   "class": "NativeSessions"
 
 "SystemConfig":

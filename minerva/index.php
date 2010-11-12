@@ -9,13 +9,13 @@ define ( 'MODULE_PATH', APP_PATH . 'modules/' );
 define ( 'TEMPLATE_PATH', PUBLIC_PATH . 'templates/' );
 define ( 'MEDIA_PATH', PUBLIC_PATH . 'media/' );
 define ( 'DATA_PATH', APP_PATH . '/data/' );
+define ( 'SERVICE_CONFIG', CONFIG_PATH . 'services.yaml' );
 
 require_once CORE_PATH . '/core.php';
 require_once EXTERN_PATH . '/robap-php-router/php-router.php';
-Core::addAutoloaderPath ( APP_PATH );
-Core::generateAutoloaderConfigFile ();
+//Core::addAutoloaderPath ( APP_PATH );
+//Core::generateAutoloaderConfigFile ();
 spl_autoload_register ( 'Core::loadClass' );
 $ServiceProvider = ServiceProvider::getInstance ();
-$ServiceProvider->loadConfig ( CONFIG_PATH . 'services.yaml' );
 $sess = $ServiceProvider->getService ( 'SessionProvider' );
 $sess->set ( 'test', 'test' );
