@@ -1,9 +1,13 @@
 "DatabaseProvider":
-  "class": "dbFacile"
-  "method": "open"
-  "is_static": true 
-  "args": ["mysql", "minerva", "root", ""]
+  "class": "\Athene\Core\Database\Database"
+  "args": 
+    "dsn": "mysql://localhost/minerva"
+    "user": "sebi"
+    "pass": "blubb"
 
+"ORMapper":
+  "class": "Athene\Core\Database\ORM\Mapper"
+    
 "SessionProvider":
   "class": "\Athene\Core\Session\SessionHandler"
     
@@ -11,8 +15,11 @@
   "class": "\Athene\Core\Session\Handlers\NativeSessions"
 
 "SystemConfig":
-  "class": "Zend_Config_Yaml"
+  "class": "\Zend_Config_Yaml"
   "args": 
     "yaml": "CHANGE_ME", 
     "section": "development", 
     "options": "yaml_decoder": ["sfYaml", "load"]
+    
+"YAMLProvider":
+  "class": "\sfYamlParser"

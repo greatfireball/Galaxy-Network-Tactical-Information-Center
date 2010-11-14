@@ -1,4 +1,7 @@
 <?php
+
+namespace Athene\Core;
+
 class Core {
 	private static $AutoloaderScanpaths = array ();
 	private static $AutoloaderPathcache = array ();
@@ -16,7 +19,7 @@ class Core {
 		}
 		foreach ( self::$AutoloaderScanpaths as $paths ) {
 			$path = realpath ( $paths );
-			$objects = new RecursiveIteratorIterator ( new RecursiveDirectoryIterator ( $path ) );
+			$objects = new \RecursiveIteratorIterator ( new \RecursiveDirectoryIterator ( $path ) );
 			foreach ( $objects as $name => $object ) {
 				if (strstr ( $name, '.php' )) {
 					$_tokens = token_get_all ( file_get_contents ( $name ) );
@@ -39,7 +42,7 @@ class Core {
 		}
 		$file = '<?php $pathcache = array();';
 		foreach ( self::$AutoloaderPathcache as $class => $path ) {
-			$file .= sprintf ( 'Core::$AutoloaderPathcache[ \'%s\'] = \'%s\';', $class, str_replace ( '\\', '/', $path ) );
+			$file .= sprintf ( '\Athene\Core\Core::$AutoloaderPathcache[ \'%s\'] = \'%s\';', $class, str_replace ( '\\', '/', $path ) );
 		}
 		$file .= '?>';
 		file_put_contents ( CONFIG_PATH . 'autoloader.php', $file );

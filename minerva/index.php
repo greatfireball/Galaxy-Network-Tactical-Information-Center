@@ -12,10 +12,10 @@ define ( 'DATA_PATH', APP_PATH . '/data/' );
 define ( 'SERVICE_CONFIG', CONFIG_PATH . 'services.yaml' );
 
 require_once CORE_PATH . '/core.php';
-require_once EXTERN_PATH . '/robap-php-router/php-router.php';
-//Core::addAutoloaderPath ( APP_PATH );
-//Core::generateAutoloaderConfigFile ();
-spl_autoload_register ( 'Core::loadClass' );
+//\Athene\Core\Core::addAutoloaderPath ( APP_PATH );
+//\Athene\Core\Core::generateAutoloaderConfigFile ();
+spl_autoload_register ( '\Athene\Core\Core::loadClass' );
 $ServiceProvider = Athene\Core\Service\ServiceProvider::getInstance ();
-$sess = $ServiceProvider->getService ( 'SessionProvider' );
-$sess->set ( 'test', 'test' );
+$grp_perm = $ServiceProvider->getService ('ORMapper', array('table'=>'group_permissions') );
+echo '<pre>';
+print_r($grp_perm);
