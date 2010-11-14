@@ -5,10 +5,10 @@
   "args": ["mysql", "minerva", "root", ""]
 
 "SessionProvider":
-  "class": "SessionHandler"
+  "class": "\Athene\Core\Session\SessionHandler"
     
 "SessionHandler":
-  "class": "NativeSessions"
+  "class": "\Athene\Core\Session\Handlers\NativeSessions"
 
 "SystemConfig":
   "class": "Zend_Config_Yaml"

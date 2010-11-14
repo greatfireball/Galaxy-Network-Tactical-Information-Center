@@ -1,5 +1,7 @@
 <?php
-class NativeSessions implements iSessionHandler {
+namespace Athene\Core\Session\Handlers;
+
+class NativeSessions implements \Athene\Core\Session\Interfaces\iSessionHandler {
 	public function init() {
 		session_start ();
 	}

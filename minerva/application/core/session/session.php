@@ -1,8 +1,10 @@
 <?php
+namespace Athene\Core\Session;
+
 class SessionHandler {
 	private $handler = null;
 	public function __construct($handler = null) {
-		$this->handler = ServiceProvider::getInstance ()->getService ( 'SessionHandler' );
+		$this->handler = \Athene\Core\Service\ServiceProvider::getInstance ()->getService ( 'SessionHandler' );
 		$this->handler->init ();
 	}
 	

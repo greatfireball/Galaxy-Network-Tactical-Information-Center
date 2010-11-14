@@ -1,4 +1,6 @@
 <?php
+namespace Athene\Core\Service;
+
 class ServiceProvider {
 	
 	private static $config = array ();
@@ -22,9 +24,9 @@ class ServiceProvider {
 			return;
 		}
 		try {
-			$yaml = new sfYamlParser ();
+			$yaml = new \sfYamlParser ();
 			$this->config = $yaml->parse ( file_get_contents ( $ConfigPath ) );
-		} catch ( InvalidArgumentException $e ) {
+		} catch ( \InvalidArgumentException $e ) {
 			echo "Unable to parse the YAML string: " . $e->getMessage ();
 		}
 	}
@@ -48,16 +50,16 @@ class ServiceProvider {
 			if (false === method_exists ( $this->config [$service_name] ['class'], (! empty ( $this->config [$service_name] ['method'] ) ? $this->config [$service_name] ['method'] : '__construct') )) {
 				exit ( "Constructor for the class <strong>$service_name</strong> does not exist, you should not pass arguments to the constructor of this class!" );
 			}
-			$refMethod = new ReflectionMethod ( $this->config [$service_name] ['class'], '__construct' );
+			$refMethod = new \ReflectionMethod ( $this->config [$service_name] ['class'], '__construct' );
 			$params = $refMethod->getParameters ();
 			$re_args = array ();
 			foreach ( $this->config [$service_name] ['args'] as $key => $param ) {
 				$re_args [$key] = $this->config [$service_name] ['args'] [$key];
 			}
-			$refClass = new ReflectionClass ( $this->config [$service_name] ['class'] );
+			$refClass = new \ReflectionClass ( $this->config [$service_name] ['class'] );
 			return $refClass->newInstanceArgs ( ( array ) $re_args );
 		} else {
-			$refClass = new ReflectionClass ( $this->config [$service_name] ['class'] );
+			$refClass = new \ReflectionClass ( $this->config [$service_name] ['class'] );
 			return $refClass->newInstanceArgs ();
 		}
 	}

@@ -46,13 +46,21 @@ class Core {
 	}
 	
 	static public function loadClass($classname) {
+		
 		if (0 === count ( self::$AutoloaderPathcache )) {
 			require_once (CONFIG_PATH . 'autoloader.php');
 		}
-		if (empty ( self::$AutoloaderPathcache [$classname] )) {
+		if (stristr ( $classname, '\\' )) {
+			$class = explode ( '\\', $classname );
+			$class = $class [count ( $class )-1];
+		} else {
+			$class = $classname;
+		}
+		
+		if (empty ( self::$AutoloaderPathcache [$class] )) {
 			return false;
 		}
-		return require_once (self::$AutoloaderPathcache [$classname]);
+		return require_once (self::$AutoloaderPathcache [$class]);
 	}
 	
 	/** * Autoloader Crap ends here */

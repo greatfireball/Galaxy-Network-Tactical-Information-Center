@@ -1,4 +1,6 @@
 <?php
+namespace \Athene\Core\Logging;
+
 class Logger
 {
 	private $foo;

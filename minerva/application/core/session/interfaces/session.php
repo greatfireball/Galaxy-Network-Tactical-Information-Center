@@ -1,4 +1,6 @@
 <?php
+namespace Athene\Core\Session\Interfaces;
+
 interface iSessionHandler {
 	public function init();
 	public function get($key = null);

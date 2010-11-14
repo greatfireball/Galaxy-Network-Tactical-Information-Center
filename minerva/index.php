@@ -16,6 +16,6 @@ require_once EXTERN_PATH . '/robap-php-router/php-router.php';
 //Core::addAutoloaderPath ( APP_PATH );
 //Core::generateAutoloaderConfigFile ();
 spl_autoload_register ( 'Core::loadClass' );
-$ServiceProvider = ServiceProvider::getInstance ();
+$ServiceProvider = Athene\Core\Service\ServiceProvider::getInstance ();
 $sess = $ServiceProvider->getService ( 'SessionProvider' );
 $sess->set ( 'test', 'test' );
