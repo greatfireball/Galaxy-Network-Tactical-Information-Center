@@ -5,21 +5,21 @@
             $error_code = 5;
         else {
             if (!isset($_POST['lstCode'])) $_POST['lstCode'] = 0;
-            $SQL_Result = mysql_query('UPDATE `gn4allianzen` SET code="'.$_POST['lstCode'].'" WHERE id="'.$Benutzer['allianz'].'";', $SQL_DBConn) or $error_code = 7;
+            $SQL_Result = tic_mysql_query('UPDATE `gn4allianzen` SET code="'.$_POST['lstCode'].'" WHERE id="'.$Benutzer['allianz'].'";', $SQL_DBConn) or $error_code = 7;
             if (isset($_POST['txtBNDs'])){
-			$SQL_Result = mysql_query('UPDATE `gn4allianzen` SET info_bnds="'.$_POST['txtBNDs'].'" WHERE id="'.$Benutzer['allianz'].'";', $SQL_DBConn) or $error_code = 7;
+			$SQL_Result = tic_mysql_query('UPDATE `gn4allianzen` SET info_bnds="'.$_POST['txtBNDs'].'" WHERE id="'.$Benutzer['allianz'].'";', $SQL_DBConn) or $error_code = 7;
 			}
             if (isset($_POST['txtNAPs'])){
-			$SQL_Result = mysql_query('UPDATE `gn4allianzen` SET info_naps="'.$_POST['txtNAPs'].'" WHERE id="'.$Benutzer['allianz'].'";', $SQL_DBConn) or $error_code = 7;
+			$SQL_Result = tic_mysql_query('UPDATE `gn4allianzen` SET info_naps="'.$_POST['txtNAPs'].'" WHERE id="'.$Benutzer['allianz'].'";', $SQL_DBConn) or $error_code = 7;
 	}
             if (isset($_POST['txtInoffizielleNAPs'])){
-            $SQL_Result = mysql_query('UPDATE `gn4allianzen` SET info_inoffizielle_naps="'.$_POST['txtInoffizielleNAPs'].'" WHERE id="'.$Benutzer['allianz'].'";', $SQL_DBConn) or $error_code = 7;
+            $SQL_Result = tic_mysql_query('UPDATE `gn4allianzen` SET info_inoffizielle_naps="'.$_POST['txtInoffizielleNAPs'].'" WHERE id="'.$Benutzer['allianz'].'";', $SQL_DBConn) or $error_code = 7;
           }
             if (isset($_POST['txtKriege'])){
-            $SQL_Result = mysql_query('UPDATE `gn4allianzen` SET info_kriege="'.$_POST['txtKriege'].'" WHERE id="'.$Benutzer['allianz'].'";', $SQL_DBConn) or $error_code = 7;
+            $SQL_Result = tic_mysql_query('UPDATE `gn4allianzen` SET info_kriege="'.$_POST['txtKriege'].'" WHERE id="'.$Benutzer['allianz'].'";', $SQL_DBConn) or $error_code = 7;
           }
           if (isset($_POST['txtGalas'])){
-            $SQL_Result = mysql_query('UPDATE `gn4allianzen` SET galalist="'.$_POST['txtGalas'].'" WHERE id="'.$Benutzer['allianz'].'";', $SQL_DBConn) or $error_code = 7;
+            $SQL_Result = tic_mysql_query('UPDATE `gn4allianzen` SET galalist="'.$_POST['txtGalas'].'" WHERE id="'.$Benutzer['allianz'].'";', $SQL_DBConn) or $error_code = 7;
           }
 
             $AllianzInfo[$Benutzer['allianz']]['code'] = $_POST['lstCode'];

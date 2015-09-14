@@ -12,16 +12,16 @@
 	}
 ?>
 			        <FORM ACTION="./main.php" METHOD="POST">
-					<INPUT TYPE="hidden" NAME="modul" VALUE="profil">
-					<INPUT TYPE="hidden" NAME="action" VALUE="passwortaendern">
+					<INPUT TYPE="hidden" NAME="modul" VALUE="profil" />
+					<INPUT TYPE="hidden" NAME="action" VALUE="passwortaendern" />
 					<TABLE>
 						<TR>
-							<TD>neues Passwort:</TD>
-							<TD><INPUT TYPE="text" NAME="txtChPasswort" MAXLENGTH=50></TD>
+							<TD VALIGN="top">neues Passwort (2x):</TD>
+							<TD><INPUT TYPE="password" NAME="txtChPasswort" MAXLENGTH=50><br><INPUT TYPE="password" NAME="txtChPasswort_p" MAXLENGTH=50 /></TD>
 						</TR>
 						<TR>
 							<TD></TD>
-							<TD><INPUT TYPE="submit" VALUE="Passwort ändern"></TD>
+							<TD><INPUT TYPE="submit" VALUE="Passwort ändern" /></TD>
             					</TR>
 					</TABLE>
 				</FORM>

@@ -16,7 +16,7 @@
 
     $sql = 'UPDATE `gn4accounts` SET tcausw="'.$newtc.'" WHERE id='.$_GET['id'];
     if ( $sql != '' ){
-        $SQL_result = mysql_query( $sql, $SQL_DBConn);
+        $SQL_result = tic_mysql_query( $sql, $SQL_DBConn);
     }
     $Benutzer['tcausw']=$newtc;
 

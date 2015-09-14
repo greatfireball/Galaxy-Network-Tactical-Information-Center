@@ -18,12 +18,12 @@
     $SQL_DBConn = mysql_connect($db_info['host'], $db_info['user'], $db_info['password']) or die('mysql con failed!');
     mysql_select_db($db_info['dbname'], $SQL_DBConn) or die('db selection failed!');
 
-    $SQL_Result0 = mysql_query('SELECT name, value FROM `gn4vars` WHERE name="botpw";', $SQL_DBConn);
+    $SQL_Result0 = tic_mysql_query('SELECT name, value FROM `gn4vars` WHERE name="botpw";', $SQL_DBConn);
 
 
 
     if (!isset($_GET['passwort'])) $_GET['passwort'] = '';
-    $SQL_Result0 = mysql_query('SELECT name, value FROM `gn4vars` WHERE name="botpw" AND value="'.$_GET['passwort'].'";', $SQL_DBConn);
+    $SQL_Result0 = tic_mysql_query('SELECT name, value FROM `gn4vars` WHERE name="botpw" AND value="'.$_GET['passwort'].'";', $SQL_DBConn);
 
     if (mysql_num_rows($SQL_Result0) != 1) die('Incorrect password');
 
@@ -95,20 +95,20 @@
     }
 
     if ( $d_typ==1 and $reverse == 1 ){
-        $SQL_Resultx = mysql_query( 'select deff from `gn4accounts` where galaxie="'.$_GET['zielgala'].'" and planet="'.$_GET['zielsek'].'" and ticid="'.$ticid.'"', $SQL_DBConn) or die('<br>mist - n db-error!!!');
+        $SQL_Resultx = tic_mysql_query( 'select deff from `gn4accounts` where galaxie="'.$_GET['zielgala'].'" and planet="'.$_GET['zielsek'].'" and ticid="'.$ticid.'"', $SQL_DBConn) or die('<br>mist - n db-error!!!');
         if (  mysql_num_rows($SQL_Resultx) > 0 ) {
-            $SQL_Resultx = mysql_query( 'select id from `gn4flottenbewegungen` where verteidiger_galaxie="'.$_GET['zielgala'].'" and verteidiger_planet="'.$_GET['zielsek'].'" and flottennr="'.$_GET['flotte'].'" and ticid="'.$ticid.'"', $SQL_DBConn) or die('<br>mist - n db-error!!!');
+            $SQL_Resultx = tic_mysql_query( 'select id from `gn4flottenbewegungen` where verteidiger_galaxie="'.$_GET['zielgala'].'" and verteidiger_planet="'.$_GET['zielsek'].'" and flottennr="'.$_GET['flotte'].'" and ticid="'.$ticid.'"', $SQL_DBConn) or die('<br>mist - n db-error!!!');
             if (  mysql_num_rows($SQL_Resultx) == 0 ) {
                 /* noch kein eintrag drin */
-                mysql_query('UPDATE `gn4accounts` SET deff=1 WHERE where galaxie="'.$_GET['zielgala'].'" and planet="'.$_GET['zielsek'].'" and ticid="'.$ticid.'"', $SQL_DBConn) or die('<br>mist - n db-error!!!');
+                tic_mysql_query('UPDATE `gn4accounts` SET deff=1 WHERE where galaxie="'.$_GET['zielgala'].'" and planet="'.$_GET['zielsek'].'" and ticid="'.$ticid.'"', $SQL_DBConn) or die('<br>mist - n db-error!!!');
             }
         }
 
     }
 
     $delcommand = 'DELETE FROM `gn4flottenbewegungen` WHERE flottennr='.$_GET['flotte'].' and angreifer_galaxie='.$von_gala.' and angreifer_planet='.$von_planet.' and ticid='.$ticid.'';
-    $SQL_Result = mysql_query( $delcommand, $SQL_DBConn) or die('<br>mist - n db-error!!!');
-    $SQL_Result = mysql_query( $setcmd, $SQL_DBConn)or die("dberror d<br>");
+    $SQL_Result = tic_mysql_query( $delcommand, $SQL_DBConn) or die('<br>mist - n db-error!!!');
+    $SQL_Result = tic_mysql_query( $setcmd, $SQL_DBConn)or die("dberror d<br>");
 ?>
 </body>
 </html>

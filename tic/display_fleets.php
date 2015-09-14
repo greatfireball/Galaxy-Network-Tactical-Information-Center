@@ -52,7 +52,7 @@
                     $eg = explode( ':', $ef[0] );
 
                     $sql = 'SELECT sf'.$ef[1].'j ,sf'.$ef[1].'b ,sf'.$ef[1].'f ,sf'.$ef[1].'z ,sf'.$ef[1].'kr ,sf'.$ef[1].'sa ,sf'.$ef[1].'t ,sf'.$ef[1].'ka ,sf'.$ef[1].'su FROM `gn4scans` WHERE rg="'.$eg[0].'" and rp="'.$eg[1].'" and type=2';
-                    $SQL_Result2 = mysql_query( $sql, $SQL_DBConn );
+                    $SQL_Result2 = tic_mysql_query( $sql, $SQL_DBConn );
                     if ( mysql_num_rows($SQL_Result2) == 0 ) {
                         $ja     = 0;
                         $bo     = 0;

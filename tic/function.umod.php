@@ -6,7 +6,7 @@
         if ($_POST['UModID'] == '') {
             $error_code = 6;
         } else {
-            $SQL_Result = mysql_query('UPDATE `gn4accounts` SET umod="'.$_POST['txtUModZeit'].'" WHERE id="'.$_POST['UModID'].'"', $SQL_DBConn) or $error_code = 7;
+            $SQL_Result = tic_mysql_query('UPDATE `gn4accounts` SET umod="'.$_POST['txtUModZeit'].'" WHERE id="'.$_POST['UModID'].'"', $SQL_DBConn) or $error_code = 7;
             if ($error_code == 0 && $Benutzer['id'] == $_POST['UModID']) $Benutzer['umod'] = $_POST['txtUModZeit'];
         }
     }

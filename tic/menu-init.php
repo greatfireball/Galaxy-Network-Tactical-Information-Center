@@ -24,7 +24,7 @@ include('./accdata.php' );
     // Variablen laden
     include('./vars.php');
 
-    $SQL_Result = mysql_query('SELECT * FROM `gn4accounts` WHERE id="'.$_SESSION['userid'].'";', $SQL_DBConn) or $error_code = 4;
+    $SQL_Result = tic_mysql_query('SELECT * FROM `gn4accounts` WHERE id="'.$_SESSION['userid'].'";', $SQL_DBConn) or $error_code = 4;
     if (mysql_num_rows($SQL_Result) != 0) {
             // Nameinfos setzen
             $Benutzer['id'] = mysql_result($SQL_Result, 0, 'id');
@@ -37,13 +37,13 @@ include('./accdata.php' );
             $Benutzer['umod'] = mysql_result($SQL_Result, 0, 'umod');
             $Benutzer['tcausw']=mysql_result($SQL_Result, 0, 'tcausw');
 
-            $SQL_Result2 = mysql_query('SELECT blind FROM `gn4allianzen` WHERE id="'.$Benutzer['allianz'].'";', $SQL_DBConn);
+            $SQL_Result2 = tic_mysql_query('SELECT blind FROM `gn4allianzen` WHERE id="'.$Benutzer['allianz'].'";', $SQL_DBConn);
             if (mysql_num_rows($SQL_Result2) != 1) {
                 $Benutzer['blind'] = 1;
             } else {
                 $Benutzer['blind'] = mysql_result($SQL_Result2, 0, 'blind');
             }
-            $SQL_Result = mysql_query('UPDATE `gn4accounts` SET lastlogin="'.date("Y").'-'.date("m").'-'.date("d").'" WHERE id="'.$Benutzer['id'].'";', $SQL_DBConn) or $error_code = 7;
+            $SQL_Result = tic_mysql_query('UPDATE `gn4accounts` SET lastlogin="'.date("Y").'-'.date("m").'-'.date("d").'" WHERE id="'.$Benutzer['id'].'";', $SQL_DBConn) or $error_code = 7;
     } else {
         echo 'Nicht Eingelogt';
         exit;

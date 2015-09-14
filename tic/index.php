@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Tactical Information Center [v1.13.1]</title>
+<title>Tactical Information Center [v1.14.2]</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
 <style type="text/css">

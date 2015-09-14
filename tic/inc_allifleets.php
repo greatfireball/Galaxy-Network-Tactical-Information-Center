@@ -3,208 +3,208 @@
 	$allianz = isset($_GET['allianz'])?$_GET['allianz']:$Benutzer['allianz'];
 ?>
 <center>
-	<font size="+2">Allianz-Flotten&uuml;bersicht</font><br>
+	<h2>Allianz-Flotten&uuml;bersicht</h2>
 <?php
 	if (isset($_GET['metanr'])) $_SESSION['metanr'] = $_GET['metanr'];
-	if (!isset($_SESSION['metanr'])) $_SESSION['metanr'] = $Benutzer['ticid'];
+	else if (!isset($_SESSION['metanr'])) $_SESSION['metanr'] = $Benutzer['ticid'];
 	$SQL_Query = "SELECT * FROM gn4vars WHERE name='ticeb' ORDER BY value;";
-	$SQL_Result_metas = mysql_query($SQL_Query, $SQL_DBConn) or $error_code = 4;
+	$SQL_Result_metas = tic_mysql_query($SQL_Query, $SQL_DBConn) or $error_code = 4;
 	for ($m=0; $m<mysql_num_rows($SQL_Result_metas); $m++) {
 		$MetaNummer = mysql_result($SQL_Result_metas, $m, 'ticid');
 		$MetaName = mysql_result($SQL_Result_metas, $m, 'value');
 		if ($MetaNummer == $_SESSION['metanr'])
-			echo "		&nbsp;<font size=\"+1\"><b><nobr>".$MetaName."<nobr></font></b>&nbsp;\n";
+			echo "<h2>".$MetaName."</h2>\n";
 		else
-			echo "		&nbsp;<a href=\"./main.php?modul=allifleets&metanr=".$MetaNummer."\"><nobr> ".$MetaName." <nobr></a>&nbsp;\n";
+			echo "<h2><a href=\"./main.php?modul=allifleets&metanr=".$MetaNummer."\">".$MetaName."</a></h2>\n";
 	}
 	mysql_free_result($SQL_Result_metas);
-
-	echo "		<br>\n";
 	foreach ($AllianzName as $AllianzNummer => $AllianzNummerName) {
 		if ($AllianzInfo[$AllianzNummer]['meta'] == $_SESSION['metanr']) {
 			if ($AllianzInfo[$allianz]['meta'] != $_SESSION['metanr']) $allianz = $AllianzNummer;
 			if ($AllianzNummer == $allianz)
-				echo "	&nbsp;<font size=\"+1\"><b><nobr>[ ".$AllianzInfo[$AllianzNummer]['tag']." ] ".$AllianzNummerName."<nobr></font></b>&nbsp;\n";
+				echo "<h3>[ ".$AllianzInfo[$AllianzNummer]['tag']." ] ".$AllianzNummerName."</h3>\n";
 			else
-				echo "	&nbsp;<a href=\"./main.php?modul=allifleets&allianz=".$AllianzNummer."\"><nobr>[ ".$AllianzTag[$AllianzNummer]." ]<nobr></a>&nbsp;\n";
+				echo "<h3><a href=\"./main.php?modul=allifleets&allianz=".$AllianzNummer."\">[ ".$AllianzTag[$AllianzNummer]." ]</h3>\n";
 		}
 	}
 ?>
-	<br><br>
-	<table border="0" cellspacing="2" cellpadding="1" width="100%" bgcolor="#BBBBBB">
+	<table width="100%">
 		<colgroup>
-			<col width="55">
-			<col width="*">
-			<col width="6%">
-			<col width="6%">
-			<col width="5%">
-			<col width="5%">
-			<col width="6%">
-			<col width="6%">
-			<col width="6%">
-			<col width="6%">
-			<col width="5%">
-			<col width="5%">
-			<col width="5%">
-			<col width="5%">
-			<col width="6%">
-			<col width="6%">
+			<col width="55" />
+			<col width="*" />
+			<col width="6%" />
+			<col width="6%" />
+			<col width="5%" />
+			<col width="5%" />
+			<col width="6%" />
+			<col width="6%" />
+			<col width="6%" />
+			<col width="6%" />
+			<col width="5%" />
+			<col width="5%" />
+			<col width="5%" />
+			<col width="5%" />
+			<col width="6%" />
+			<col width="6%" />
 		</colgroup>
-		<tr bgcolor="#666666">
-			<th><font size="-1" color="#FFFFFF">Sektor</font></td>
-			<th><font size="-1" color="#FFFFFF">Name</font></td>
-			<th colspan="5"><font size="-1" color="#FFFFFF">Deffensiv</font></td>
-			<th colspan="9"><font size="-1" color="#FFFFFF">Offensiv</font></td>
+		<tr class="datatablehead">
+			<th>Sektor</th>
+			<th>Name</th>
+			<th colspan="5">Deffensiv</th>
+			<th colspan="9">Offensiv</th>
 		</tr>
-		<tr bgcolor="#444444">
+		<tr class="datatablehead">
 			<th>&nbsp;</th>
 			<th>&nbsp;</th>
-			<th><font size="-2" color="#eeeeee" title="leichtes Orbitalgesch&uuml;tz">LO</font></th>
-			<th><font size="-2" color="#eeeeee" title="leichtes Raumgesch&uuml;tz">LR</font></th>
-			<th><font size="-2" color="#eeeeee" title="mittleres Raumgesch&uuml;tz">MR</font></th>
-			<th><font size="-2" color="#eeeeee" title="schweres Raumgesch&uuml;tz">SR</font></th>
-			<th><font size="-2" color="#eeeeee" title="Abfangj&auml;ger">AJ</font></th>
-			<th><font size="-2" color="#eeeeee" title="J&auml;ger">J&auml;</font></th>
-			<th><font size="-2" color="#eeeeee" title="Bomber">Bo</font></th>
-			<th><font size="-2" color="#eeeeee" title="Fregatten">Fr</font></th>
-			<th><font size="-2" color="#eeeeee" title="Zerst&ouml;rer">Ze</font></th>
-			<th><font size="-2" color="#eeeeee" title="Kreuzer">Kr</font></th>
-			<th><font size="-2" color="#eeeeee" title="Schlachtschiffe">SS</font></th>
-			<th><font size="-2" color="#eeeeee" title="Tr&auml;ger">Tr</font></th>
-			<th><font size="-2" color="#eeeeee" title="Kaperschiffe">Ka</font></b></th>
-			<th><font size="-2" color="#eeeeee" title="Schildschiffe">Sch</font></th>
+			<th title="Leichtes Orbitalgesch&uuml;tz">LO</th>
+			<th title="Leichtes Raumgesch&uuml;tz">LR</th>
+			<th title="Mittleres Raumgesch&uuml;tz">MR</th>
+			<th title="Schweres Raumgesch&uuml;tz">SR</th>
+			<th title="Abfangj&auml;ger">AJ</th>
+			<th title="J&auml;ger">J&auml;</th>
+			<th title="Bomber">Bo</th>
+			<th title="Fregatten">Fr</th>
+			<th title="Zerst&ouml;rer">Ze</th>
+			<th title="Kreuzer">Kr</th>
+			<th title="Schlachtschiffe">SS</th>
+			<th title="Tr&auml;ger">Tr</th>
+			<th title="Kaperschiffe">Ka</th>
+			<th title="Schildschiffe">Sch</th>
 		</tr>
 <?php
-	$SQL_Result2 = mysql_query('SELECT id, name, galaxie, planet FROM `gn4accounts` WHERE allianz="'.$allianz.'" order by galaxie, planet', $SQL_DBConn);
-	for ( $i=0; $i<mysql_num_rows($SQL_Result2); $i++ ) {
-		$gala   = mysql_result($SQL_Result2, $i, 'galaxie');
-		$planet = mysql_result($SQL_Result2, $i, 'planet');
-		$name   = mysql_result($SQL_Result2, $i, 'name');
-
-		$SQL_Result = mysql_query('SELECT sfj ,sfb ,sff ,sfz ,sfkr ,sfsa ,sft ,sfka ,sfsu FROM `gn4scans` WHERE rg="'.$gala.'" and rp="'.$planet.'" and type=1', $SQL_DBConn);
-		$SQL_Result3 = mysql_query('SELECT glo,glr,gmr,gsr,ga FROM `gn4scans` WHERE rg="'.$gala.'" and rp="'.$planet.'" and type=3', $SQL_DBConn);
-
-		if ( mysql_num_rows($SQL_Result) == 0 ) {
-			$ja     = " ";
-			$bo     = " ";
-			$fr     = " ";
-			$ze     = " ";
-			$kr     = " ";
-			$sl     = " ";
-			$tr     = " ";
-			$ka     = " ";
-			$ca     = " ";
-		} else {
-			$ja     = mysql_result($SQL_Result, 0, 'sfj' );
-			$bo     = mysql_result($SQL_Result, 0, 'sfb' );
-			$fr     = mysql_result($SQL_Result, 0, 'sff' );
-			$ze     = mysql_result($SQL_Result, 0, 'sfz' );
-			$kr     = mysql_result($SQL_Result, 0, 'sfkr' );
-			$sl     = mysql_result($SQL_Result, 0, 'sfsa' );
-			$tr     = mysql_result($SQL_Result, 0, 'sft' );
-			$ka     = mysql_result($SQL_Result, 0, 'sfka' );
-			$ca     = mysql_result($SQL_Result, 0, 'sfsu' );
+    $gja = 0;
+    $gbo = 0;
+    $gfr = 0;
+    $gze = 0;
+    $gkr = 0;
+    $gsl = 0;
+    $gtr = 0;
+    $gka = 0;
+    $gca = 0;
+    $glo = 0;
+    $gro = 0;
+    $gmr = 0;
+    $gsr = 0;
+    $gaj = 0;
+	$SQL_Result2 = tic_mysql_query('SELECT a.id, a.name, a.galaxie, a.planet, b.sfj, b.sfb, b.sff, b.sfz, b.sfkr, b.sfsa, b.sft, b.sfka, b.sfsu, c.glo, c.glr, c.gmr, c.gsr, c.ga FROM `gn4accounts` AS a LEFT JOIN `gn4scans` AS b ON(a.galaxie = b.rg AND a.planet = b.rp AND b.type = 1) LEFT JOIN `gn4scans` AS c ON(a.galaxie = c.rg AND a.planet = c.rp AND c.type = 3) WHERE a.allianz="'.$allianz.'" order by a.galaxie, a.planet', $SQL_DBConn);
+	$color = 0;
+	if(mysql_num_rows($SQL_Result2) > 0)
+	{
+		for ( $i=0; $i<mysql_num_rows($SQL_Result2); $i++ ) {
+			$color = !$color;
+			$ftype = "normal";
+			$gala   = mysql_result($SQL_Result2, $i, 'galaxie');
+			$planet = mysql_result($SQL_Result2, $i, 'planet');
+			$name   = mysql_result($SQL_Result2, $i, 'name');
+			
+			
+			$ja = mysql_result($SQL_Result2, $i, 'sfj' );
+			$bo = mysql_result($SQL_Result2, $i, 'sfb' );
+			
+			$fr     = mysql_result($SQL_Result2, $i, 'sff' );
+			$ze     = mysql_result($SQL_Result2, $i, 'sfz' );
+			$kr     = mysql_result($SQL_Result2, $i, 'sfkr' );
+			$sl     = mysql_result($SQL_Result2, $i, 'sfsa' );
+			$tr     = mysql_result($SQL_Result2, $i, 'sft' );
+			$ka     = mysql_result($SQL_Result2, $i, 'sfka' );
+			$ca     = mysql_result($SQL_Result2, $i, 'sfsu' );
+			$lo     = mysql_result($SQL_Result2, $i, 'glo' );
+			$ro     = mysql_result($SQL_Result2, $i, 'glr' );
+			$mr     = mysql_result($SQL_Result2, $i, 'gmr' );
+			$sr     = mysql_result($SQL_Result2, $i, 'gsr' );
+			$aj     = mysql_result($SQL_Result2, $i, 'ga' );
+			$gja += $ja;
+			$gbo += $bo;
+			$gfr += $fr;
+			$gze += $ze;
+			$gkr += $kr;
+			$gsl += $sl;
+			$gtr += $tr;
+			$gka += $ka;
+			$gca += $ca;
+			$glo += $lo;
+			$gro += $ro;
+			$gmr += $mr;
+			$gsr += $sr;
+			$gaj += $aj;
+			echo "		<tr class=\"field".$ftype.($color ? "dark" : "light")."\">\n";
+			echo "			<td align=\"center\">".$gala.":".$planet."</td>\n";
+			echo "			<td>".$name."</td>\n";
+			echo "			<td title=\"Leichtes Orbitalgesch&uuml;tz\" align=\"right\">".IntVal($lo)."</td>\n";
+			echo "			<td title=\"Leichtes Raumgesch&uuml;tz\" align=\"right\">".IntVal($ro)."</td>\n";
+			echo "			<td title=\"Mittleres Raumgesch&uuml;tz\" align=\"right\">".IntVal($mr)."</td>\n";
+			echo "			<td title=\"Schweres Raumgesch&uuml;tz\" align=\"right\">".IntVal($sr)."</td>\n";
+			echo "			<td title=\"Abfangj&auml;ger\" align=\"right\">".IntVal($aj)."</td>\n";
+			echo "			<td title=\"J&auml;ger\" align=\"right\">".IntVal($ja)."</td>\n";
+			echo "			<td title=\"Bomber\" align=\"right\">".IntVal($bo)."</td>\n";
+			echo "			<td title=\"Fregatten\" align=\"right\">".IntVal($fr)."</td>\n";
+			echo "			<td title=\"Zerst&ouml;rer\" align=\"right\">".IntVal($ze)."</td>\n";
+			echo "			<td title=\"Kreuzer\" align=\"right\">".IntVal($kr)."</td>\n";
+			echo "			<td title=\"Schlachtschiffe\" align=\"right\">".IntVal($sl)."</td>\n";
+			echo "			<td title=\"Tr&auml;ger\" align=\"right\">".IntVal($tr)."</td>\n";
+			echo "			<td title=\"Kaperschiffe\" align=\"right\">".IntVal($ka)."</td>\n";
+			echo "			<td title=\"Schildschiffe\" align=\"right\">".IntVal($ca)."</td>\n";
+			echo "		</tr>\n";
+			}
+			$color = !$color;
+			echo "		<tr class=\"fieldnormal".($color ? "dark" : "light")."\" style=\"font-weight:bold;\">\n";
+			echo "			<td align=\"center\">Allianz</td>\n";
+			echo "			<td>Gesammt</td>\n";
+			echo "			<td title=\"Leichtes Orbitalgesch&uuml;tz\" align=\"right\">".IntVal($glo)."</td>\n";
+			echo "			<td title=\"Leichtes Raumgesch&uuml;tz\" align=\"right\">".IntVal($gro)."</td>\n";
+			echo "			<td title=\"Mittleres Raumgesch&uuml;tz\" align=\"right\">".IntVal($gmr)."</td>\n";
+			echo "			<td title=\"Schweres Raumgesch&uuml;tz\" align=\"right\">".IntVal($gsr)."</td>\n";
+			echo "			<td title=\"Abfangj&auml;ger\" align=\"right\">".IntVal($gaj)."</td>\n";
+			echo "			<td title=\"J&auml;ger\" align=\"right\">".IntVal($gja)."</td>\n";
+			echo "			<td title=\"Bomber\" align=\"right\">".IntVal($gbo)."</td>\n";
+			echo "			<td title=\"Fregatten\" align=\"right\">".IntVal($gfr)."</td>\n";
+			echo "			<td title=\"Zerst&ouml;rer\" align=\"right\">".IntVal($gze)."</td>\n";
+			echo "			<td title=\"Kreuzer\" align=\"right\">".IntVal($gkr)."</td>\n";
+			echo "			<td title=\"Schlachtschiffe\" align=\"right\">".IntVal($gsl)."</td>\n";
+			echo "			<td title=\"Tr&auml;ger\" align=\"right\">".IntVal($gtr)."</td>\n";
+			echo "			<td title=\"Kaperschiffe\" align=\"right\">".IntVal($gka)."</td>\n";
+			echo "			<td title=\"Schildschiffe\" align=\"right\">".IntVal($gca)."</td>\n";
+			echo "		</tr>\n";
+			$gja = IntVal($gja/mysql_num_rows($SQL_Result2));
+			$gbo = IntVal($gbo/mysql_num_rows($SQL_Result2));
+			$gfr = IntVal($gfr/mysql_num_rows($SQL_Result2));
+			$gze = IntVal($gze/mysql_num_rows($SQL_Result2));
+			$gkr = IntVal($gkr/mysql_num_rows($SQL_Result2));
+			$gsl = IntVal($gsl/mysql_num_rows($SQL_Result2));
+			$gtr = IntVal($gtr/mysql_num_rows($SQL_Result2));
+			$gka = IntVal($gka/mysql_num_rows($SQL_Result2));
+			$gca = IntVal($gca/mysql_num_rows($SQL_Result2));
+			$glo = IntVal($glo/mysql_num_rows($SQL_Result2));
+			$gro = IntVal($gro/mysql_num_rows($SQL_Result2));
+			$gmr = IntVal($gmr/mysql_num_rows($SQL_Result2));
+			$gsr = IntVal($gsr/mysql_num_rows($SQL_Result2));
+			$gaj = IntVal($gaj/mysql_num_rows($SQL_Result2));
+			$color = !$color;
+			echo "		<tr class=\"fieldnormal".($color ? "dark" : "light")."\" style=\"font-weight:bold;\">\n";
+			echo "			<td align=\"center\">Allianz</td>\n";
+			echo "			<td>Durchschnitt</td>\n";
+			echo "			<td title=\"Leichtes Orbitalgesch&uuml;tz\" align=\"right\">".$glo."</td>\n";
+			echo "			<td title=\"Leichtes Raumgesch&uuml;tz\" align=\"right\">".$gro."</td>\n";
+			echo "			<td title=\"Mittleres Raumgesch&uuml;tz\" align=\"right\">".$gmr."</td>\n";
+			echo "			<td title=\"Schweres Raumgesch&uuml;tz\" align=\"right\">".$gsr."</td>\n";
+			echo "			<td title=\"Abfangj&auml;ger\" align=\"right\">".$gaj."</td>\n";
+			echo "			<td title=\"J&auml;ger\" align=\"right\">".$gja."</td>\n";
+			echo "			<td title=\"Bomber\" align=\"right\">".$gbo."</td>\n";
+			echo "			<td title=\"Fregatten\" align=\"right\">".$gfr."</td>\n";
+			echo "			<td title=\"Zerst&ouml;rer\" align=\"right\">".$gze."</td>\n";
+			echo "			<td title=\"Kreuzer\" align=\"right\">".$gkr."</td>\n";
+			echo "			<td title=\"Schlachtschiffe\" align=\"right\">".$gsl."</td>\n";
+			echo "			<td title=\"Tr&auml;ger\" align=\"right\">".$gtr."</td>\n";
+			echo "			<td title=\"Kaperschiffe\" align=\"right\">".$gka."</td>\n";
+			echo "			<td title=\"Schildschiffe\" align=\"right\">".$gca."</td>\n";
+			echo "		</tr>\n";
 		}
-		if ( mysql_num_rows($SQL_Result3) == 0 ) {
-			$lo     = " ";
-			$ro     = " ";
-			$mr     = " ";
-			$sr     = " ";
-			$aj     = " ";
-		} else {
-			$lo     = mysql_result($SQL_Result3, 0, 'glo' );
-			$ro     = mysql_result($SQL_Result3, 0, 'glr' );
-			$mr     = mysql_result($SQL_Result3, 0, 'gmr' );
-			$sr     = mysql_result($SQL_Result3, 0, 'gsr' );
-			$aj     = mysql_result($SQL_Result3, 0, 'ga' );
+		else
+		{
+			echo "<tr class=\"datatablefoot\" style=\"font-weight:bold;\"><td>Diese Allianz hat keine Mitglieder</td></tr>";
 		}
-    $gja = $gja+$ja ;
-    $gbo = $gbo+$bo ;
-    $gfr = $gfr+$fr ;
-    $gze = $gze+$ze ;
-    $gkr = $gkr+$kr ;
-    $gsl = $gsl+$sl ;
-    $gtr = $gtr+$tr ;
-    $gka = $gka+$ka ;
-    $gca = $gca+$ca ;
-    $glo = $glo+$lo ;
-    $gro = $gro+$ro ;
-    $gmr = $gmr+$mr ;
-    $gsr = $gsr+$sr ;
-    $gaj = $gaj+$aj ;
-		echo "		<tr>\n";
-		echo "			<td bgcolor=\"#dddddd\" align=\"center\"><font size=\"-1\">".$gala.":".$planet."</font></td>\n";
-		echo "			<td bgcolor=\"#eeeeee\"><font size=\"-1\"><nobr>".$name."</nobr></font></td>\n";
-		echo "			<td bgcolor=\"#dddddd\" align=\"right\"><font size=\"-1\">".$lo."</font></td>\n";
-		echo "			<td bgcolor=\"#eeeeee\" align=\"right\"><font size=\"-1\">".$ro."</font></td>\n";
-		echo "			<td bgcolor=\"#dddddd\" align=\"right\"><font size=\"-1\">".$mr."</font></td>\n";
-		echo "			<td bgcolor=\"#eeeeee\" align=\"right\"><font size=\"-1\">".$sr."</font></td>\n";
-		echo "			<td bgcolor=\"#dddddd\" align=\"right\"><font size=\"-1\">".$aj."</font></td>\n";
-		echo "			<td bgcolor=\"#eeeeee\" align=\"right\"><font size=\"-1\">".$ja."</font></td>\n";
-		echo "			<td bgcolor=\"#dddddd\" align=\"right\"><font size=\"-1\">".$bo."</font></td>\n";
-		echo "			<td bgcolor=\"#eeeeee\" align=\"right\"><font size=\"-1\">".$fr."</font></td>\n";
-		echo "			<td bgcolor=\"#dddddd\" align=\"right\"><font size=\"-1\">".$ze."</font></td>\n";
-		echo "			<td bgcolor=\"#eeeeee\" align=\"right\"><font size=\"-1\">".$kr."</font></td>\n";
-		echo "			<td bgcolor=\"#dddddd\" align=\"right\"><font size=\"-1\">".$sl."</font></td>\n";
-		echo "			<td bgcolor=\"#eeeeee\" align=\"right\"><font size=\"-1\">".$tr."</font></td>\n";
-		echo "			<td bgcolor=\"#dddddd\" align=\"right\"><font size=\"-1\">".$ka."</font></td>\n";
-		echo "			<td bgcolor=\"#eeeeee\" align=\"right\"><font size=\"-1\">".$ca."</font></td>\n";
-		echo "		</tr>\n";
-        }
-    echo "		<tr>\n";
-		echo "			<td bgcolor=\"#dddddd\" align=\"center\"><font size=\"-1\">Ally</font></td>\n";
-		echo "			<td bgcolor=\"#eeeeee\"><font size=\"-1\"><nobr>Gesammt</nobr></font></td>\n";
-		echo "			<td bgcolor=\"#dddddd\" align=\"right\"><font size=\"-1\">".$glo."</font></td>\n";
-		echo "			<td bgcolor=\"#eeeeee\" align=\"right\"><font size=\"-1\">".$gro."</font></td>\n";
-		echo "			<td bgcolor=\"#dddddd\" align=\"right\"><font size=\"-1\">".$gmr."</font></td>\n";
-		echo "			<td bgcolor=\"#eeeeee\" align=\"right\"><font size=\"-1\">".$gsr."</font></td>\n";
-		echo "			<td bgcolor=\"#dddddd\" align=\"right\"><font size=\"-1\">".$gaj."</font></td>\n";
-		echo "			<td bgcolor=\"#eeeeee\" align=\"right\"><font size=\"-1\">".$gja."</font></td>\n";
-		echo "			<td bgcolor=\"#dddddd\" align=\"right\"><font size=\"-1\">".$gbo."</font></td>\n";
-		echo "			<td bgcolor=\"#eeeeee\" align=\"right\"><font size=\"-1\">".$gfr."</font></td>\n";
-		echo "			<td bgcolor=\"#dddddd\" align=\"right\"><font size=\"-1\">".$gze."</font></td>\n";
-		echo "			<td bgcolor=\"#eeeeee\" align=\"right\"><font size=\"-1\">".$gkr."</font></td>\n";
-		echo "			<td bgcolor=\"#dddddd\" align=\"right\"><font size=\"-1\">".$gsl."</font></td>\n";
-		echo "			<td bgcolor=\"#eeeeee\" align=\"right\"><font size=\"-1\">".$gtr."</font></td>\n";
-		echo "			<td bgcolor=\"#dddddd\" align=\"right\"><font size=\"-1\">".$gka."</font></td>\n";
-		echo "			<td bgcolor=\"#eeeeee\" align=\"right\"><font size=\"-1\">".$gca."</font></td>\n";
-		echo "		</tr>\n";
-    $gja = IntVal($gja/mysql_num_rows($SQL_Result2)) ;
-    $gbo = IntVal($gbo/mysql_num_rows($SQL_Result2)) ;
-    $gfr = IntVal($gfr/mysql_num_rows($SQL_Result2)) ;
-    $gze = IntVal($gze/mysql_num_rows($SQL_Result2)) ;
-    $gkr = IntVal($gkr/mysql_num_rows($SQL_Result2)) ;
-    $gsl = IntVal($gsl/mysql_num_rows($SQL_Result2)) ;
-    $gtr = IntVal($gtr/mysql_num_rows($SQL_Result2)) ;
-    $gka = IntVal($gka/mysql_num_rows($SQL_Result2)) ;
-    $gca = IntVal($gca/mysql_num_rows($SQL_Result2)) ;
-    $glo = IntVal($glo/mysql_num_rows($SQL_Result2)) ;
-    $gro = IntVal($gro/mysql_num_rows($SQL_Result2)) ;
-    $gmr = IntVal($gmr/mysql_num_rows($SQL_Result2)) ;
-    $gsr = IntVal($gsr/mysql_num_rows($SQL_Result2)) ;
-    $gaj = IntVal($gaj/mysql_num_rows($SQL_Result2)) ;
-		echo "		<tr>\n";
-		echo "			<td bgcolor=\"#dddddd\" align=\"center\"><font size=\"-1\">Ally</font></td>\n";
-		echo "			<td bgcolor=\"#eeeeee\"><font size=\"-1\"><nobr>Durchschnitt</nobr></font></td>\n";
-		echo "			<td bgcolor=\"#dddddd\" align=\"right\"><font size=\"-1\">".$glo."</font></td>\n";
-		echo "			<td bgcolor=\"#eeeeee\" align=\"right\"><font size=\"-1\">".$gro."</font></td>\n";
-		echo "			<td bgcolor=\"#dddddd\" align=\"right\"><font size=\"-1\">".$gmr."</font></td>\n";
-		echo "			<td bgcolor=\"#eeeeee\" align=\"right\"><font size=\"-1\">".$gsr."</font></td>\n";
-		echo "			<td bgcolor=\"#dddddd\" align=\"right\"><font size=\"-1\">".$gaj."</font></td>\n";
-		echo "			<td bgcolor=\"#eeeeee\" align=\"right\"><font size=\"-1\">".$gja."</font></td>\n";
-		echo "			<td bgcolor=\"#dddddd\" align=\"right\"><font size=\"-1\">".$gbo."</font></td>\n";
-		echo "			<td bgcolor=\"#eeeeee\" align=\"right\"><font size=\"-1\">".$gfr."</font></td>\n";
-		echo "			<td bgcolor=\"#dddddd\" align=\"right\"><font size=\"-1\">".$gze."</font></td>\n";
-		echo "			<td bgcolor=\"#eeeeee\" align=\"right\"><font size=\"-1\">".$gkr."</font></td>\n";
-		echo "			<td bgcolor=\"#dddddd\" align=\"right\"><font size=\"-1\">".$gsl."</font></td>\n";
-		echo "			<td bgcolor=\"#eeeeee\" align=\"right\"><font size=\"-1\">".$gtr."</font></td>\n";
-		echo "			<td bgcolor=\"#dddddd\" align=\"right\"><font size=\"-1\">".$gka."</font></td>\n";
-		echo "			<td bgcolor=\"#eeeeee\" align=\"right\"><font size=\"-1\">".$gca."</font></td>\n";
-		echo "		</tr>\n";
 
 ?>
 	</table>
-	<br>
-	<font size="-1"><a href="./inc_printableallifleets.php" target="forptint">Druckerfreundliche Version</a></font>
 </center>
 <!-- ENDE: inc_allifleets -->

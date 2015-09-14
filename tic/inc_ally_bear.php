@@ -2,7 +2,7 @@
 <TABLE WIDTH=70%>
 <?php
 if($Benutzer['rang']!='5')die('Keine Rechte, Kontaktieren Sie ihren nächsten Admin');
-                $SQL_Result=mysql_query('SELECT name, tag, info_bnds, info_naps, info_inoffizielle_naps, info_kriege, code FROM `gn4allianzen` WHERE id="'.$allid.'";', $SQL_DBConn);
+                $SQL_Result=tic_mysql_query('SELECT name, tag, info_bnds, info_naps, info_inoffizielle_naps, info_kriege, code FROM `gn4allianzen` WHERE id="'.$allid.'";', $SQL_DBConn);
                 if (mysql_num_rows($SQL_Result) == 0) die('Alli ID nicht vorhanden');
                 $tag = mysql_result($SQL_Result, 0, 'tag');
 		            $name = mysql_result($SQL_Result, 0, 'name');

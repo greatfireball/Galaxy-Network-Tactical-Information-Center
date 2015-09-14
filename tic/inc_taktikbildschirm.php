@@ -51,7 +51,7 @@
 			if (isset($_GET['metanr'])) $_SESSION['metanr'] = $_GET['metanr'];
 			if (!isset($_SESSION['metanr'])) $_SESSION['metanr'] = $Benutzer['ticid'];
 			$SQL_Query = "SELECT * FROM gn4vars WHERE name='ticeb' ORDER BY value;";
-			$SQL_Result_metas = mysql_query($SQL_Query, $SQL_DBConn) or $error_code = 4;
+			$SQL_Result_metas = tic_mysql_query($SQL_Query, $SQL_DBConn) or $error_code = 4;
 			for ($m=0; $m<mysql_num_rows($SQL_Result_metas); $m++) {
 				$MetaNummer = mysql_result($SQL_Result_metas, $m, 'ticid');
 				$MetaName = mysql_result($SQL_Result_metas, $m, 'value');
@@ -68,12 +68,10 @@
 		foreach ($AllianzName as $AllianzNummer => $AllianzNummerName) {
 			if ($AllianzInfo[$AllianzNummer]['meta'] == $_SESSION['metanr']) {
 				if ($AllianzInfo[$allianz]['meta'] != $_SESSION['metanr']) $allianz = $AllianzNummer;
-				if (($Benutzer['blind'] == 1 && $Benutzer['allianz'] == $AllianzNummer) || ($Benutzer['blind'] != 1 && $AllianzInfo[$AllianzNummer]['blind'] != 1)) {
-					if ($AllianzNummer == $allianz)
-						echo "	&nbsp;<font size=\"+1\"><b><nobr>[ ".$AllianzInfo[$AllianzNummer]['tag']." ] ".$AllianzNummerName."<nobr></font></b>&nbsp;\n";
-					else
-						echo "	&nbsp;<a href=\"./main.php?modul=taktikbildschirm&mode=4&allianz=".$AllianzNummer."\"><nobr>[ ".$AllianzTag[$AllianzNummer]." ]<nobr></a>&nbsp;\n";
-				}
+				if ($AllianzNummer == $allianz)
+					echo "	&nbsp;<font size=\"+1\"><b><nobr>[ ".$AllianzInfo[$AllianzNummer]['tag']." ] ".$AllianzNummerName."<nobr></font></b>&nbsp;\n";
+				else
+					echo "	&nbsp;<a href=\"./main.php?modul=taktikbildschirm&mode=4&allianz=".$AllianzNummer."\"><nobr>[ ".$AllianzTag[$AllianzNummer]." ]<nobr></a>&nbsp;\n";
 			}
 		}
 	}
@@ -103,7 +101,7 @@
 			break;
 	}
 
-	$SQL_Result_user = mysql_query($SQL_Query, $SQL_DBConn); // or error("Error while bilding 'taktik' (step 1).<br>".$SQL_Query, ERROR_SQL, false);
+	$SQL_Result_user = tic_mysql_query($SQL_Query, $SQL_DBConn); // or error("Error while bilding 'taktik' (step 1).<br>".$SQL_Query, ERROR_SQL, false);
 	$SQL_Num_user = mysql_num_rows($SQL_Result_user);
 
 	$time_online = time() - 300;

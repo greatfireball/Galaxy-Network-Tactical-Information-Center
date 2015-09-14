@@ -1,121 +1,100 @@
 <center>
-    <FORM ACTION="./main.php" METHOD="POST">
-      <font size="-1">
-      <INPUT TYPE="hidden" NAME="modul" VALUE="userman">
-      <INPUT TYPE="hidden" NAME="action" VALUE="accounterstellen">
-      </font>
-      <P CLASS="hell">
-      <TABLE>
-        <TR>
-          <TD colspan=2 bgcolor="#333333"><font color="#ffffff" size="-1"><b>Neuen Benutzer anlegen</b>
-          </font>
-          </td>
-        </TR>
-        <TR>
-          <TD><font size="-1">Name:</font></TD>
-          <TD><font size="-1">
-            <INPUT TYPE="text" NAME="txtAccName" MAXLENGTH=50>
-            </font></TD>
-        </TR>
-        <TR>
-          <TD><font size="-1">Koordinaten:</font></TD>
-          <TD> <font size="-1">
+    <form action="main.php?modul=userman" method="post">
+      <input type="hidden" name="action" value="accounterstellen" />
+      <table>
+        <tr>
+          <td colspan="2" class="datatablehead" align="center">Neuen Benutzer anlegen</td>
+        </tr>
+        <tr class="fieldnormallight">
+          <td>Name:</td>
+          <td><input type="text" name="txtAccName" maxlength="50" /></td>
+        </tr>
+        <tr class="fieldnormaldark">
+          <td>Koordinaten:</td>
+          <td>
             <?php
                 if ($Benutzer['rang'] != $Rang_GC)
-                    echo '<INPUT TYPE="text" NAME="txtAccGalaxie" MAXLENGTH=4 SIZE=4>';
+                    echo '<input type="text" name="txtAccGalaxie" maxlength="4" size="4" />';
                 else
-                    echo '<B>'.$Benutzer['galaxie'].'</B>';
+                    echo '<b>'.$Benutzer['galaxie'].'</b>';
             ?>
-            <B>:</B>
-            <INPUT TYPE="text" NAME="txtAccPlanet" MAXLENGTH=2 SIZE=2>
-            </font></TD>
-        </TR>
-        <TR>
-          <TD><font size="-1">Passwort:</font></TD>
-          <TD><font size="-1">
-            <INPUT TYPE="text" NAME="txtAccPasswort" MAXLENGTH=50>
-            </font></TD>
-        </TR>
-        <TR>
-          <TD>
-           <font size="-1">Allianz:</font>
-          </TD>
-           <TD>
+            <b>:</b>
+            <input type="text" name="txtAccPlanet" maxlength="2" size="2" /></td>
+        </tr>
+        <tr class="fieldnormallight">
+          <td>Passwort:</td>
+          <td><input type="password" name="txtAccPasswort" maxlength="50" /></td>
+        </tr>
+        <tr class="fieldnormaldark">
+          <td>Allianz:</td>
+           <td>
             <?php
 
                 if ($Benutzer['rang'] >= $Rang_Techniker) {
-                    echo '<SELECT NAME="lstAllianz" SIZE="1">';
+                    echo '<select name="lstAllianz">';
                     foreach ($AllianzName as $AllianzNummer => $AllianzNummerName) {
                         $zusatz = '';
                         /*
                         if ($AllianzNummer == $Benutzer['allianz'])
                             $zusatz = ' SELECTED';
                         */
-                        echo '<OPTION VALUE="'.$AllianzNummer.'"'.$zusatz.'>'.$AllianzTag[$AllianzNummer].' '.$AllianzNummerName.'</OPTION>';
+                        echo '<option value="'.$AllianzNummer.'"'.$zusatz.'>'.$AllianzTag[$AllianzNummer].' '.$AllianzNummerName.'</option>';
                     }
-                    echo '</SELECT>';
+                    echo '</select>';
                 } else {
-                    echo '<B><font size="-1">'.$AllianzTag[$Benutzer['allianz']].' '.$AllianzName[$Benutzer['allianz']].'</font></B>';
+                    echo '<b>'.$AllianzTag[$Benutzer['allianz']].' '.$AllianzName[$Benutzer['allianz']].'</b>';
                 }
             ?>
-            </TD>
-        </TR>
-        <TR>
-          <TD><font size="-1">Rang:</font></TD>
-          <TD> <font size="-1">
-            <SELECT NAME="lstRang" SIZE="1">
+            </td>
+        </tr>
+        <tr class="fieldnormaldark">
+          <td>Rang:</td>
+          <td>
+            <select name="lstRang">
               <?php
                   foreach ($RangName as $RangNummer => $RangNummerName) {
-                      if ($RangNummer <= $Benutzer['rang']) echo '<OPTION VALUE="'.$RangNummer.'">'.($RangNummer + 1).'. '.$RangNummerName.'</OPTION>';
+                      if ($RangNummer <= $Benutzer['rang']) echo '<option value="'.$RangNummer.'">'.($RangNummer + 1).'. '.$RangNummerName.'</option>';
                   }
               ?>
-            </SELECT>
-            </font></TD>
-            </TR>
-            <TR>
-            <TD><font size="-1"><BR>
-                </font></TD>
-            <TD><font size="-1">
-                <INPUT TYPE="submit" VALUE="Erstellen">
-                </font></TD>
-            </TR>
-        </TABLE>
-        <font size="-1"></P> </font>
-    </FORM>
+            </select>
+            </td>
+            </tr>
+            <tr class="datatablefoot">
+             <td colspan="2" align="center"><input type="submit" value="Erstellen" /></td>
+            </tr>
+        </table>
+    </form>
 
 <?php
 
-    echo '<table bgcolor="#333333"><tr><td>';
+    echo '<table>';
 
-    echo '<table width="100%"><tr><td bgcolor="#eeeeee">';
-    echo '<font size="-1"><b>Benutzer Verwaltung</b></font>';
-    echo '</td></tr></table>';
-
-    $sql = "SELECT gn4allianzen.id, gn4allianzen.tag, gn4vars.value as meta FROM gn4allianzen LEFT JOIN gn4vars USING (ticid) WHERE gn4vars.name = 'ticeb' ORDER BY meta, gn4allianzen.tag;";
+    echo '<tr class="datatablehead" align="center"><td>Benutzer Verwaltung</td></tr>';
+    $sql = "SELECT gn4allianzen.id, gn4allianzen.tag, gn4meta.name as meta FROM gn4allianzen LEFT JOIN gn4meta ON(gn4allianzen.ticid = gn4meta.id) ORDER BY gn4allianzen.tag;";
 
     $SQL_result = tic_mysql_query( $sql ) or print tic_mysql_error();
     $allianzahl = mysql_num_rows( $SQL_result );
-    echo '<table cellspacing="3">';
+    echo '<tr><td class="fieldnormallight"><table cellspacing="3">';
     if ( $allianzahl > 0 ) {
         for ($n = 0; $n < $allianzahl; $n++) {
             $allid = mysql_result( $SQL_result, $n, 'id');
             echo '<tr>';
-            echo '<td bgcolor="#CCCCCC"><font size=-1>'.mysql_result( $SQL_result, $n, 'meta').'</font></td>';
-            echo '<td bgcolor="#CCCCCC"><font size=-1>'.mysql_result( $SQL_result, $n, 'tag').'</font></td>';
+            echo '<td>'.mysql_result( $SQL_result, $n, 'meta').'</td>';
+            echo '<td>'.mysql_result( $SQL_result, $n, 'tag').'</td>';
             $sql2 = "SELECT DISTINCT(galaxie) FROM gn4accounts WHERE allianz='".$allid."' ORDER BY galaxie DESC";
-            $SQL_result2 = mysql_query($sql2, $SQL_DBConn);
+            $SQL_result2 = tic_mysql_query($sql2, $SQL_DBConn);
             $galanzahl = mysql_num_rows( $SQL_result2);
             $galanum = mysql_num_rows( $SQL_result2);
             if ( $galanzahl != '' ) {
                 for ($p = 0; $p < $galanzahl; $p++) {
-                    $SQL_result2 = mysql_query($sql2, $SQL_DBConn);
+                    $SQL_result2 = tic_mysql_query($sql2, $SQL_DBConn);
                     for ($i = 0;$i < $galanum; $i++) {
                           $gala = mysql_fetch_array($SQL_result2, MYSQL_NUM);
                     }
                     $galanum = $galanum - 1;
-                    echo '<td bgcolor="#CCCCCC"><font size=-1>';
-                    echo '<a href="./main.php?modul=userman&selgala='.$gala[0].'">['.$gala[0].']</a>';
-                    echo '</font></td>';
+                    echo '<td>';
+                    echo '<a href="./main.php?modul=userman&amp;selgala='.$gala[0].'">['.$gala[0].']</a>';
+                    echo '</td>';
                 }
             }
 
@@ -123,155 +102,126 @@
         }
     }
 
-    echo '</table><br>';
+    echo '</table></td></tr></table>';
 
     if ( isset( $_GET['selgala'] ) ){
 
-        echo '<table cellspacing="3">';
-        echo '<tr><td bgcolor="#999999">';
-        echo '<font size="-1"><b>Galaxie '.$_GET['selgala'].'</b></font>';
-        echo '</td></tr>';
-        echo '<tr><td bgcolor="#999999">';
-        echo '<table>';
-        echo '<tr>';
-        echo '<td bgcolor="#cccccc"><font size="-1">';
-        echo '&nbsp;Planet&nbsp;';
-        echo '</font></td>';
-        echo '<td bgcolor="#cccccc"><font size="-1">';
-        echo '&nbsp;Name&nbsp;';
-        echo '</font></td>';
-        echo '<td bgcolor="#cccccc"><font size="-1">';
-        echo '&nbsp;Rang&nbsp;';
-        echo '</font></td>';
-        echo '<td bgcolor="#cccccc"><font size="-1">';
-        echo '&nbsp;Allianz&nbsp;';
-        echo '</font></td>';
-        echo '<td bgcolor="#cccccc"><font size="-1">';
-        echo '&nbsp;UMode&nbsp;';
-        echo '</font></td>';
-        echo '<td bgcolor="#cccccc"><font size="-1">';
-        echo '&nbsp;LastLogin&nbsp;';
-        echo '</font></td>';
-        echo '<td bgcolor="#cccccc"><font size="-1">';
-		echo '&nbsp;Status&nbsp;';
-        echo '</font></td>';
-        echo '<td bgcolor="#cccccc" colspan="8"><font size="-1">';
-        echo '&nbsp;Bearbeiten&nbsp;';
-        echo '</font></td>';
+        echo '<br /><table>';
+        echo '<tr class="datatablehead" align="center"><td colspan="15">Galaxie '.$_GET['selgala'].'</td></tr>';
+        echo '<tr style="font-weight:bold;" class="fieldnormaldark" align="center">';
+        echo '<td>';
+        echo 'Planet';
+        echo '</td>';
+        echo '<td>';
+        echo 'Name';
+        echo '</td>';
+        echo '<td>';
+        echo 'Rang';
+        echo '</td>';
+        echo '<td>';
+        echo 'Allianz';
+        echo '</td>';
+        echo '<td>';
+        echo 'UMode';
+        echo '</td>';
+        echo '<td>';
+        echo 'LastLogin';
+        echo '</td>';
+        echo '<td>';
+		echo 'Status';
+        echo '</td>';
+        echo '<td colspan="8">';
+        echo 'Bearbeiten';
+        echo '</td>';
         echo '</tr>';
         $sql = 'select * from gn4accounts where galaxie='.$_GET['selgala'].' order by planet';
-        $SQL_result = mysql_query( $sql, $SQL_DBConn);
-		$n = 1;
-        while($urow = mysql_fetch_assoc($SQL_result)) {
-			echo '<tr style="font-size:8pt;">';
+        $SQL_result = tic_mysql_query( $sql, $SQL_DBConn);
+		$color = 0;
+		while($urow = mysql_fetch_assoc($SQL_result)) {
+			$color = !$color;
+			echo '<tr style="font-size:8pt;" class="fieldnormal'.($color ? 'light' : 'dark').'">';
 
 			if ($urow['spy'] == 1)
 			{
-				$status = '<font color="#cc0000">Gesperrt</font>';
+				$status = '<td style="font-color=#cc0000;">Gesperrt';
 			} else {
 				if($urow['versuche'] >= 3 && $urow['ip'] != "")
-				    $status = '<font color="#cc0000">IP '.$urow['ip'].' gesperrt</font>';
+				    $status = '<td style="font-color=#cc0000;">IP '.$urow['ip'].' gesperrt';
                 else
-				    $status = '<font color="#00cc00">Entsperrt</font>';
+				    $status = '<td style="font-color=#00cc00;">Entsperrt';
 			}
 
+			echo '<td>'.$urow['planet'].'</td>';
+			echo '<td>'.$urow['name'].'</td>';
+			echo '<td>'.$RangName[$urow['rang']].'</td>';
+			echo '<td>'.$AllianzTag[$urow['allianz']].'</td>';
+			echo '<td>'.$urow['umod'].'</td>';
 
-			if ($n) $colour = ' bgcolor="#eeeeee"';
-			else $colour = ' bgcolor="#cccccc"';
-			$n = !$n;
-
-			echo '<td'.$colour.'>';
-			echo $urow['planet'];
+			echo '<td style="text-align:center;\">';
+			echo ($urow['lastlogin'] ? strftime("%d.%m.%Y %H:%M", $urow['lastlogin']) : "-nie-");
 			echo '</td>';
 
-			echo '<td'.$colour.'>';
-			echo '&nbsp;'.$urow['name'].'&nbsp;';
-			echo '</td>';
-
-
-			echo '<td'.$colour.'>';
-			echo '&nbsp;'.$RangName[$urow['rang']].'&nbsp;';
-			echo '</td>';
-
-			echo '<td'.$colour.'>';
-			echo '&nbsp;'.$AllianzTag[$urow['allianz']].'&nbsp;';
-			echo '</td>';
-
-			echo '<td'.$colour.'>';
-			echo '&nbsp;'.$urow['umod'].'&nbsp;';
-			echo '</td>';
-
-			echo '<td'.$colour.' style="text-align:center;\">';
-			echo '&nbsp;'.($urow['lastlogin'] ? strftime("%d.%m.%Y %H:%M", $urow['lastlogin']) : "-nie-").'&nbsp;';
-			echo '</td>';
-
-			echo '<td'.$colour.'>';
-			echo '&nbsp;'.$status.'&nbsp;';
+			echo $status;
 			echo '</td>';
 
 			// change gala planet pw alliid umode
-			echo '<td'.$colour.'><font size="-1">';
+			echo '<td>';
 			if ( $Benutzer['rang'] >= $Rang_Techniker || ( $Benutzer['rang'] >  $Rang_GC && $Benutzer['allianz'] == $urow['allianz'] ) || ( $Benutzer['rang'] == $Rang_GC && $Benutzer['galaxie'] == $_GET['selgala'] ) ) {
-				echo  '<a href="./main.php?modul=useredit&change=umode&uid='.$urow['id'].'">&nbsp;UMode&nbsp;</a></td><td'.$colour.'><font size="-1"><a href="./main.php?modul=useredit&change=pw&uid='.$urow['id'].'">&nbsp;NeuesPW&nbsp;</a>';
-				echo '</font></td><td'.$colour.'><font size="-1">';
-				echo  '<a href="./main.php?modul=useredit&change=koords&uid='.$urow['id'].'">&nbsp;Koords&nbsp;</a>';
+				echo  '<a href="./main.php?modul=useredit&amp;change=umode&amp;uid='.$urow['id'].'">UMode</a></td><td><a href="./main.php?modul=useredit&amp;change=pw&amp;uid='.$urow['id'].'">NeuesPW</a>';
+				echo '</td><td>';
+				echo  '<a href="./main.php?modul=useredit&amp;change=koords&amp;uid='.$urow['id'].'">Koords</a>';
 			} else {
-				echo '&nbsp;UMode&nbsp;</font></td>
-						 <td'.$colour.'><font size="-1">&nbsp;NeuesPW&nbsp;</font></td>
-						 <td'.$colour.'><font size="-1">&nbsp;Koords&nbsp';
+				echo 'UMode</td>
+						 <td>NeuesPW</td>
+						 <td>Koords';
+			}
+			echo '</td>';
+
+			echo '<td>';
+			if ( $Benutzer['rang'] >= $Rang_Techniker || ( $Benutzer['rang'] >  $Rang_GC && $Benutzer['allianz'] == $urow['allianz'] ) || ( $Benutzer['rang'] == $Rang_GC && $Benutzer['galaxie'] == $_GET['selgala'] ) ) {
+				echo  '<a href="./main.php?modul=useredit&amp;change=name&amp;uid='.$urow['id'].'">Name</a>';
+			} else {
+				echo  'Name';
 			}
 
+			echo '</td>';
 
-
-
-
-			echo '</font></td>';
-
-			echo '<td'.$colour.'><font size="-1">';
+			echo '<td>';
 			if ( $Benutzer['rang'] >= $Rang_Techniker || ( $Benutzer['rang'] >  $Rang_GC && $Benutzer['allianz'] == $urow['allianz'] ) || ( $Benutzer['rang'] == $Rang_GC && $Benutzer['galaxie'] == $_GET['selgala'] ) ) {
-				echo  '<a href="./main.php?modul=useredit&change=name&uid='.$urow['id'].'">&nbsp;Name&nbsp;</a>';
+				echo  '<a href="./main.php?modul=useredit&amp;change=allianz&amp;uid='.$urow['id'].'">Alli</a>';
 			} else {
-				echo  '&nbsp;Name&nbsp;';
+				echo  'Alli';
 			}
 
-			echo '</font></td>';
+			echo '</td>';
 
-			echo '<td'.$colour.'><font size="-1">';
+			echo '<td>';
 			if ( $Benutzer['rang'] >= $Rang_Techniker || ( $Benutzer['rang'] >  $Rang_GC && $Benutzer['allianz'] == $urow['allianz'] ) || ( $Benutzer['rang'] == $Rang_GC && $Benutzer['galaxie'] == $_GET['selgala'] ) ) {
-				echo  '<a href="./main.php?modul=useredit&change=allianz&uid='.$urow['id'].'">&nbsp;Alli&nbsp;</a>';
+				echo  '<a href="./main.php?modul=useredit&amp;change=rang&amp;uid='.$urow['id'].'">Rang</a>';
 			} else {
-				echo  '&nbsp;Alli&nbsp;';
+				echo  'Rang';
 			}
 
-			echo '</font></td>';
-
-			echo '<td'.$colour.'><font size="-1">';
-			if ( $Benutzer['rang'] >= $Rang_Techniker || ( $Benutzer['rang'] >  $Rang_GC && $Benutzer['allianz'] == $urow['allianz'] ) || ( $Benutzer['rang'] == $Rang_GC && $Benutzer['galaxie'] == $_GET['selgala'] ) ) {
-				echo  '<a href="./main.php?modul=useredit&change=rang&uid='.$urow['id'].'">&nbsp;Rang&nbsp;</a>';
-			} else {
-				echo  '&nbsp;Rang&nbsp;';
-			}
-
-			echo '<td'.$colour.'><font size="-1">';
+			echo '<td>';
 			if ( $Benutzer['rang'] >= $Rang_Techniker || ( $Benutzer['rang'] >  $Rang_GC && $Benutzer['allianz'] == $urow['allianz'] ) || ( $Benutzer['rang'] == $Rang_GC && $Benutzer['galaxie'] == $_GET['selgala'] ) ) {
 			if ( $urow['spy'] == 1 || $urow['versuche'] >= 3 && $urow['ip'] != ""){
-			echo  '<a href="./main.php?modul=useredit&change=spy&uid='.$urow['id'].'">&nbsp;Entsperren&nbsp;</a>';
+			echo  '<a href="./main.php?modul=useredit&amp;change=spy&amp;uid='.$urow['id'].'">Entsperren</a>';
 			} else {
-			echo  '<a href="./main.php?modul=useredit&change=spy&uid='.$urow['id'].'">&nbsp;Sperren&nbsp;</a>';
+			echo  '<a href="./main.php?modul=useredit&amp;change=spy&amp;uid='.$urow['id'].'">Sperren</a>';
 			}
 			} else {
-			echo  '&nbsp;Keine Rechte&nbsp;';
+			echo  'Keine Rechte';
 			}
 
-			echo '</font></td>';
+			echo '</td>';
 
 
-				echo '<td'.$colour.'><font size="-1">';
+				echo '<td>';
         if ( $Benutzer['rang'] >= $Rang_Techniker || ( $Benutzer['rang'] >  $Rang_GC && $Benutzer['allianz'] == $urow['allianz'] ) || ( $Benutzer['rang'] == $Rang_GC && $Benutzer['galaxie'] == $_GET['selgala'] ) ) {
-				echo '<A HREF="./main.php?modul=userman&selgala='.$_GET['selgala'].'&action=accloeschen	&id='.$urow['id'].'">&nbsp;L&ouml;schen&nbsp;</a>';
-				echo '</font></td>';
+				echo '<a href="main.php?modul=userman&amp;selgala='.$_GET['selgala'].'&amp;action=accloeschen&amp;id='.$urow['id'].'">L&ouml;schen</a>';
+				echo '</td>';
         }else {
-				echo  '&nbsp;Löschen&nbsp;';
+				echo  'L&ouml;schen</td>';
 			}
 
 
@@ -281,14 +231,7 @@
 
 		}
 		echo '</table>';
-		echo '</td></tr>';
-
-        echo '</table>';
-
     }
-
-
-    echo '</td></tr></table>';
 
 ?>
 </center>

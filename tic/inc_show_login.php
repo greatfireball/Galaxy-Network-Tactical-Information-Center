@@ -12,28 +12,28 @@
 	}
 ?>
 <center>
-	<font size="+2">Liste der letzten Anmeldungen</font><br>
-	<table width="400" align="center" BORDER="0" cellspacing="3" cellpadding="0" bordercolor="#FFFFFF">
-		<tr BGCOLOR='#333333' >
-			<th><font size="-1" color="#ffffff">Nummer</font></th>
-			<th><font size="-1" color="#ffffff">Allianz</font></th>
-			<th><font size="-1" color="#ffffff">Name</font></th>
-			<th><font size="-1"><a href="./main.php?modul=show_login&sort=<?=$newsort?>"><font color="#dddd66">Anmeldedatum</font></a></font></th>
+	<h2>Liste der letzten Anmeldungen</h2>
+	<table width="400" align="center">
+		<tr class="datatablehead">
+			<th>Nummer</th>
+			<th>Allianz</th>
+			<th>Name</th>
+			<th><a class="datatablesortselected" href="./main.php?modul=show_login&amp;sort=<?=$newsort?>">Anmeldedatum</a></th>
 		</tr>
 <?php
 	$action = "";
-	$SQL_Result = mysql_query('SELECT name, lastlogin, allianz FROM `gn4accounts` where ticid="'.$Benutzer['ticid'].'" ORDER BY lastlogin '.$sort.', name;', $SQL_DBConn) or $error_code = 4;
+	$SQL_Result = tic_mysql_query('SELECT name, lastlogin, allianz FROM `gn4accounts` where ticid="'.$Benutzer['ticid'].'" ORDER BY lastlogin '.$sort.', name;', $SQL_DBConn) or $error_code = 4;
 	for ( $i=0; $i<mysql_num_rows($SQL_Result); $i++) {
 		if ( $i%2 == 0 ) {
-			$colour='BGCOLOR=#eeeeee';
+			$colour='class="fieldnormallight"';
 		} else {
-			$colour='BGCOLOR=#dddddd';
+			$colour='class="fieldnormaldark"';
 		}
 		$tmp_name = mysql_result($SQL_Result, $i, 'name');
 
 		// determine alli-name
 		$tmp_alli = mysql_result($SQL_Result, $i, 'allianz');
-		$SQL_Result2 = mysql_query('SELECT tag FROM `gn4allianzen` WHERE id="'.$tmp_alli.'";', $SQL_DBConn) or $error_code = 4;
+		$SQL_Result2 = tic_mysql_query('SELECT tag FROM `gn4allianzen` WHERE id="'.$tmp_alli.'";', $SQL_DBConn) or $error_code = 4;
 		$tmp_tag = mysql_result($SQL_Result2, 0, 'tag');
 
 		$tmp_lastlogin = mysql_result($SQL_Result, $i, 'lastlogin');
@@ -49,7 +49,7 @@
 				$tmp_lastlogin = 0;
 			}
 			if ( $tmp_lastlogin == -1 ) $tmp_lastlogin = 0;
-			mysql_query('update `gn4accounts` SET lastlogin="'.$tmp_lastlogin.'" WHERE name="'.$tmp_name.'" and ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn) or $error_code = 4;
+			tic_mysql_query('update `gn4accounts` SET lastlogin="'.$tmp_lastlogin.'" WHERE name="'.$tmp_name.'" and ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn) or $error_code = 4;
 		}
 
 		/* change the format (if old format xxxx-xx-xx found) - update in db */
@@ -61,20 +61,20 @@
 				$tmp_lastlogin = 0;
 			}
 			if ( $tmp_lastlogin == -1 ) $tmp_lastlogin = 0;
-			mysql_query('update `gn4accounts` SET lastlogin="'.$tmp_lastlogin.'" WHERE name="'.$tmp_name.'" and ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn) or $error_code = 4;
+			tic_mysql_query('update `gn4accounts` SET lastlogin="'.$tmp_lastlogin.'" WHERE name="'.$tmp_name.'" and ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn) or $error_code = 4;
 		}
 
 		if ( $tmp_lastlogin == -1 ) {
 			$tmp_lastlogin = 0;
-			mysql_query('update `gn4accounts` SET lastlogin="'.$tmp_lastlogin.'" WHERE name="'.$tmp_name.'" and ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn) or $error_code = 4;
+			tic_mysql_query('update `gn4accounts` SET lastlogin="'.$tmp_lastlogin.'" WHERE name="'.$tmp_name.'" and ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn) or $error_code = 4;
 		}
 
 		$j=$i+1;
 		echo "		<tr ".$colour.">";
-		echo "<td align=\"right\"><font size=\"-1\">".$j.".)&nbsp;</font></td>\n";
-		echo "<td align=\"center\"><font size=\"-1\">[".$tmp_tag."]</font></td>";
-		echo "<td><font size=\"-1\">".$tmp_name."</font></td>";
-		echo "<td align=\"center\"><font size=\"-1\"><nobr>".($tmp_lastlogin?strftime("%d.%m.%Y %H:%M", $tmp_lastlogin):"nie")."</nobr></font></td></tr>\n";
+		echo "<td align=\"right\">".$j.".)&nbsp;</td>\n";
+		echo "<td align=\"center\">[".$tmp_tag."]</td>";
+		echo "<td>".$tmp_name."</td>";
+		echo "<td align=\"center\" style=\"white-space:nowrap\">".($tmp_lastlogin?strftime("%d.%m.%Y %H:%M", $tmp_lastlogin):"nie")."</td></tr>\n";
 	}
 ?>
 	</table>

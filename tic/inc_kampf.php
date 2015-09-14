@@ -1,10 +1,9 @@
 <?
 
 include("GNSimuclass.php");
-$ticks = isset($_POST['ticks'])?$_POST['ticks']:5;
-$me = $_POST['me'];
-$ke = $_POST['ke'];
-if($_GET['doing'] == 'compute')
+$ticks = (isset($_POST['ticks']) ? $_POST['ticks'] : 5);
+
+if(isset($_POST['compute']))
 {
     $a[0] = $_POST['a1'];
     $a[1] = $_POST['a2'];
@@ -30,15 +29,28 @@ if($_GET['doing'] == 'compute')
     $v[12] = $_POST['v13'];
     $v[13] = $_POST['v14'];
     $gnsimu = new GNSimu();
+    $gnsimu_m = new GNSimu_Multi();
+    $f_att = new Fleet();
+    $f_deff = new Fleet();
+    $f_att->TicksToStay = 5;
+    $f_deff->TicksToStay = 5;
     for($i=0;$i<14;$i++)
     {
-    if($a[$i])
-        $gnsimu->attaking[$i] = $a[$i];
-    if($v[$i])
-        $gnsimu->deffending[$i] = $v[$i];
+        if(isset($a[$i]))
+        {
+            $gnsimu->attaking[$i] = $a[$i];
+            $f_att->Ships[$i] = $a[$i];
+        }
+        if(isset($v[$i]))
+        {
+            $gnsimu->deffending[$i] = $v[$i];
+            $f_deff->Ships[$i] = $v[$i];
+        }
     }
-    $gnsimu->mexen = $me;
-    $gnsimu->kexen = $ke;
+    $gnsimu_m->AddAttFleet($f_att);
+    $gnsimu_m->AddDeffFleet($f_deff);
+    $gnsimu->mexen = $me = $_POST['me'];
+    $gnsimu->kexen = $ke = $_POST['ke'];
 }
 else
 {
@@ -51,57 +63,57 @@ else
     $me = 0;
     $ke = 0;
 }
-    echo "<script>
+    echo "<script type=\"text/javascript\">
+        //<![CDATA[
               var newwindow=0;
               function parser(to)
               {
 	               newwindow = window.open('parser.php?for='+to, 'Parser',  'menubar=no,width=300,height=230,left=200,top=200,toolbar=no,directories=no,status=no,scrollbars=auto,resizable=no');
               newwindow.focus();
               }
+        //]]>
         </script>
         <center><h2>GN-Kampfsimulator v 1.2</h2></center>";
-    echo "<form action='./main.php?modul=kampf&doing=compute' method='POST' name='form1'>";
-    echo "<table width=100% bgcolor=#999999> <tr><td><font size=-1><b>Schiffs Typ</b></font></td><td><font size=-1><b>Verteidigende Flotte</b></font></td><td><font size=-1><b>Angreifende Flotte</b></font></td></tr>";
-    echo "<tr bgcolor=#cccccc><td><font size=-1>Jäger - Leo:</font></td><td><font size=-1><input type='text' name='v1' value='$v[0]'></font></td><td><font size=-1><input type='text' name='a1' value='$a[0]'></font></td></tr>";
-    echo "<tr bgcolor=#DDDDDD><td><font size=-1>Bomber - Aquilae:</font></td><td><font size=-1><input type='text' name='v2' value='$v[1]'></font></td><td><font size=-1><input type='text' name='a2' value='$a[1]'></font></td></tr>";
-    echo "<tr bgcolor=#cccccc><td><font size=-1>Fregatte - Fronax:</font></td><td><font size=-1><input type='text' name='v3' value='$v[2]'></font></td><td><font size=-1><input type='text' name='a3' value='$a[2]'></font></td></tr>";
-    echo "<tr bgcolor=#DDDDDD><td><font size=-1>Zerstörer - Draco:</font></td><td><font size=-1><input type='text' name='v4' value='$v[3]'></font></td><td><font size=-1><input type='text' name='a4' value='$a[3]'></font></td></tr>";
-    echo "<tr bgcolor=#cccccc><td><font size=-1>Kreuzer - Goron:</font></td><td><font size=-1><input type='text' name='v5' value='$v[4]'></font></td><td><font size=-1><input type='text' name='a5' value='$a[4]'></font></td></tr>";
-    echo "<tr bgcolor=#DDDDDD><td><font size=-1>Schlachtschiff - Pentalin:</font></td><td><font size=-1><input type='text' name='v6' value='$v[5]'></font></td><td><font size=-1><input type='text' name='a6' value='$a[5]'></font></td></tr>";
-    echo "<tr bgcolor=#cccccc><td><font size=-1>Trägerschiff - Zenit:</font></td><td><font size=-1><input type='text' name='v7' value='$v[6]'></font></td><td><font size=-1><input type='text' name='a7' value='$a[6]'></font></td></tr>";
-    echo "<tr bgcolor=#DDDDDD><td><font size=-1>Kaperschiff - Cleptor:</font></td><td><font size=-1><input type='text' name='v8' value='$v[7]'></font></td><td><font size=-1><input type='text' name='a8' value='$a[7]'></font></td></tr>";
-    echo "<tr bgcolor=#cccccc><td><font size=-1>Schutzschiff - Cancri:</font></td><td><font size=-1><input type='text' name='v9' value='$v[8]'></font></td><td><font size=-1><input type='text' name='a9' value='$a[8]'></font></td></tr>";
-    echo "<tr bgcolor=#DDDDDD><td><font size=-1>Leichtes Orbitalgeschütz - Rubium:</font></td><td><font size=-1><input type='text' name='v10' value='$v[9]'></font></td></tr>";
-    echo "<tr bgcolor=#cccccc><td><font size=-1>Leichtes Raumgeschütz - Pulsar:</font></td><td><font size=-1><input type='text' name='v11' value='$v[10]'></font></td></tr>";
-    echo "<tr bgcolor=#DDDDDD><td><font size=-1>Mittlers Raumgeschütz - Coon:</font></td><td><font size=-1><input type='text' name='v12' value='$v[11]'></font></td></tr>";
-    echo "<tr bgcolor=#cccccc><td><font size=-1>Schweres Raumgeschütz - Centurion:</font></td><td><font size=-1><input type='text' name='v13' value='$v[12]'></font></td></tr>";
-    echo "<tr bgcolor=#DDDDDD><td><font size=-1>Abfangjäger - Horus:</font></td><td><font size=-1><input type='text' name='v14' value='$v[13]'></font></td></tr>";
-    echo "<tr bgcolor=#cccccc><td><font size=-1>Metalextraktoren:</font></td><td><font size=-1><input type='text' name='me' value='$me'></font></td><tr>";
-    echo "<tr bgcolor=#DDDDDD><td><font size=-1>Kristalextraktoren:</font></td><td><font size=-1><input type='text' name='ke' value='$ke'></font></td></tr>";
-    echo "<tr><td><font size=-1></font></td><td><font size=-1><b>&nbsp;</b></font></td><td><font size=-1><b>&nbsp;</b></font></td></tr>
-	    <tr><td></td><td><b><a href=\"javascript:parser(1)\">Parser</a></b></td><td><b><a href=\"javascript:parser(0)\">Parser</a></b></td></tr>
-        <tr><td colspan=3><br><font size=-1>Ticks: </font><select name='ticks'>";
+    echo "<form action=\"./main.php?modul=kampf\" method=\"post\" name=\"form1\"><input type=\"hidden\" name=\"compute\" value=\"1\" />";
+    echo "<table align=\"center\" class=\"datatable\"><tr class=\"datatablehead\"><td>Schiffstyp</td><td>Verteidigende Flotte</td><td>Angreifende Flotte</td></tr>";
+    echo "<tr class=\"fieldnormallight\"><td>J&auml;ger - Leo:</td><td><input type=\"text\" name=\"v1\" value=\"$v[0]\" /></td><td><input type=\"text\" name=\"a1\" value=\"$a[0]\" /></td></tr>";
+    echo "<tr class=\"fieldnormaldark\"><td>Bomber - Aquilae:</td><td><input type=\"text\" name=\"v2\" value=\"$v[1]\" /></td><td><input type=\"text\" name=\"a2\" value=\"$a[1]\" /></td></tr>";
+    echo "<tr class=\"fieldnormallight\"><td>Fregatte - Fronax:</td><td><input type=\"text\" name=\"v3\" value=\"$v[2]\" /></td><td><input type=\"text\" name=\"a3\" value=\"$a[2]\" /></td></tr>";
+    echo "<tr class=\"fieldnormaldark\"><td>Zerst&ouml;rer - Draco:</td><td><input type=\"text\" name=\"v4\" value=\"$v[3]\" /></td><td><input type=\"text\" name=\"a4\" value=\"$a[3]\" /></td></tr>";
+    echo "<tr class=\"fieldnormallight\"><td>Kreuzer - Goron:</td><td><input type=\"text\" name=\"v5\" value=\"$v[4]\" /></td><td><input type=\"text\" name=\"a5\" value=\"$a[4]\" /></td></tr>";
+    echo "<tr class=\"fieldnormaldark\"><td>Schlachtschiff - Pentalin:</td><td><input type=\"text\" name=\"v6\" value=\"$v[5]\" /></td><td><input type=\"text\" name=\"a6\" value=\"$a[5]\" /></td></tr>";
+    echo "<tr class=\"fieldnormallight\"><td>Tr&auml;gerschiff - Zenit:</td><td><input type=\"text\" name=\"v7\" value=\"$v[6]\" /></td><td><input type=\"text\" name=\"a7\" value=\"$a[6]\" /></td></tr>";
+    echo "<tr class=\"fieldnormaldark\"><td>Kaperschiff - Cleptor:</td><td><input type=\"text\" name=\"v8\" value=\"$v[7]\" /></td><td><input type=\"text\" name=\"a8\" value=\"$a[7]\" /></td></tr>";
+    echo "<tr class=\"fieldnormallight\"><td>Schutzschiff - Cancri:</td><td><input type=\"text\" name=\"v9\" value=\"$v[8]\" /></td><td><input type=\"text\" name=\"a9\" value=\"$a[8]\" /></td></tr>";
+    echo "<tr class=\"fieldnormaldark\"><td>Leichtes Orbitalgesch&uuml;tz - Rubium:</td><td><input type=\"text\" name=\"v10\" value=\"$v[9]\" /></td></tr>";
+    echo "<tr class=\"fieldnormallight\"><td>Leichtes Raumgesch&uuml;tz - Pulsar:</td><td><input type=\"text\" name=\"v11\" value=\"$v[10]\" /></td></tr>";
+    echo "<tr class=\"fieldnormaldark\"><td>Mittlers Raumgesch&uuml;tz - Coon:</td><td><input type=\"text\" name=\"v12\" value=\"$v[11]\" /></td></tr>";
+    echo "<tr class=\"fieldnormallight\"><td>Schweres Raumgesch&uuml;tz - Centurion:</td><td><input type=\"text\" name=\"v13\" value=\"$v[12]\" /></td></tr>";
+    echo "<tr class=\"fieldnormaldark\"><td>Abfangj&auml;ger - Horus:</td><td><input type=\"text\" name=\"v14\" value=\"$v[13]\" /></td></tr>";
+    echo "<tr class=\"fieldnormallight\"><td>Metalextraktoren:</td><td><input type=\"text\" name=\"me\" value=\"".$me."\" /></td></tr>";
+    echo "<tr class=\"fieldnormaldark\"><td>Kristalextraktoren:</td><td><input type=\"text\" name=\"ke\" value=\"".$ke."\" /></td></tr>";
+    echo "<tr><td></td><td><b><a href=\"javascript:parser(1)\">Parser</a></b></td><td><b><a href=\"javascript:parser(0)\">Parser</a></b></td></tr>
+        <tr><td colspan=\"3\">Ticks: <select name=\"ticks\">";
     for($i=1;$i<6;$i++) {
         if($i==$ticks)
-            echo "<option value='".$i."' selected>".$i."</option>";
+            echo "<option value=\"".$i."\" selected=\"selected\">".$i."</option>";
         else
-            echo "<option value='".$i."'>".$i."</option>";
+            echo "<option value=\"".$i."\">".$i."</option>";
     }
 
-    echo "</select><input type='checkbox' name='before'";
-    if($before || !isset($_POST['ticks'])) {
-        echo "checked";
+    echo "</select><input type=\"checkbox\" name=\"preticks\"";
+    if(isset($_POST['preticks']) || !isset($_POST['ticks'])) {
+        echo " checked=\"checked\"";
     }
-    echo "><font size=-1>Feuerkraft der Geschütze vor Ankunft der Flotte berechnen</font></td></tr>";
+    echo " />Feuerkraft der Gesch&uuml;tze vor Ankunft der Flotte berechnen</td></tr>";
     echo "<tr><td></td></tr>";
-    echo "<tr><td colspan=3 align='center'><input type='submit' value='Berechnen'></td></tr>";
-    echo "<tr><td colspan=3 align='left' style=\"font-size:7pt;\">Powered by <a href='mailto:laprican@laprican.de'>laprican</a></td></tr></table></form>";
+    echo "<tr><td colspan=\"3\" align=\"center\"><input type='submit' value=\"Berechnen\" /></td></tr></table></form>";
     if($ticks<1)
         $ticks=1;
     if($ticks>5)
         $ticks=5;
-if($_GET['doing'] == 'compute') {
-    if($_POST['before']) {
+if(isset($_POST['compute'])) {
+    if(isset($_POST['preticks'])) {
         $gnsimu->ComputeTwoTickBefore();
         $gnsimu->PrintStatesGun();
         $gnsimu->ComputeOneTickBefore();
@@ -111,9 +123,11 @@ if($_GET['doing'] == 'compute') {
     for($i=0;$i<$ticks;$i++) {
         $gnsimu->Compute($i==$ticks-1);
         $gnsimu->PrintStates();
+//        $gnsimu_m->Tick(1);
     }
+
     $gnsimu->PrintOverView();
-    echo "<br>";
+//    $gnsimu_m->PrintOverView();
 }
 
 ?>

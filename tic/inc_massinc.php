@@ -3,12 +3,12 @@
 <?php
 
     $sql = 'SELECT value from `gn4vars` where name="incfreigabe"  ';
-    $SQL_Result = mysql_query( $sql, $SQL_DBConn );
+    $SQL_Result = tic_mysql_query( $sql, $SQL_DBConn );
     $allowed = mysql_result($SQL_Result, 0, 'value' );
     $isadmin = 0;
     $isscanner=0;
     $sql = 'SELECT name, value from `gn4vars` where value="'.$Benutzer['galaxie'].':'.$Benutzer['planet'].'"  ';
-    $SQL_Result = mysql_query( $sql, $SQL_DBConn );
+    $SQL_Result = tic_mysql_query( $sql, $SQL_DBConn );
 	$count = mysql_num_rows($SQL_Result);
 	if($count=='1'){
 	$admin = mysql_result($SQL_Result, 'name');
@@ -68,19 +68,19 @@
       <td>
       <?php
         $sql2 = 'select name, value from `gn4vars` where name="galainc" and value!="|"  order by id asc ';
-	    $SQL_Result3 = mysql_query( $sql2, $SQL_DBConn );
+	    $SQL_Result3 = tic_mysql_query( $sql2, $SQL_DBConn );
 	    $count2 = mysql_num_rows( $SQL_Result3 ) or $count=0;
 
 	    for ( $x=0; $x<$count2; $x++ ){
             $sql2 = 'select name, value from `gn4vars` where name="galainc" and value!="|"  order by id asc ';
-	        $SQL_Result3 = mysql_query( $sql2, $SQL_DBConn );
+	        $SQL_Result3 = tic_mysql_query( $sql2, $SQL_DBConn );
             $trennen1 = mysql_result( $SQL_Result3, $x, 'value' );
             $trennen = explode("|", $trennen1 );
             $vgala = $trennen[0];
             $beschreibung = $trennen[1];
 
         $sql = 'SELECT planet, bestaetigt, vorgemerkt, frei FROM `gn4incplanets` where gala="'.$vgala.'"  ORDER BY planet ';
-        $SQL_Result = mysql_query( $sql, $SQL_DBConn );
+        $SQL_Result = tic_mysql_query( $sql, $SQL_DBConn );
         $count = mysql_num_rows( $SQL_Result ) or $count=0;
 
         for ( $i=0; $i<$count; $i++ ) {
@@ -110,7 +110,7 @@
                   <td colspan="3" bgcolor="#EEEEEE"><font size="-1">
                     <?php
                     $sql = 'SELECT pts, me, ke FROM `gn4scans` WHERE rg="'.$vgala.'" and rp="'.$plan.'"  and type=0';
-                    $SQL_Result2 = mysql_query( $sql, $SQL_DBConn );
+                    $SQL_Result2 = tic_mysql_query( $sql, $SQL_DBConn );
                     if ( mysql_num_rows($SQL_Result2) == 0 ) {
                         $pts = 0;
                         $me  = 0;
@@ -123,7 +123,7 @@
                     printf( "%s Pnkts &nbsp;-&nbsp; %d MEx &nbsp;-&nbsp; %d KEx\n", number_format($pts, 0, ',', '.'), $me, $ke );
 
                     $sql = 'SELECT glo,glr,gmr,gsr,ga FROM `gn4scans` WHERE rg="'.$vgala.'"  and rp="'.$plan.'" and type=3';
-                    $SQL_Result2 = mysql_query( $sql, $SQL_DBConn );
+                    $SQL_Result2 = tic_mysql_query( $sql, $SQL_DBConn );
                     if ( mysql_num_rows($SQL_Result2) == 0 ) {
                         $lo     = 0;
                         $ro     = 0;
@@ -146,7 +146,7 @@
                   <td colspan="3" bgcolor="#EEEEEE"><font size="-1">
                     <?php
                     $sql = 'SELECT sfj ,sfb ,sff ,sfz ,sfkr ,sfsa ,sft ,sfka ,sfsu FROM `gn4scans` WHERE rg="'.$vgala.'"  and rp="'.$plan.'" and type=1';
-                    $SQL_Result2 = mysql_query( $sql, $SQL_DBConn );
+                    $SQL_Result2 = tic_mysql_query( $sql, $SQL_DBConn );
                     if ( mysql_num_rows($SQL_Result2) == 0 ) {
                         $ja     = " ";
                         $bo     = " ";

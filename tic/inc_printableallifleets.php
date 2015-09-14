@@ -8,7 +8,7 @@
     $SQL_DBConn = mysql_connect($db_info['host'], $db_info['user'], $db_info['password']) or $error_code = 1;
     mysql_select_db($db_info['dbname'], $SQL_DBConn) or $error_code = 2;
 
-    $SQL_Result = mysql_query('SELECT * FROM `gn4accounts` WHERE id="'.$_SESSION['userid'].'";', $SQL_DBConn) or $error_code = 4;
+    $SQL_Result = tic_mysql_query('SELECT * FROM `gn4accounts` WHERE id="'.$_SESSION['userid'].'";', $SQL_DBConn) or $error_code = 4;
     if (mysql_num_rows($SQL_Result) != 0) {
             // Nameinfos setzen
             $logged_out = 0;
@@ -70,14 +70,14 @@
       <td><font size="-1"><b><font color="#000000">Schutzies</font></b></font></td>
     </tr>
     <?php
-    $SQL_Result2 = mysql_query('SELECT id, name, galaxie, planet FROM `gn4accounts` WHERE allianz="'.$Benutzer['allianz'].'" and ticid="'.$Benutzer['ticid'].'" order by galaxie, planet', $SQL_DBConn);
+    $SQL_Result2 = tic_mysql_query('SELECT id, name, galaxie, planet FROM `gn4accounts` WHERE allianz="'.$Benutzer['allianz'].'" and ticid="'.$Benutzer['ticid'].'" order by galaxie, planet', $SQL_DBConn);
     for ( $i=0; $i<mysql_num_rows($SQL_Result2); $i++ ) {
         $_POST['gala']   = mysql_result($SQL_Result2, $i, 'galaxie');
         $_POST['planet'] = mysql_result($SQL_Result2, $i, 'planet');
         $name   = mysql_result($SQL_Result2, $i, 'name');
 
-        $SQL_Result = mysql_query('SELECT sfj ,sfb ,sff ,sfz ,sfkr ,sfsa ,sft ,sfka ,sfsu FROM `gn4scans` WHERE rg="'.$_POST['gala'].'" and rp="'.$_POST['planet'].'" and ticid="'.$Benutzer['ticid'].'" and type=1', $SQL_DBConn);
-        $SQL_Result3 = mysql_query('SELECT glo,glr,gmr,gsr,ga FROM `gn4scans` WHERE rg="'.$_POST['gala'].'" and rp="'.$_POST['planet'].'" and ticid="'.$Benutzer['ticid'].'" and type=3', $SQL_DBConn);
+        $SQL_Result = tic_mysql_query('SELECT sfj ,sfb ,sff ,sfz ,sfkr ,sfsa ,sft ,sfka ,sfsu FROM `gn4scans` WHERE rg="'.$_POST['gala'].'" and rp="'.$_POST['planet'].'" and ticid="'.$Benutzer['ticid'].'" and type=1', $SQL_DBConn);
+        $SQL_Result3 = tic_mysql_query('SELECT glo,glr,gmr,gsr,ga FROM `gn4scans` WHERE rg="'.$_POST['gala'].'" and rp="'.$_POST['planet'].'" and ticid="'.$Benutzer['ticid'].'" and type=3', $SQL_DBConn);
 
         if ( mysql_num_rows($SQL_Result) == 0 ) {
             $ja     = " ";

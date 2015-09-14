@@ -7,16 +7,24 @@
         echo 'internal parameter-error #2';
         return;
     }
+    
+    $SQL_Result = tic_mysql_query("SELECT verteidiger_galaxie, verteidiger_planet FROM `gn4flottenbewegungen` WHERE id ='".$_GET['fbid']."'") or die(tic_mysql_error(__FILE__,__LINE__));
+    
+    if(!$row = mysql_fetch_row($SQL_Result))
+        return;
 
     if ( $_GET['incsave'] == 1 )
-        $newsave=0;
-    else
-        $newsave=1;
-
-    $sql = 'UPDATE `gn4flottenbewegungen` SET save="'.$newsave.'" WHERE id='.$_GET['fbid'];
-    if ( $sql != '' ){
-        $SQL_result = mysql_query( $sql, $SQL_DBConn) or die(mysql_errno()." - ".mysql_error());
+    {
+        $newsave = 0;
+        LogAction($row[0].":".$row[1]." -> Safe", LOG_SETSAFE);
     }
+    else
+    {
+        $newsave = 1;
+        LogAction($row[0].":".$row[1]." -> Unafe", LOG_SETSAFE);
+    }
+    
+    tic_mysql_query("UPDATE `gn4flottenbewegungen` SET save='".$newsave."' WHERE id='".$_GET['fbid']."'") or die(tic_mysql_error(__FILE__,__LINE__));
 
 
 ?>

@@ -1,118 +1,109 @@
-<?PHP
-    if (!isset($_POST['txtScanGalaxie']) || !isset($_POST['txtScanPlanet'])) {
-        $SQL_Result = mysql_query('SELECT * FROM `gn4scans` WHERE rg<>"0" AND rp<>"0" and ticid="'.$Benutzer['ticid'].'" ORDER BY rg, rp LIMIT 1;', $SQL_DBConn);
+<?php
+    if(isset($_GET['txtScanGalaxie']))
+        $coords_gala = $_GET['txtScanGalaxie'];
+    else if(isset($_POST['txtScanGalaxie']))
+        $coords_gala = $_POST['txtScanGalaxie'];
+    else if(isset($_POST['galakoord']))
+        $coords_gala = $_POST['galakoord'];
+    else
+        $coords_gala = null;
+
+    if(isset($_GET['txtScanPlanet']))
+        $coords_planet = $_GET['txtScanPlanet'];
+    else if(isset($_POST['txtScanPlanet']))
+        $coords_planet = $_POST['txtScanPlanet'];
+    else if(isset($_POST['planetkoord']))
+        $coords_planet = $_POST['planetkoord'];
+    else
+        $coords_planet = null;
+
+
+    if (!isset($coords_gala) || !isset($coords_planet)) {
+        $SQL_Result = tic_mysql_query('SELECT * FROM `gn4scans` WHERE rg<>"0" AND rp<>"0" and ticid="'.$Benutzer['ticid'].'" ORDER BY rg, rp LIMIT 1;', $SQL_DBConn);
         if (mysql_num_rows($SQL_Result) != 0) {
-            $_POST['txtScanGalaxie'] = mysql_result($SQL_Result, 0, 'rg');
-            $_POST['txtScanPlanet'] = mysql_result($SQL_Result, 0, 'rp');
+            $coords_gala = mysql_result($SQL_Result, 0, 'rg');
+            $coords_planet = mysql_result($SQL_Result, 0, 'rp');
         } else {
-            $_POST['txtScanGalaxie'] = 0;
-            $_POST['txtScanPlanet'] = 0;
+            $coords_gala = $Benutzer['galaxie'];
+            $coords_planet = $Benutzer['planet'];
         }
     }
 ?>
-<CENTER>
-  <table border="0" bgcolor="#333333" width="90%">
+  <table width="90%" align="center">
     <tr><td>
         <table border="0" cellspacing="2" cellpadding="0" width="100%">
           <tr>
-            <td valign="top" cbgcolor="#cccccc" width="33%" rowspan="2">
-              <table border="0" cellspacing="2" cellpadding="0" align="center" width="100%" height="100%">
+            <td valign="top" width="33%" rowspan="2">
+              <table border="0" cellspacing="2" cellpadding="0" align="center" width="100%">
                 <tr>
-                  <td bgcolor="#CCCCCC" align="center"> <font size="-1"><b>Planeten
-                    Scan abfragen</b> </font></td>
+                  <td class="datatablehead">Planetenscan abfragen</td>
                 </tr>
                 <tr>
-                  <td bgcolor="#eeeeee" align="center" >
-                    <form action="./main.php" method="POST">
-                      <br>
-                      <font size="-1">
-                      <input type="hidden" name="modul" value="showgalascans">
-                      <input type="hidden" name="displaymode" value="0">
-                      <input type="text" size=4 maxlength=4 name="xgala" value="<?=$_POST['txtScanGalaxie']?>">
+                  <td class="fieldnormallight" align="center">
+                    <form action="./main.php?modul=showgalascans&amp;displaymode=0" method="post">
+                      <br />
+                      <input type="text" size="4" maxlength="4" name="xgala" value="<?=$coords_gala?>" />
                       :
-                      <input type="text" size=2 maxlength=2 name="xplanet" value="<?=$_POST['txtScanPlanet']?>">
-                      <input type="submit" value="anzeigen" name="submit">
-                      </font>
+                      <input type="text" size="2" maxlength="2" name="xplanet" value="<?=$coords_planet?>" />
+                      <input type="submit" value="Anzeigen" />
                     </form>
-                    <br>
-                  </td>
-                </tr>
-                <tr bgcolor="#CCCCCC">
-                  <td bgcolor="#CCCCCC" align="center"> <font size="-1"><b>Gala
-                    Scans abfragen</b> </font></td>
-                </tr>
-                <tr>
-                  <td bgcolor="#eeeeee" align="center">
-                    <form action="./main.php" method="POST">
-                      <br>
-                      <font size="-1">
-                      <input type="hidden" name="modul" value="showgalascans">
-                      <input type="hidden" name="displaytype" value="1">
-                      <input type="text" size=4 maxlength=4 name="xgala" value="<?=$_POST['txtScanGalaxie']?>">
-                      <input type="submit" value="anzeigen" name="submit">
-                      <br>
-                      </font>
-                    </form>
-                    <br>
                   </td>
                 </tr>
                 <tr>
-                  <td bgcolor="#CCCCCC" align="center"><font size="-1"><b>Sektor-Eingabe
-                    &quot;von Hand&quot;</b></font> </td>
+                  <td class="datatablehead" align="center">Galascans abfragen</td>
                 </tr>
                 <tr>
-                  <td bgcolor="#eeeeee" align="center">
-                    <form name="form1" method="POST" action="./main.php">
-                      <br>
-                      <font size="-1">
-                      <input type="hidden" name="modul" value="sektor_editor">
-                      <input type="text" name="galakoord" size="4" maxlength="4" value="<?=$_POST['txtScanGalaxie']?>">
-                      :
-                      <input type="text" name="planetkoord" size="2" maxlength="2" value="<?=$_POST['txtScanPlanet']?>">
-                      <input type="submit" name="manuell" value="manuell erfassen">
-                      <br>
-                      </font>
+                  <td class="fieldnormallight" align="center">
+                    <form action="./main.php?modul=showgalascans&amp;displaytype=1" method="post">
+                      <br />
+                      <input type="text" size="4" maxlength="4" name="xgala" value="<?=$coords_gala?>" />
+                      <input type="submit" value="Anzeigen" name="submit" />
                     </form>
-                    <br>
                   </td>
                 </tr>
                 <tr>
-                  <td bgcolor="#CCCCCC" align="center"> <font size="-1"><b>Flotten-Eingabe&quot;von
-                    Hand&quot;</b> </font></td>
+                  <td class="datatablehead" align="center">Sektor-Eingabe &quot;von Hand&quot;</td>
                 </tr>
                 <tr>
-                  <td bgcolor="#eeeeee" align="center" >
-                    <form name="form1" method="POST" action="./main.php">
-                      <font size="-1"><br>
-                      <input type="hidden" name="modul" value="fleet_editor">
-                      <input type="text" name="galakoord" size="4" maxlength="4" value="<?=$_POST['txtScanGalaxie']?>">
+                  <td class="fieldnormallight" align="center">
+                    <form method="post" action="./main.php?modul=sektor_editor">
+                      <br />
+                      <input type="text" name="galakoord" size="4" maxlength="4" value="<?=$coords_gala?>" />
                       :
-                      <input type="text" name="planetkoord" size="2" maxlength="2" value="<?=$_POST['txtScanPlanet']?>">
-                      <input type="submit" name="manuell" value="manuell erfassen">
-                      <br>
-                      </font>
+                      <input type="text" name="planetkoord" size="2" maxlength="2" value="<?=$coords_planet?>" />
+                      <input type="submit" name="manuell" value="Manuell erfassen" />
                     </form>
-                    <br>
                   </td>
                 </tr>
                 <tr>
-                  <td bgcolor="#CCCCCC" align="center" ><font size="-1"><b>Gesch&uuml;tz-Eingabe&quot;von
-                    Hand&quot;</b></font></td>
+                  <td align="center" class="datatablehead">Flotten-Eingabe&quot;von Hand&quot;</td>
                 </tr>
                 <tr>
-                  <td bgcolor="#eeeeee" align="center" >
-                    <form name="form1" method="POST" action="./main.php">
-                      <br>
-                      <font size="-1">
-                      <input type="hidden" name="modul" value="gun_editor">
-                      <input type="text" name="galakoord" size="4" maxlength="4" value="<?=$_POST['txtScanGalaxie']?>">
+                  <td class="fieldnormallight" align="center" >
+                    <form method="post" action="./main.php?modul=fleet_editor">
+                      <br />
+                      <input type="text" name="galakoord" size="4" maxlength="4" value="<?=$coords_gala?>" />
                       :
-                      <input type="text" name="planetkoord" size="2" maxlength="2" value="<?=$_POST['txtScanPlanet']?>">
-                      <input type="submit" name="manuell" value="manuell erfassen">
-                      <br>
+                      <input type="text" name="planetkoord" size="2" maxlength="2" value="<?=$coords_planet?>" />
+                      <input type="submit" name="manuell" value="Manuell erfassen" />
+                    </form>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="datatablehead" align="center" >Gesch&uuml;tz-Eingabe&quot;von Hand&quot;</td>
+                </tr>
+                <tr>
+                  <td class="fieldnormallight" align="center" >
+                    <form method="post" action="./main.php?modul=gun_editor">
+                      <br />
+                      <font size="-1">
+                      <input type="text" name="galakoord" size="4" maxlength="4" value="<?=$coords_gala?>" />
+                      :
+                      <input type="text" name="planetkoord" size="2" maxlength="2" value="<?=$coords_planet?>" />
+                      <input type="submit" name="manuell" value="Manuell erfassen" />
+                      <br />
                       </font>
                     </form>
-                    <br>
                   </td>
                 </tr>
               </table>
@@ -120,46 +111,26 @@
             <td width="67%" valign="top">
               <table width="100%" cellspacing="2">
                 <tr>
-                  <td bgcolor=#CCCfCC><b><font size="-1">Daten aus GN einf&uuml;gen
-                    (Clipboard)</font></b></td>
+                  <td class="datatablehead">Daten aus GN einf&uuml;gen(Clipboard)</td>
                 </tr>
                 <tr>
-                  <td bgcolor="#CCCceC"> <font color="#303030" size="-1"><a href="help/scaneingabe.html" target="tic-help#scan">weiter
+                  <td bgcolor="#ccccec"><font color="#303030" size="-1"><a href="help/scaneingabe.html">weiter
                     Infos und Hilfe zum Thema &quot;Scans ...&quot;</a></font></td>
                 </tr>
                 <tr>
-                  <td bgcolor="#eeeeee">
-                    <form action="./main.php" method="POST">
-                      <font size="-1">
-                      <input type="hidden" name="modul2" value="scan">
-                      <input type="hidden" name="action" value="addscan">
-                      <textarea cols=50 rows=25 name="txtScan"></textarea>
-                      <br>
-                      <input type="submit" value="Speichern" name="submit2">
-                      </font>
+                  <td class="fieldnormallight">
+                    <form action="./main.php" method="post">
+                      <input type="hidden" name="modul2" value="scan" />
+                      <input type="hidden" name="action" value="addscan" />
+                      <textarea cols="50" rows="25" name="txtScan"></textarea>
+                      <br />
+                      <input type="submit" value="Speichern" />
                     </form>
-                    <br>
-                    <br>
                   </td>
                 </tr>
               </table>
             </td>
           </tr>
-          <tr>
-            <td width="67%" valign="top">
-
-          <?php
-          /*
-          http://localhost/tic/main.php?modul=flotten&selected=wirdangegriffen&id=5&needdeff=5
-          echo '<input type="button" name="Verweis2" value="Zur Datenerfassung"onClick="self.location.href=';
-          echo "'./main.php?modul=scans&txtScanGalaxie=".$xgala."&txtScanPlanet=".$xplanet."'".'">';
-          */
-          ?>
-
-            </td>
-          </tr>
         </table>
   </td></tr>
-  </table>
-  <p>&nbsp;</p>
-</CENTER>
+</table>

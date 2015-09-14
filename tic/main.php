@@ -1,43 +1,51 @@
 <?PHP
 /*
-    ##########################################################
-    #                                                        #
-    #  T.I.C. | Tactical Information Center                  #
-    #                                                        #
-    #  Allianzorganisationstool für Galaxy-Network           #
-    #  von NataS alias Tobias Sarnowski                      #
-    #  von Pomel alias Achim Pomorin                         #
-    #  von Abrafax alias ??????                              #
-    #  vom tic-entwickler.de Team                            #
-    #                                                        #
-    ##########################################################
+	##########################################################
+	#                                                        #
+	#  T.I.C. | Tactical Information Center                  #
+	#                                                        #
+	#  Allianzorganisationstool für Galaxy-Network           #
+	#  von NataS alias Tobias Sarnowski                      #
+	#  von Pomel alias Achim Pomorin                         #
+	#  von Abrafax                                           #
+	#  vom tic-entwickler.de Team                            #
+	#  und mit bytehoppers                                   #
+	#                                                        #
+	##########################################################
 */
-//    error_reporting(E_ALL); // zu testzwecken einschalten
-    ob_start("ob_gzhandler");
-    foreach ($_GET as $key => $val) { $$key = $val; }
+//	error_reporting(E_ALL); // zu testzwecken einschalten
+	ob_start("ob_gzhandler");
+
+	include("sessionhelpers.inc.php");
+	$_GET = injsafe($_GET);
+	$_POST = injsafe($_POST);
+	foreach ($_GET as $key => $val) { $$key = $val; }
 
 	// Session-Registrieren
 	session_start();
-	include 'sessionhelpers.inc.php';
-	if (isset($_POST['login'])) {
+	if (!isset($_SESSION['is_auth']) || $_SESSION['is_auth']!=1) {
 		if ($userid=check_user($_POST['username'], $_POST['userpass'])) {
 			$_SESSION['is_auth'] = 1;
 			$_SESSION['userid'] = $userid;
 		} else {
 			$_SESSION['is_auth'] = 0;
 			$_SESSION['userid'] = -1;
-			die('Ihre Anmeldedaten waren nicht korrekt!');
+			die("Ihre Anmeldedaten waren nicht korrekt!");
 		}
 	}
+
+
+
 	$mtime = microtime();
 	$mtime = explode(" ", $mtime);
 	$mtime = $mtime[1] + $mtime[0];
 	$start_time = $mtime;
 
-	$version = '1.13.1 Beta8';
+	$version = "1.14.2";
 
-	include('./accdata.php' );
-	include('./globalvars.php');
+	include("./accdata.php");
+	include("./globalvars.php");
+	include("./functions.php");
 
 	// Kein Fehler zu Beginn ^^
 	$error_code = 0;
@@ -52,8 +60,9 @@
 	$htmlstyle['hell_blau'] = 'aaaaff';
 	$htmlstyle['dunkel_blau'] = '8888ff';
 
-	$SQL_Result = mysql_query('SELECT * FROM `gn4accounts` WHERE id="'.$_SESSION['userid'].'";') or die(mysql_errno()." - ".mysql_error());
-	if (mysql_num_rows($SQL_Result) == 1) {
+	$SQL_Result = tic_mysql_query("SELECT * FROM `gn4accounts` WHERE id='".$_SESSION['userid']."'") or die(tic_mysql_error(__FILE__,__LINE__));
+	if (mysql_num_rows($SQL_Result) == 1)
+	{
 		// Nameinfos setzen
 		$Benutzer['id'] = mysql_result($SQL_Result, 0, 'id');
 		$Benutzer['ticid'] = mysql_result($SQL_Result, 0, 'ticid');
@@ -71,34 +80,32 @@
 		$Benutzer['spy'] = mysql_result($SQL_Result, 0, 'spy');
 		$Benutzer['help'] = mysql_result($SQL_Result, 0, 'help');
 		$Benutzer['tcausw'] = mysql_result($SQL_Result, 0, 'tcausw');
-	} else {
-		echo '<a href="index.php" target="_top">Neu Einloggen</a>';
-		exit;
+
+// Erweiterung von Bytehoppers vom 20.07.05 für Attplaner2
+		@$Benutzer['attplaner'] = mysql_result($SQL_Result, 0, 'attplaner');
+	}
+	else
+	{
+		die("<a href=\"index.php\" target=\"_top\">Neu Einloggen</a>");
 	}
 
-  	// Variablen laden
-	include('./vars.php');
 
-    //funktionen Laden
-	include('./functions.php');
-
+	// Variablen laden
+	include("./vars.php");
 	// Pseudo-Cron
-	include('./cron.php');
+	include("./cron.php");
+	//Nachtwache Kontrolle Laden
+	include("./NWkontrolle.php");
 
-    //Nachtwache Kontrolle Laden
-    include('./NWkontrolle.php');
+	// Standardmodul wählen falls nicht angegeben
+	if(isset($_POST['modul']) && $_POST['modul'] != "")
+		$modul = $_POST['modul'];
+	else if(isset($_GET['modul']) && $_GET['modul'] != "")
+		$modul = $_GET['modul'];
+	else
+		$modul = "nachrichten";
 
-    // Standardmodul wählen falls nicht angegeben
-    if(isset($_POST['modul']) && $_POST['modul'] != "")
-        $modul = $_POST['modul'];
-    else if(isset($_GET['modul']) && $_GET['modul'] != "")
-        $modul = $_GET['modul'];
-    else
-        $modul = "nachrichten";
-
-
-
-	$SQL_Result2 = mysql_query('SELECT pts, s, d, me, ke FROM `gn4scans` WHERE rg="'.$Benutzer['galaxie'].'" AND rp="'.$Benutzer['planet'].'" AND type="0";', $SQL_DBConn);
+	$SQL_Result2 = tic_mysql_query("SELECT pts, s, d, me, ke FROM `gn4scans` WHERE rg='".$Benutzer['galaxie']."' AND rp='".$Benutzer['planet']."' AND type='0'") or die(tic_mysql_error(__FILE__,__LINE__));
 	if (mysql_num_rows($SQL_Result2) != 1)
 	{
 		$Benutzer['punkte'] = 0;
@@ -115,7 +122,7 @@
 		$Benutzer['exen_m'] = mysql_result($SQL_Result2, 0, 'me');
 		$Benutzer['exen_k'] = mysql_result($SQL_Result2, 0, 'ke');
 	}
-	$SQL_Result2 = mysql_query('SELECT blind FROM `gn4allianzen` WHERE id="'.$Benutzer['allianz'].'" and ticid="'.$Benutzer['ticid'].'";', $SQL_DBConn);
+	$SQL_Result2 = tic_mysql_query("SELECT blind FROM `gn4allianzen` WHERE id='".$Benutzer['allianz']."' AND ticid='".$Benutzer['ticid']."'") or die(tic_mysql_error(__FILE__,__LINE__));
 	if (mysql_num_rows($SQL_Result2) != 1)
 	{
 		$Benutzer['blind'] = 1;
@@ -126,26 +133,24 @@
 	}
 
 	//lastlogin setzen
-
-	$SQL_Result = mysql_query('UPDATE `gn4accounts` SET lastlogin="'.time().'" WHERE id="'.$Benutzer['id'].'" and ticid="'.$Benutzer['ticid'].'";', $SQL_DBConn) or $error_code = 7;
-
-
+	tic_mysql_query("UPDATE `gn4accounts` SET lastlogin='".time()."' WHERE id='".$Benutzer['id']."' AND ticid='".$Benutzer['ticid']."'") or die(tic_mysql_error(__FILE__,__LINE__));
 
 	// Spion???
-	if($Benutzer['spy'] != 0 && $Benutzer["rang"] != $Rang_STechniker)
+	if($Benutzer['spy'] != 0 && $Benutzer['rang'] != RANG_STECHNIKER)
 	{
 
 ?>
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de" dir="ltr">
 	<head>
 		<title>TIC wird gewartet</title>
 	</head>
-	<body bgcolor=black>
+	<body style="background-color:#000000">
 		<table height="100%" width="100%">
 			<tr height="80%"><td style="text-align:center">
-				<font style="font: 36pt bold arial,sans-serif; color:red;;text-align:center">
+				<font style="font: 36pt bold arial,sans-serif; color:#ffffff;text-align:center">
 					Das "Tactical Information Center" ist<br />
-			 		wegen Wartungsarbeiten nicht erreichbar!<p><br /></p>
+					 wegen Wartungsarbeiten nicht erreichbar!<p><br /></p>
 				</font>
 			</td></tr>
 		</table>
@@ -155,37 +160,39 @@
 		exit;
 	}
 
-    if(isset($_POST['action']) && $_POST['action'] != "")
-        $action = $_POST['action'];
-    else if(isset($_GET['action']) && $_GET['action'] != "")
-        $action = $_GET['action'];
-    else
-        $action = "";
+	if(isset($_POST['action']) && $_POST['action'] != "")
+		$action = $_POST['action'];
+	else if(isset($_GET['action']) && $_GET['action'] != "")
+		$action = $_GET['action'];
+	else
+		$action = "";
 
 	// Incoming makieren
-	if (isset($_GET['need_planet'])) {
-		$SQL_Result = mysql_query('UPDATE `gn4flottenbewegungen` SET save="0" WHERE verteidiger_galaxie='.$need_galaxie.' and verteidiger_planet='.$need_planet.';', $SQL_DBConn) or $error_code = 7;
+	if (isset($_GET['need_planet']) && isset($_GET['need_galaxie']))
+	{
+		LogAction($_GET['need_galaxie'].":".$_GET['need_planet']." -> Unsafe", LOG_SETSAFE);
+		tic_mysql_query("UPDATE `gn4flottenbewegungen` SET save='0' WHERE verteidiger_galaxie='".$_GET['need_galaxie']."' AND verteidiger_planet='".$_GET['need_planet']."'") or die(tic_mysql_error(__FILE__,__LINE__));
 	}
-	if (isset($_GET['needno_planet'])) {
-		$SQL_Result = mysql_query('UPDATE `gn4flottenbewegungen` SET save="1" WHERE verteidiger_galaxie='.$needno_galaxie.' and verteidiger_planet='.$needno_planet.';', $SQL_DBConn) or $error_code = 7;
+	if (isset($_GET['needno_planet']) && isset($_GET['needno_galaxie']))
+	{
+		LogAction($_GET['needno_galaxie'].":".$_GET['needno_planet']." -> Safe", LOG_SETSAFE);
+		tic_mysql_query("UPDATE `gn4flottenbewegungen` SET save='1' WHERE verteidiger_galaxie='".$_GET['needno_galaxie']."' AND verteidiger_planet='".$_GET['needno_planet']."'") or die(tic_mysql_error(__FILE__,__LINE__));
 	}
 
 	// Funktion einbinden
-	// echo 'action=./function.'.$action.'.php<br>';
-	if ($action != '') include('./function.'.$action.'.php');
+	if ($action != "")
+		include("./function.".$action.".php");
 
-	$SQL_Result6 = mysql_query( 'SELECT value FROM `gn4vars` WHERE name="ticeb" and ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn );
-	$meta =  mysql_result($SQL_Result6, 0, 'value' );
 ?>
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de" dir="ltr">
 	<head>
-		<title>T.I.C. | Tactical Information Center - Meta <?=$meta?></title>
-		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-		<meta http-equiv="refresh" content="900; URL=./main.php?auto">
-		<basefont size="-1" face="Verdana">
-
-		<link rel="stylesheet" href="./tic.css" type="text/css">
-		<script language="JavaScript">
+		<title>T.I.C. | Tactical Information Center - Meta <?=$MetaInfo['name']?></title>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<meta http-equiv="refresh" content="900; URL=./main.php?<?=(isset($_GET['auto']) ? "" : "auto").($_SERVER['QUERY_STRING'] != "" ? (isset($_GET['auto']) ? "" : "&amp;").str_replace("&", "&amp;", $_SERVER['QUERY_STRING']) : "")?>" />
+		<link rel="stylesheet" href="./tic.css" type="text/css" />
+		<script language="javascript" type="text/javascript">
+		<!--
 			function NeuFenster( link ) {
 				MeinFenster = window.open( link, "Artikel", "width=800,height=300,scrollbars=yes,resizable=yes");
 				MeinFenster.focus();
@@ -194,63 +201,70 @@
 //			if ( top.frames.length < 2) {
 //				window.open("./frameset.html","_top");
 //			}
+		//-->
 		</script>
 		<script type="text/javascript" src="./overlib/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
 	</head>
-	<body bgcolor="#FFFFFF" link="#0000ff" vlink="#0000ff" alink="#ff0000" style="margin:0px; padding:0px; background-image:url(images/bg.jpg); background-repeat:repeat-x">
+	<body>
 		<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
-		<table width="99%"><tr><td align="center" valign="top" width="150">
+		<div style="z-index:10;background-image:url('bilder/skin/background.bmp');width:100%">
+		<div align="center" style="width:100%"><img src="bilder/skin/banner.jpg" alt="" align="middle" /></div>
 <?php
-	include('./menu.inc.php');
+	include("./menu.inc.php");
 ?>
-		</td><td align="center" valign="top">
-			<font size="5" bgcolor="#eeeeee"><b>T.I.C. | Tactical Information Center der Meta <?=$meta?></b></font>
-			<font face="Verdana, Arial, Helvetica, sans-serif" size="-1">
+		<div style="position:relative;margin-left:200px;margin-right:30px;"><div class="info" align="center">
+			<!--<font size="5"><b>T.I.C. | Tactical Information Center der Meta <?=$MetaInfo['name']?></b></font>//-->
 <?php
 	if ($error_code != 0)
-		include('./inc_errors.php');
-	else {
-		include('./inc_accinfo.php');
-
+		include("./inc_errors.php");
+	else
+	{
+		include("./inc_accinfo.php");
+		echo "</div>";
 		$mtime = microtime();
 		$mtime = explode(" ", $mtime);
 		$mtime = $mtime[1] + $mtime[0];
 		$mid_time = $mtime;
-		if (isset($_GET['auto'])) echo "Auto-Refresh...";
-		if ($Benutzer['pwdandern'] != 1) {
-			include('./inc_'.$modul.'.php');
-		} else {
-			include('./inc_pwdandern.php');
-		}
-		if ($error_code != 0) include('./inc_errors.php');
+		if (isset($_GET['auto']))
+			echo "Auto-Refresh...";
+		echo "<div class=\"main\" align=\"center\">";
+		if ($Benutzer['pwdandern'] != 1)
+			include("./inc_".$modul.".php");
+		else
+			include("./inc_pwdandern.php");
+		echo "</div>";
+
+		if ($error_code != 0)
+			include("./inc_errors.php");
 	}
 ?>
-			</font>
-			<br>
-			<hr width="99%">
-			<table width="99%"><tr>
+		</div>
+		<div style="position:relative;top:50px;margin-left:200px;margin-right:30px;">
+			<hr />
+			<table width="100%"><tr>
 				<td align="left" valign="top" width="40%">
 					<font size="-1">T.I.C. v<?=$version?></font><br />
 					<a href="http://game.galaxynet.4players.de/game/login.php" target="_blank"><img src="http://portal.galaxynet.4players.de/banner_images/gn-button.gif"/></a>
 				</td>
-				<td align="center" valign="top" width="20%"><font size="-1">
-					erstellt in<br>
+				<td align="center">
+					erstellt in
 <?php
 	$mtime = microtime();
 	$mtime = explode(" ", $mtime);
 	$mtime = $mtime[1] + $mtime[0];
 	$end_time = $mtime;
-	echo "					".sprintf("%01.3f", $end_time - $start_time)." sec\n";
-	if (isset($mid_time) && $mid_time != 0) {
-		echo "					<br>\n";
-		echo "					(".sprintf("%01.3f", $mid_time - $start_time)." sec)\n";
+	echo sprintf("%01.3f", $end_time - $start_time)." sek.";
+	if (isset($mid_time) && $mid_time != 0)
+	{
+		echo "(".sprintf("%01.3f", $mid_time - $start_time)." sek.)\n";
 	}
+	echo "<br />".count_querys(false)." Datenbankabfragen\n";
 ?>
-				</font></td>
+				</td>
 				<td align="right" valign="top" width="40%">
 					<a href="http://www.tic-entwickler.de" target="_blank"><img src="./bilder/TICELogo.jpg"/></a>
 				</td>
 			</tr></table>
-		</td></tr></table>
+		</div></div>
 	</body>
 </html>

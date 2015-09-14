@@ -60,6 +60,8 @@
 		$user_r = $SQL_Row_user['rang'];
 		$user_ll = $SQL_Row_user['lastlogin'];
 
+		$login_warn = $user_ll == "" || $user_ll == "0000-00-00" || $user_ll == 0 || $user_ll < (time() - (3 * 24 * 3600));
+
 // ------------------
 		$dsp .= "			<td class=\"field".$farb_zusatz."dark\"><a href=\"./main.php?modul=scans&txtScanGalaxie=".$user_g."&txtScanPlanet=".$user_p."\"><img src=\"./bilder/default/scan.gif\" width=\"20\" height=\"20\" border=\"0\" alt=\"Scans erfassen\" title=\"Scans erfassen\"></a></td>\n";
 		$dsp .= "			<td class=\"field".$farb_zusatz."dark\"><a href=\"./main.php?modul=showgalascans&xgala=".$user_g."&xplanet=".$user_p."&displaymode=0\"><img src=\"./bilder/default/ship.gif\" width=\"20\" height=\"20\" border=\"0\" alt=\"Schiffe anzeigen\" title=\"Schiffe anzeigen\"></a></td>\n";
@@ -78,7 +80,7 @@
 		$link_scan = "<a href=\"./main.php?modul=showgalascans&displaymode=0&xgala=".$user_g."&xplanet=".$user_p."\" onmouseover=\"return overlib('".$tooltip_scan."');\" onmouseout=\"return nd();\">";
 
 		$dsp .= "			<td class=\"field".$farb_zusatz."light\" align=\"center\">".$user_g.":".$user_p."</td>\n";
-		$dsp .= "			<td class=\"field".$farb_zusatz."dark\" align=\"left\"><img src=\"".$RangImage[$user_r]."\" width=\"20\" height=\"20\" border=\"0\" alt=\"".$RangName[$user_r]."\" title=\"".$RangName[$user_r]."\" align=\"middle\"> ".$link_scan."<span class=\"texttaktik\">[ ".$AllianzTag[$SQL_Row_user['allianz']]." ] ".$user_n." <img src=\"./bilder/scans/".getScanAge($scan["scan_militaer_time"], time()).".gif\" width=\"15\" height=\"15\" border=\"0\" align=\"middle\"></span></a>".($user_ll > $time_online?" *":"")."</td>\n";
+		$dsp .= "			<td class=\"field".$farb_zusatz."dark\" align=\"left\"><img src=\"".$RangImage[$user_r]."\" width=\"20\" height=\"20\" border=\"0\" alt=\"".$RangName[$user_r]."\" title=\"".$RangName[$user_r]."\" align=\"middle\"> ".$link_scan."<span class=\"texttaktik\">[ ".$AllianzTag[$SQL_Row_user['allianz']]." ] ".($login_warn?"<span class=\"loginwarn\">":"").$user_n.($login_warn?"</span>":"")." <img src=\"./bilder/scans/".getScanAge($scan["scan_militaer_time"], time()).".gif\" width=\"15\" height=\"15\" border=\"0\" align=\"middle\"></span></a>".($user_ll > $time_online?" *":"")."</td>\n";
 // ----------
 		$f1_liste_namen = "";
 		$f1_liste_eta = "";
@@ -89,7 +91,7 @@
 		$incs_not_safe = 0;
 
 		$SQL_Query = "SELECT * FROM gn4flottenbewegungen WHERE (angreifer_galaxie = '".$user_g."' AND angreifer_planet='".$user_p."') OR (verteidiger_galaxie='".$user_g."' AND verteidiger_planet='".$user_p."') ORDER BY eta;";
-		$SQL_Result_fleets = mysql_query($SQL_Query, $SQL_DBConn); // or error("Error while bilding 'taktik' (step 2).", ERROR_SQL, false);
+		$SQL_Result_fleets = tic_mysql_query($SQL_Query, $SQL_DBConn); // or error("Error while bilding 'taktik' (step 2).", ERROR_SQL, false);
 
 		while ($SQL_Row_fleets = mysql_fetch_assoc($SQL_Result_fleets)) {
 			$f_id		= $SQL_Row_fleets['id'];
@@ -151,7 +153,7 @@
 				$link_fleet = "<a href=\"".$scripturl."&action=flonrchange&fbid=".$f_id."&flonr=".$f_nummer."\" onmouseover=\"return overlib('".$tooltip_fleet."');\" onmouseout=\"return nd();\">#".($f_nummer == 0?"?":$f_nummer)."</a>";
 
 				$f1_liste_namen = $f1_liste_namen."			".($f_mode == FLEET_MOVEMENT_ATTACK_RETURN || $f_mode == FLEET_MOVEMENT_DEFEND_RETURN?"RF: ":"").$link_scan."<span class=\"".($f_mode == FLEET_MOVEMENT_ATTACK || $f_mode == FLEET_MOVEMENT_ATTACK_RETURN?"fleetatt":"fleetdeff")."\">".$ziel_g.":".$ziel_p." ".trimname($ziel_n)." <img src=\"./bilder/scans/".getScanAge($scan_militaer_time, $f_eta).".gif\" width=\"15\" height=\"15\" border=\"0\" align=\"middle\"></span></a> ".$link_fleet."<br />\n";
-				$f1_liste_eta = $f1_liste_eta ."			".($f_mode != FLEET_MOVEMENT_ATTACK_RETURN && $f_mode != FLEET_MOVEMENT_DEFEND_RETURN && $f_eta < $time_now?"-":"").getime4display(eta($f_mode == FLEET_MOVEMENT_ATTACK_RETURN || $f_mode == FLEET_MOVEMENT_DEFEND_RETURN?$f_eta_rueck:($f_eta >= $time_now?$f_eta:$f_eta_ab)) * 15 - $tick_abzug)."<br />\n";
+				$f1_liste_eta = $f1_liste_eta ."			".($f_mode != FLEET_MOVEMENT_ATTACK_RETURN && $f_mode != FLEET_MOVEMENT_DEFEND_RETURN && $f_eta < $time_now?"-":"").getime4display(eta($f_mode == FLEET_MOVEMENT_ATTACK_RETURN || $f_mode == FLEET_MOVEMENT_DEFEND_RETURN?$f_eta_rueck:($f_eta >= $time_now?$f_eta:$f_eta_ab)) * $Ticks['lange'] - $tick_abzug)."<br />\n";
 				if ($mode == 2) $display_line = 1;
 			}
 
@@ -208,7 +210,7 @@
 				$link_safe = "<a href=\"".$scripturl."&action=savechange&fbid=".$f_id."&&incsave=".(1 - $inc_safe)."\" onmouseover=\"return overlib('".$tooltip_safe."');\" onmouseout=\"return nd();\">";
 
 				$f2_liste_namen = $f2_liste_namen."			".$link_scan."<span class=\"".($inc_safe?"textincsafe":(($f_eta - $time_now <= ($tsec * 12))?"textincovertime":"textincopen"))."\">".$start_g.":".$start_p." ".trimname($start_n)." <img src=\"./bilder/scans/".getScanAge($scan["scan_militaer_time"], $f_eta).".gif\" width=\"15\" height=\"15\" border=\"0\" align=\"middle\"></span></a> ".$link_fleet."<br />\n";
-				$f2_liste_eta = $f2_liste_eta ."			".$link_safe."<span class=\"".($inc_safe?"textincsafe":(($f_eta - $time_now <= ($tsec * 12))?"textincovertime":"textincopen"))."\">".($f_eta < $time_now?"-":"").getime4display(eta($f_eta >= $time_now?$f_eta:$f_eta_ab) * 15 - $tick_abzug)."</span></a><br />\n";
+				$f2_liste_eta = $f2_liste_eta ."			".$link_safe."<span class=\"".($inc_safe?"textincsafe":(($f_eta - $time_now <= ($tsec * 12))?"textincovertime":"textincopen"))."\">".($f_eta < $time_now?"-":"").getime4display(eta($f_eta >= $time_now?$f_eta:$f_eta_ab) * $Ticks['lange'] - $tick_abzug)."</span></a><br />\n";
 				$display_line = 1;
 				$incs += 1;
 				$incs_not_safe += (1 - $inc_safe);
@@ -258,7 +260,7 @@
 				$link_fleet = "<a href=\"".$scripturl."&action=flonrchange&fbid=".$f_id."&flonr=".$f_nummer."\" onmouseover=\"return overlib('".$tooltip_fleet."');\" onmouseout=\"return nd();\">#".($f_nummer == 0?"?":$f_nummer)."</a>";
 
 				$f3_liste_namen = $f3_liste_namen."			".$link_scan."<span class=\"texttaktik\">".$start_g.":".$start_p." ".trimname($start_n)." <img src=\"./bilder/scans/".getScanAge($scan["scan_militaer_time"], $f_eta).".gif\" width=\"15\" height=\"15\" border=\"0\" align=\"middle\"></span></a> ".$link_fleet."<br />\n";
-				$f3_liste_eta = $f3_liste_eta ."			".($f_eta < $time_now?"-":"").getime4display(eta($f_eta >= $time_now?$f_eta:$f_eta_ab) * 15 - $tick_abzug)."<br />\n";
+				$f3_liste_eta = $f3_liste_eta ."			".($f_eta < $time_now?"-":"").getime4display(eta($f_eta >= $time_now?$f_eta:$f_eta_ab) * $Ticks['lange'] - $tick_abzug)."<br />\n";
 				$display_line=1;
 			}
 		}

@@ -86,12 +86,12 @@ function parseLine( $line_in) {
 									if (ereg("00:00", $etas[$ii])) {
 										$etas[$ii] = 0;
 									} else {
-										$etas[$ii] = (int)((substr($etas[$ii],0,2)*60 + substr($etas[$ii],3,2))/15)+1;
+										$etas[$ii] = (int)((substr($etas[$ii],0,2)*60 + substr($etas[$ii],3,2))/$Ticks['lange'])+1;
 									}
 								} elseif (strpos($etas[$ii], "s")>0) {
-									$etas[$ii] = (int)(substr($etas[$ii],0,strpos($etas[$ii], "s"))*60/15)+1;
+									$etas[$ii] = (int)(substr($etas[$ii],0,strpos($etas[$ii], "s"))*60/$Ticks['lange'])+1;
 								} elseif (strpos($etas[$ii], "m")>0) {
-									$etas[$ii] = (int)(substr($etas[$ii],0,strpos($etas[$ii], "m"))/15)+1;
+									$etas[$ii] = (int)(substr($etas[$ii],0,strpos($etas[$ii], "m"))/$Ticks['lange'])+1;
 								}
 							}
 							for ($ii = 0; $ii < sizeof($flotten); $ii++) {
@@ -116,12 +116,12 @@ function parseLine( $line_in) {
 									if (ereg("00:00", $etas[$ii])) {
 										$etas[$ii] = 0;
 									} else {
-										$etas[$ii] = (int)((substr($etas[$ii],0,2)*60 + substr($etas[$ii],3,2))/15)+1;
+										$etas[$ii] = (int)((substr($etas[$ii],0,2)*60 + substr($etas[$ii],3,2))/$Ticks['lange'])+1;
 									}
 								} elseif (strpos($etas[$ii], "s")>0) {
-									$etas[$ii] = (int)(substr($etas[$ii],0,strpos($etas[$ii], "s"))*60/15)+1;
+									$etas[$ii] = (int)(substr($etas[$ii],0,strpos($etas[$ii], "s"))*60/$Ticks['lange'])+1;
 								} elseif (strpos($etas[$ii], "m")>0) {
-									$etas[$ii] = (int)(substr($etas[$ii],0,strpos($etas[$ii], "m"))/15)+1;
+									$etas[$ii] = (int)(substr($etas[$ii],0,strpos($etas[$ii], "m"))/$Ticks['lange'])+1;
 								}
 							}
 							for ($ii = 0; $ii < sizeof($flotten); $ii++) {
@@ -146,12 +146,12 @@ function parseLine( $line_in) {
 									if (ereg("00:00", $etas[$ii])) {
 										$etas[$ii] = 0;
 									} else {
-										$etas[$ii] = (int)((substr($etas[$ii],0,2)*60 + substr($etas[$ii],3,2))/15)+1;
+										$etas[$ii] = (int)((substr($etas[$ii],0,2)*60 + substr($etas[$ii],3,2))/$Ticks['lange'])+1;
 									}
 								} elseif (strpos($etas[$ii], "s")>0) {
-									$etas[$ii] = (int)(substr($etas[$ii],0,strpos($etas[$ii], "s"))*60/15)+1;
+									$etas[$ii] = (int)(substr($etas[$ii],0,strpos($etas[$ii], "s"))*60/$Ticks['lange'])+1;
 								} elseif (strpos($etas[$ii], "m")>0) {
-									$etas[$ii] = (int)(substr($etas[$ii],0,strpos($etas[$ii], "m"))/15)+1;
+									$etas[$ii] = (int)(substr($etas[$ii],0,strpos($etas[$ii], "m"))/$Ticks['lange'])+1;
 								}
 							}
 							for ($ii = 0; $ii < sizeof($flotten); $ii++) {
@@ -172,12 +172,12 @@ function parseLine( $line_in) {
 									if (ereg("00:00", $etas[$ii])) {
 										$etas[$ii] = 0;
 									} else {
-										$etas[$ii] = (int)((substr($etas[$ii],0,2)*60 + substr($etas[$ii],3,2))/15)+1;
+										$etas[$ii] = (int)((substr($etas[$ii],0,2)*60 + substr($etas[$ii],3,2))/$Ticks['lange'])+1;
 									}
 								} elseif (strpos($etas[$ii], "s")>0) {
-									$etas[$ii] = (int)(substr($etas[$ii],0,strpos($etas[$ii], "s"))*60/15)+1;
+									$etas[$ii] = (int)(substr($etas[$ii],0,strpos($etas[$ii], "s"))*60/$Ticks['lange'])+1;
 								} elseif (strpos($etas[$ii], "m")>0) {
-									$etas[$ii] = (int)(substr($etas[$ii],0,strpos($etas[$ii], "m"))/15)+1;
+									$etas[$ii] = (int)(substr($etas[$ii],0,strpos($etas[$ii], "m"))/$Ticks['lange'])+1;
 								}
 							}
 							for ($ii = 0; $ii < sizeof($flotten); $ii++) {
@@ -195,7 +195,7 @@ function parseLine( $line_in) {
 				}
 
 				$SQL_Query = 'SELECT * FROM `gn4flottenbewegungen` WHERE (angreifer_galaxie='.$this_galaxy.' OR verteidiger_galaxie='.$this_galaxy.') ORDER BY eta;';
-				$SQL_Result = mysql_query( $SQL_Query, $SQL_DBConn) or die('<br>mist - n db-error!!!');
+				$SQL_Result = tic_mysql_query( $SQL_Query, $SQL_DBConn) or die('<br>mist - n db-error!!!');
 
 				for ($i=0; $i < mysql_num_rows($SQL_Result); $i++){
 					$start_galaxie = mysql_result($SQL_Result, $i, 'angreifer_galaxie');
@@ -214,7 +214,7 @@ function parseLine( $line_in) {
 				}
 
 				$delcommand = 'DELETE FROM `gn4flottenbewegungen` WHERE (angreifer_galaxie='.$this_galaxy.' or verteidiger_galaxie='.$this_galaxy.');';
-				$SQL_Result = mysql_query( $delcommand, $SQL_DBConn) or die(mysql_errno()." - ".mysql_error());
+				$SQL_Result = tic_mysql_query( $delcommand, $SQL_DBConn) or die(mysql_errno()." - ".mysql_error());
 				$action = "flottenbewegung";
 				for ($i = 0; $i < sizeof($flottenbewegungen); $i++) {
 					switch ($flottenbewegungen[$i]["modus"]) {
@@ -311,11 +311,11 @@ function parseLine( $line_in) {
 					addgnuser($galaxiemitglieder[$i]["galaxie"], $galaxiemitglieder[$i]["planet"], $galaxiemitglieder[$i]["name"]);
 
 					$delcommand = "DELETE FROM `gn4scans` WHERE rg='".$galaxiemitglieder[$i]["galaxie"]."' AND rp='".$galaxiemitglieder[$i]["planet"]."' AND type='0';";
-					$SQL_Result = mysql_query( $delcommand, $SQL_DBConn) or die(mysql_errno()." - ".mysql_error());
+					$SQL_Result = tic_mysql_query( $delcommand, $SQL_DBConn) or die(mysql_errno()." - ".mysql_error());
 
 					$addcommand = "INSERT INTO `gn4scans` (type, zeit, g, p, rg, rp, gen, pts, s, d, me, ke, a)
 								VALUES ('0', '".date("H:i d.m.Y")."', '".$Benutzer['galaxie']."', '".$Benutzer['planet']."', '".$galaxiemitglieder[$i]["galaxie"]."', '".$galaxiemitglieder[$i]["planet"]."', '99', '".$galaxiemitglieder[$i]["punkte"]."', '".$galaxiemitglieder[$i]["flotte"]."', '".$galaxiemitglieder[$i]["geschuetze"]."', '".$galaxiemitglieder[$i]["mextraktoren"]."', '".$galaxiemitglieder[$i]["kextraktoren"]."', '".$galaxiemitglieder[$i]["asteroiden"]."');";
-					$SQL_Result = mysql_query( $addcommand, $SQL_DBConn) or die(mysql_errno()." - ".mysql_error());
+					$SQL_Result = tic_mysql_query( $addcommand, $SQL_DBConn) or die(mysql_errno()." - ".mysql_error());
 				}
 
 			}
@@ -404,16 +404,15 @@ function parseLine( $line_in) {
                 $scan_status1 = 4;
                 $scan_status2 = 4;
                 // insert mili  ............................................
-                $SQL_Result = mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$scan_rg.'" AND rp="'.$scan_rp.'" AND type="'.$scan_type.'";', $SQL_DBConn);
+                $SQL_Result = tic_mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$scan_rg.'" AND rp="'.$scan_rp.'" AND type="'.$scan_type.'";', $SQL_DBConn);
                 $insert_names = 'sf0j, sf0b, sf0f, sf0z, sf0kr, sf0sa, sf0t, sf0ko, sf0ka, sf0su';
                 $insert_names = $insert_names.', sf1j, sf1b, sf1f, sf1z, sf1kr, sf1sa, sf1t, sf1ko, sf1ka, sf1su, status1';
                 $insert_names = $insert_names.', sf2j, sf2b, sf2f, sf2z, sf2kr, sf2sa, sf2t, sf2ko, sf2ka, sf2su, status2';
                 $insert_values = '"'.$scan_sf0j.'", "'.$scan_sf0b.'", "'.$scan_sf0f.'", "'.$scan_sf0z.'", "'.$scan_sf0kr.'", "'.$scan_sf0sa.'", "'.$scan_sf0t.'", "'.$scan_sf0ko.'", "'.$scan_sf0ka.'", "'.$scan_sf0su.'"';
-                $insert_values = '"'.$scan_sf0j.'", "'.$scan_sf0b.'", "'.$scan_sf0f.'", "'.$scan_sf0z.'", "'.$scan_sf0kr.'", "'.$scan_sf0sa.'", "'.$scan_sf0t.'", "'.$scan_sf0ko.'", "'.$scan_sf0ka.'", "'.$scan_sf0su.'"';
                 $insert_values = $insert_values.', "'.$scan_sf1j.'", "'.$scan_sf1b.'", "'.$scan_sf1f.'", "'.$scan_sf1z.'", "'.$scan_sf1kr.'", "'.$scan_sf1sa.'", "'.$scan_sf1t.'", "'.$scan_sf1ko.'", "'.$scan_sf1ka.'", "'.$scan_sf1su.'", "'.$scan_status1.'"';
                 $insert_values = $insert_values.', "'.$scan_sf2j.'", "'.$scan_sf2b.'", "'.$scan_sf2f.'", "'.$scan_sf2z.'", "'.$scan_sf2kr.'", "'.$scan_sf2sa.'", "'.$scan_sf2t.'", "'.$scan_sf2ko.'", "'.$scan_sf2ka.'", "'.$scan_sf2su.'", "'.$scan_status2.'"';
                 addgnuser($scan_rg, $scan_rp, $scan_rn);
-                $SQL_Result = mysql_query('INSERT INTO `gn4scans` (type, zeit, g, p, rg, rp, gen, '.$insert_names.') VALUES ("'.$scan_type.'", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$Benutzer['galaxie'].'", "'.$Benutzer['planet'].'", "'.$scan_rg.'", "'.$scan_rp.'", "'.$scan_gen.'", '.$insert_values.');', $SQL_DBConn) or die('ERROR 2 Konnte Datensatz nicht schreiben');
+                $SQL_Result = tic_mysql_query('INSERT INTO `gn4scans` (type, zeit, g, p, rg, rp, gen, '.$insert_names.') VALUES ("'.$scan_type.'", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$Benutzer['galaxie'].'", "'.$Benutzer['planet'].'", "'.$scan_rg.'", "'.$scan_rp.'", "'.$scan_gen.'", '.$insert_values.');', $SQL_DBConn) or die('ERROR 2 Konnte Datensatz nicht schreiben');
 
                 // insert unit  ............................................
                 $scan_type = 1;
@@ -447,10 +446,10 @@ function parseLine( $line_in) {
                 // schutzies
                 $scan_sfsu = $scan_sf0su + $scan_sf1su +$scan_sf2su;
 
-                $SQL_Result = mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$scan_rg.'" AND rp="'.$scan_rp.'" AND type="'.$scan_type.'";', $SQL_DBConn);
+                $SQL_Result = tic_mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$scan_rg.'" AND rp="'.$scan_rp.'" AND type="'.$scan_type.'";', $SQL_DBConn);
                 $insert_names = 'sfj, sfb, sff, sfz, sfkr, sfsa, sft, sfko, sfka, sfsu';
                 $insert_values = '"'.$scan_sfj.'", "'.$scan_sfb.'", "'.$scan_sff.'", "'.$scan_sfz.'", "'.$scan_sfkr.'", "'.$scan_sfsa.'", "'.$scan_sft.'", "'.$scan_sfko.'", "'.$scan_sfka.'", "'.$scan_sfsu.'"';
-                $SQL_Result = mysql_query('INSERT INTO `gn4scans` (type, zeit, g, p, rg, rp, gen, '.$insert_names.') VALUES ("'.$scan_type.'", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$Benutzer['galaxie'].'", "'.$Benutzer['planet'].'", "'.$scan_rg.'", "'.$scan_rp.'", "'.$scan_gen.'", '.$insert_values.');', $SQL_DBConn) or die('ERROR 2 Konnte Datensatz nicht schreiben');
+                $SQL_Result = tic_mysql_query('INSERT INTO `gn4scans` (type, zeit, g, p, rg, rp, gen, '.$insert_names.') VALUES ("'.$scan_type.'", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$Benutzer['galaxie'].'", "'.$Benutzer['planet'].'", "'.$scan_rg.'", "'.$scan_rp.'", "'.$scan_gen.'", '.$insert_values.');', $SQL_DBConn) or die('ERROR 2 Konnte Datensatz nicht schreiben');
                 addgnuser($scan_rg, $scan_rp, $scan_rn);
 //print( $insert_values."<br>" );
 
@@ -499,10 +498,10 @@ function parseLine( $line_in) {
                     $scan_gr = 0;                                 // raumbasis
 
                     addgnuser($scan_rg, $scan_rp, $scan_rn);
-                    $SQL_Result = mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$scan_rg.'" AND rp="'.$scan_rp.'" AND type="'.$scan_type.'";', $SQL_DBConn);
+                    $SQL_Result = tic_mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$scan_rg.'" AND rp="'.$scan_rp.'" AND type="'.$scan_type.'";', $SQL_DBConn);
                     $insert_names = 'glo, glr, gmr, gsr, ga, gr';
                     $insert_values = '"'.$scan_glo.'", "'.$scan_glr.'", "'.$scan_gmr.'", "'.$scan_gsr.'", "'.$scan_ga.'", "'.$scan_gr.'"';
-                    $SQL_Result = mysql_query('INSERT INTO `gn4scans` (type, zeit, g, p, rg, rp, gen, '.$insert_names.') VALUES ("'.$scan_type.'", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$Benutzer['galaxie'].'", "'.$Benutzer['planet'].'", "'.$scan_rg.'", "'.$scan_rp.'", "'.$scan_gen.'", '.$insert_values.');', $SQL_DBConn) or die('ERROR 2 Konnte Datensatz nicht schreiben');
+                    $SQL_Result = tic_mysql_query('INSERT INTO `gn4scans` (type, zeit, g, p, rg, rp, gen, '.$insert_names.') VALUES ("'.$scan_type.'", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$Benutzer['galaxie'].'", "'.$Benutzer['planet'].'", "'.$scan_rg.'", "'.$scan_rp.'", "'.$scan_gen.'", '.$insert_values.');', $SQL_DBConn) or die('ERROR 2 Konnte Datensatz nicht schreiben');
 
                 }
             } else {    // sec, mili, unit, news, gscan
@@ -532,10 +531,10 @@ function parseLine( $line_in) {
                 $daten = parseLine( $zeilen[8]);            // Asteroiden: 20
                 $scan_a = trim($daten[1]);
                 addgnuser($scan_rg, $scan_rp, $scan_rn);
-                $SQL_Result = mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$scan_rg.'" AND rp="'.$scan_rp.'" and type="'.$scan_type.'";', $SQL_DBConn);
+                $SQL_Result = tic_mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$scan_rg.'" AND rp="'.$scan_rp.'" and type="'.$scan_type.'";', $SQL_DBConn);
                 $insert_names = 'pts, s, d, me, ke, a';
                 $insert_values = '"'.$scan_pts.'", "'.$scan_s.'", "'.$scan_d.'", "'.$scan_me.'", "'.$scan_ke.'", "'.$scan_a.'"';
-                $SQL_Result = mysql_query('INSERT INTO `gn4scans` (type, zeit, g, p, rg, rp, gen, '.$insert_names.') VALUES ("'.$scan_type.'", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$Benutzer['galaxie'].'", "'.$Benutzer['planet'].'", "'.$scan_rg.'", "'.$scan_rp.'", "'.$scan_gen.'", '.$insert_values.')', $SQL_DBConn)  or $error_code = 7;
+                $SQL_Result = tic_mysql_query('INSERT INTO `gn4scans` (type, zeit, g, p, rg, rp, gen, '.$insert_names.') VALUES ("'.$scan_type.'", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$Benutzer['galaxie'].'", "'.$Benutzer['planet'].'", "'.$scan_rg.'", "'.$scan_rp.'", "'.$scan_gen.'", '.$insert_values.')', $SQL_DBConn)  or $error_code = 7;
             }
             if ($scan_typ == 'Einheitenscan') {
                 $scan_type = 1;
@@ -560,145 +559,162 @@ function parseLine( $line_in) {
                 $daten = parseLine( $zeilen[11]);           // Schutzschiff 500
                 $scan_sfsu = trim($daten[3]);
                 addgnuser($scan_rg, $scan_rp, $scan_rn);
-                $SQL_Result = mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$scan_rg.'" and rp="'.$scan_rp.'" AND type="'.$scan_type.'";', $SQL_DBConn);
+                $SQL_Result = tic_mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$scan_rg.'" and rp="'.$scan_rp.'" AND type="'.$scan_type.'";', $SQL_DBConn);
                 $insert_names = 'sfj, sfb, sff, sfz, sfkr, sfsa, sft, sfko, sfka, sfsu';
                 $insert_values = '"'.$scan_sfj.'", "'.$scan_sfb.'", "'.$scan_sff.'", "'.$scan_sfz.'", "'.$scan_sfkr.'", "'.$scan_sfsa.'", "'.$scan_sft.'", "'.$scan_sfko.'", "'.$scan_sfka.'", "'.$scan_sfsu.'"';
-                $SQL_Result = mysql_query('INSERT INTO `gn4scans` (type, zeit, g, p, rg, rp, gen, '.$insert_names.') VALUES ("'.$scan_type.'", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$Benutzer['galaxie'].'", "'.$Benutzer['planet'].'", "'.$scan_rg.'", "'.$scan_rp.'", "'.$scan_gen.'", '.$insert_values.');', $SQL_DBConn) or die('ERROR 2 Konnte Datensatz nicht schreiben');
+                $SQL_Result = tic_mysql_query('INSERT INTO `gn4scans` (type, zeit, g, p, rg, rp, gen, '.$insert_names.') VALUES ("'.$scan_type.'", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$Benutzer['galaxie'].'", "'.$Benutzer['planet'].'", "'.$scan_rg.'", "'.$scan_rp.'", "'.$scan_gen.'", '.$insert_values.');', $SQL_DBConn) or die('ERROR 2 Konnte Datensatz nicht schreiben');
             }
-            if ($scan_typ == 'Militärscan') {
-                $scan_type = 2;
-                for($n = 0; $n <= 50; $n++) {
-                    if (!isset($zeilen[$n])) $zeilen[$n] = '0';
-                    $zeilen[$n] = str_replace(',', '', $zeilen[$n]);
-                }
 
-                $daten = parseLine( $zeilen[4]);            // Jäger
-                $scan_sf0j = trim(   $daten[3]);
-                $scan_sf1j = trim(   $daten[4]);
-                $scan_sf2j = trim(   $daten[5]);
+			if ($scan_typ == 'Militärscan') {
+				$scan_type = 2;
+					for($n = 0; $n <= 50; $n++) {
+						if (!isset($zeilen[$n])) $zeilen[$n] = '0';
+						$zeilen[$n] = str_replace(',', '', $zeilen[$n]);
+					}
 
-                $daten = parseLine( $zeilen[5]);            // bomber
-                $scan_sf0b = trim(   $daten[3]);
-                $scan_sf1b = trim(   $daten[4]);
-                $scan_sf2b = trim(   $daten[5]);
+					$daten = parseLine( $zeilen[4]);            // Jäger
+					$scan_sf0j = trim(   $daten[3]);
+					$scan_sf1j = trim(   $daten[4]);
+					$scan_sf2j = trim(   $daten[5]);
 
-                $daten = parseLine( $zeilen[6]);            // fregs
-                $scan_sf0f = trim(   $daten[3]);
-                $scan_sf1f = trim(   $daten[4]);
-                $scan_sf2f = trim(   $daten[5]);
+					$daten = parseLine( $zeilen[5]);            // bomber
+					$scan_sf0b = trim(   $daten[3]);
+					$scan_sf1b = trim(   $daten[4]);
+					$scan_sf2b = trim(   $daten[5]);
 
-                $daten = parseLine( $zeilen[7]);            // zerries
-                $scan_sf0z = trim(   $daten[3]);
-                $scan_sf1z = trim(   $daten[4]);
-                $scan_sf2z = trim(   $daten[5]);
+					$daten = parseLine( $zeilen[6]);            // fregs
+					$scan_sf0f = trim(   $daten[3]);
+					$scan_sf1f = trim(   $daten[4]);
+					$scan_sf2f = trim(   $daten[5]);
 
-                $daten = parseLine( $zeilen[8]);            // kreuzer
-                $scan_sf0kr = trim(   $daten[3]);
-                $scan_sf1kr = trim(   $daten[4]);
-                $scan_sf2kr = trim(   $daten[5]);
+					$daten = parseLine( $zeilen[7]);            // zerries
+					$scan_sf0z = trim(   $daten[3]);
+					$scan_sf1z = trim(   $daten[4]);
+					$scan_sf2z = trim(   $daten[5]);
 
-                $daten = parseLine( $zeilen[9]);            // schlachter
-                $scan_sf0sa = trim(   $daten[3]);
-                $scan_sf1sa = trim(   $daten[4]);
-                $scan_sf2sa = trim(   $daten[5]);
+					$daten = parseLine( $zeilen[8]);            // kreuzer
+					$scan_sf0kr = trim(   $daten[3]);
+					$scan_sf1kr = trim(   $daten[4]);
+					$scan_sf2kr = trim(   $daten[5]);
 
-                $daten = parseLine( $zeilen[10]);            // träger
-                $scan_sf0t  = trim(   $daten[3]);
-                $scan_sf1t  = trim(   $daten[4]);
-                $scan_sf2t  = trim(   $daten[5]);
+					$daten = parseLine( $zeilen[9]);            // schlachter
+					$scan_sf0sa = trim(   $daten[3]);
+					$scan_sf1sa = trim(   $daten[4]);
+					$scan_sf2sa = trim(   $daten[5]);
 
-                $sf0ko = 0;
-                $sf1ko = 0;
-                $sf2ko = 0;
+					$daten = parseLine( $zeilen[10]);            // träger
+					$scan_sf0t  = trim(   $daten[3]);
+					$scan_sf1t  = trim(   $daten[4]);
+					$scan_sf2t  = trim(   $daten[5]);
 
-                $daten = parseLine( $zeilen[11]);            // Kaper
-                $scan_sf0ka = trim(   $daten[3]);
-                $scan_sf1ka = trim(   $daten[4]);
-                $scan_sf2ka = trim(   $daten[5]);
+					$sf0ko = 0;
+					$sf1ko = 0;
+					$sf2ko = 0;
 
-                $daten = parseLine( $zeilen[12]);            // schutzies
-                $scan_sf0su = trim(   $daten[3]);
-                $scan_sf1su = trim(   $daten[4]);
-                $scan_sf2su = trim(   $daten[5]);
+					$daten = parseLine( $zeilen[11]);            // Kaper
+					$scan_sf0ka = trim(   $daten[3]);
+					$scan_sf1ka = trim(   $daten[4]);
+					$scan_sf2ka = trim(   $daten[5]);
 
-                $ipos = parseLine( $zeilen[13]);
+					$daten = parseLine( $zeilen[12]);            // schutzies
+					$scan_sf0su = trim(   $daten[3]);
+					$scan_sf1su = trim(   $daten[4]);
+					$scan_sf2su = trim(   $daten[5]);
+
+					$ipos = parseLine( $zeilen[13]);
 
 
+					$next_word = trim( $ipos[5] );
+					$scan_ziel1 = trim( $ipos[6] );
+					switch ( $next_word ) {
+						case 'Im': // orbit
+							$scan_status1 = 0;
+							break;
+						case 'Rückflug':
+							$scan_status1 = 3 ;
+							break;
+						case 'Angriffsflug':
+							$scan_status1 = 1;
+							break;
+						case 'Verteidigungsflug':
+							$scan_status1 = 2;
+							break;
+					}
 
+					$next_word = trim( $ipos[7] );
+					$scan_ziel2 = trim( $ipos[8] );
+					switch ( $next_word ) {
+						case 'Im': // orbit
+							$scan_status2 = 0;
+							break;
+						case 'Rückflug':
+							$scan_status2 = 3;
+							break;
+						case 'Angriffsflug':
+							$scan_status2 = 1;
+							break;
+						case 'Verteidigungsflug':
+							$scan_status2 = 2;
+							break;
+					}
 
-                $next_word = trim( $ipos[5] );
-                $scan_ziel1 = trim( $ipos[6] );
-                switch ( $next_word ) {
-                    case 'Im': // orbit
-                        $scan_status1 = 0;
-                        break;
-                    case 'Rückflug':
-                        $scan_status1 = 3 ;
-                        break;
-                    case 'Angriffsflug':
-                        $scan_status1 = 1;
-                        break;
-                    case 'Verteidigungsflug':
-                        $scan_status1 = 2;
-                        break;
-                }
+					if (!isset($scan_status2)) $scan_status2 = 4;
 
-                $next_word = trim( $ipos[7] );
-                $scan_ziel2 = trim( $ipos[8] );
-                switch ( $next_word ) {
-                    case 'Im': // orbit
-                        $scan_status2 = 0;
-                        break;
-                    case 'Rückflug':
-                        $scan_status2 = 3;
-                        break;
-                    case 'Angriffsflug':
-                        $scan_status2 = 1;
-                        break;
-                    case 'Verteidigungsflug':
-                        $scan_status2 = 2;
-                        break;
-                }
+					$SQL_Result = tic_mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$scan_rg.'" and rp="'.$scan_rp.'" AND type="'.$scan_type.'";', $SQL_DBConn);
+					$insert_names = 'sf0j, sf0b, sf0f, sf0z, sf0kr, sf0sa, sf0t, sf0ko, sf0ka, sf0su';
+					$insert_names = $insert_names.', sf1j, sf1b, sf1f, sf1z, sf1kr, sf1sa, sf1t, sf1ko, sf1ka, sf1su, status1, ziel1';
+					$insert_names = $insert_names.', sf2j, sf2b, sf2f, sf2z, sf2kr, sf2sa, sf2t, sf2ko, sf2ka, sf2su, status2, ziel2';
+					$insert_values = '"'.$scan_sf0j.'", "'.$scan_sf0b.'", "'.$scan_sf0f.'", "'.$scan_sf0z.'", "'.$scan_sf0kr.'", "'.$scan_sf0sa.'", "'.$scan_sf0t.'", "'.$scan_sf0ko.'", "'.$scan_sf0ka.'", "'.$scan_sf0su.'"';
+					$insert_values = $insert_values.', "'.$scan_sf1j.'", "'.$scan_sf1b.'", "'.$scan_sf1f.'", "'.$scan_sf1z.'", "'.$scan_sf1kr.'", "'.$scan_sf1sa.'", "'.$scan_sf1t.'", "'.$scan_sf1ko.'", "'.$scan_sf1ka.'", "'.$scan_sf1su.'", "'.$scan_status1.'","'.$scan_ziel1.'"';
+					$insert_values = $insert_values.', "'.$scan_sf2j.'", "'.$scan_sf2b.'", "'.$scan_sf2f.'", "'.$scan_sf2z.'", "'.$scan_sf2kr.'", "'.$scan_sf2sa.'", "'.$scan_sf2t.'", "'.$scan_sf2ko.'", "'.$scan_sf2ka.'", "'.$scan_sf2su.'", "'.$scan_status2.'","'.$scan_ziel2.'"';
+					$SQL_Result = tic_mysql_query('INSERT INTO `gn4scans` (type, zeit, g, p, rg, rp, gen, '.$insert_names.') VALUES ("'.$scan_type.'", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$Benutzer['galaxie'].'", "'.$Benutzer['planet'].'", "'.$scan_rg.'", "'.$scan_rp.'", "'.$scan_gen.'", '.$insert_values.');', $SQL_DBConn) or die('ERROR 2 Konnte Datensatz nicht schreiben');
+					addgnuser($scan_rg, $scan_rp, $scan_rn);
+					if ($scan_ziel1!='Orbit') {
+						if ($scan_status1==1 || $scan_status1==2) {
+							$SQL_Result = tic_mysql_query('SELECT gala,planet FROM `gn4gnuser` WHERE name="'.$scan_ziel1.'";') or die(mysql_errno()." - ".mysql_error());
+							if (mysql_num_rows($SQL_Result)==1) {
+								$ziel1_gala = mysql_result($SQL_Result,0,'gala');
+								$ziel1_planet=mysql_result($SQL_Result,0,'planet');
+								$SQL_Result = tic_mysql_query('SELECT eta FROM `gn4flottenbewegungen` WHERE angreifer_galaxie="'.$scan_rg.'" and angreifer_planet="'.$scan_rp.'" and verteidiger_galaxie="'.$ziel1_gala.'" and verteidiger_planet="'.$ziel1_planet.'";') or die(mysql_errno()." - ".mysql_error());
+								if (mysql_num_rows($SQL_Result) == 1) {
+									tic_mysql_query('UPDATE `gn4flottenbewegungen` SET flottennr="1" WHERE angreifer_galaxie="'.$scan_rg.'" and angreifer_planet="'.$scan_rp.'" and verteidiger_galaxie="'.$ziel1_gala.'" and verteidiger_planet="'.$ziel1_planet.'";')or die(mysql_errno()." - ".mysql_error());
+								}
+							}
+						}
+					}
+					if ($scan_ziel2!='Orbit') {
+						if ($scan_status2==1 || $scan_status2==2) {
+							$SQL_Result = tic_mysql_query('SELECT gala,planet FROM `gn4gnuser` WHERE name="'.$scan_ziel2.'";') or die(mysql_errno()." - ".mysql_error());
+							$SQL_Num=mysql_num_rows($SQL_Result);
+							if ($SQL_Num==1) {
+								$ziel2_gala = mysql_result($SQL_Result,0,'gala');
+								$ziel2_planet=mysql_result($SQL_Result,0,'planet');
+								$SQL_Result = tic_mysql_query('SELECT eta FROM `gn4flottenbewegungen` WHERE angreifer_galaxie="'.$scan_rg.'" and angreifer_planet="'.$scan_rp.'" and verteidiger_galaxie="'.$ziel2_gala.'" and verteidiger_planet="'.$ziel2_planet.'";') or die(mysql_errno()." - ".mysql_error());
+								if (mysql_num_rows($SQL_Result) == 1) {
+									tic_mysql_query('UPDATE `gn4flottenbewegungen` SET flottennr="2" WHERE angreifer_galaxie="'.$scan_rg.'" and angreifer_planet="'.$scan_rp.'" and verteidiger_galaxie="'.$ziel2_gala.'" and verteidiger_planet="'.$ziel2_planet.'";')or die(mysql_errno()." - ".mysql_error());
+								}
+							}
+						}
+					}
 
-                if (!isset($scan_status2)) $scan_status2 = 4;
+					// insert unit  ............................................
+					$scan_type = 1;
+					$scan_sfj = $scan_sf0j + $scan_sf1j + $scan_sf2j; // jäger
+					$scan_sfb = $scan_sf0b + $scan_sf1b + $scan_sf2b; // bomber
+					$scan_sff = $scan_sf0f + $scan_sf1f + $scan_sf2f; // fregs
+					$scan_sfz = $scan_sf0z + $scan_sf1z + $scan_sf2z; // zerries
+					$scan_sfkr = $scan_sf0kr + $scan_sf1kr + $scan_sf2kr; // kreuzer
+					$scan_sfsa = $scan_sf0sa + $scan_sf1sa + $scan_sf2sa; // schlachter
+					$scan_sft  = $scan_sf0t  + $scan_sf1t + $scan_sf2t; // träger
+					$sfko = 0; // komisches ding
+					$scan_sfka = $scan_sf0ka + $scan_sf1ka + $scan_sf2ka; // Kaper
+					$scan_sfsu = $scan_sf0su + $scan_sf1su +$scan_sf2su; // schutzies
 
-                $SQL_Result = mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$scan_rg.'" and rp="'.$scan_rp.'" AND type="'.$scan_type.'";', $SQL_DBConn);
-                $insert_names = 'sf0j, sf0b, sf0f, sf0z, sf0kr, sf0sa, sf0t, sf0ko, sf0ka, sf0su';
-                $insert_names = $insert_names.', sf1j, sf1b, sf1f, sf1z, sf1kr, sf1sa, sf1t, sf1ko, sf1ka, sf1su, status1, ziel1';
-                $insert_names = $insert_names.', sf2j, sf2b, sf2f, sf2z, sf2kr, sf2sa, sf2t, sf2ko, sf2ka, sf2su, status2, ziel2';
-                $insert_values = '"'.$scan_sf0j.'", "'.$scan_sf0b.'", "'.$scan_sf0f.'", "'.$scan_sf0z.'", "'.$scan_sf0kr.'", "'.$scan_sf0sa.'", "'.$scan_sf0t.'", "'.$scan_sf0ko.'", "'.$scan_sf0ka.'", "'.$scan_sf0su.'"';
-                $insert_values = $insert_values.', "'.$scan_sf1j.'", "'.$scan_sf1b.'", "'.$scan_sf1f.'", "'.$scan_sf1z.'", "'.$scan_sf1kr.'", "'.$scan_sf1sa.'", "'.$scan_sf1t.'", "'.$scan_sf1ko.'", "'.$scan_sf1ka.'", "'.$scan_sf1su.'", "'.$scan_status1.'","'.$scan_ziel1.'"';
-                $insert_values = $insert_values.', "'.$scan_sf2j.'", "'.$scan_sf2b.'", "'.$scan_sf2f.'", "'.$scan_sf2z.'", "'.$scan_sf2kr.'", "'.$scan_sf2sa.'", "'.$scan_sf2t.'", "'.$scan_sf2ko.'", "'.$scan_sf2ka.'", "'.$scan_sf2su.'", "'.$scan_status2.'","'.$scan_ziel2.'"';
-                $SQL_Result = mysql_query('INSERT INTO `gn4scans` (type, zeit, g, p, rg, rp, gen, '.$insert_names.') VALUES ("'.$scan_type.'", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$Benutzer['galaxie'].'", "'.$Benutzer['planet'].'", "'.$scan_rg.'", "'.$scan_rp.'", "'.$scan_gen.'", '.$insert_values.');', $SQL_DBConn) or die('ERROR 2 Konnte Datensatz nicht schreiben');
-                addgnuser($scan_rg, $scan_rp, $scan_rn);
-                if($scan_ziel1!='Orbit'){
-                if($scan_status1==1||$scan_status1==2){
-                $SQL_Result = mysql_query('SELECT gala,planet FROM `gn4gnuser` WHERE name="'.$scan_ziel1.'";') or die(mysql_errno()." - ".mysql_error());
-                if(mysql_num_rows($SQL_Result)==1){
-                $ziel1_gala = mysql_result($SQL_Result,0,'gala');
-                $ziel1_planet=mysql_result($SQL_Result,0,'planet');
-                $SQL_Result = mysql_query('SELECT eta FROM `gn4flottenbewegungen` WHERE angreifer_galaxie="'.$scan_rg.'" and angreifer_planet="'.$scan_rp.'" and verteidiger_galaxie="'.$ziel1_gala.'" and verteidiger_planet="'.$ziel1_planet.'";') or die(mysql_errno()." - ".mysql_error());
-                if(mysql_num_rows($SQL_Result) ==1){
-                mysql_query('UPDATE `gn4flottenbewegungen` SET flottennr="1" WHERE angreifer_galaxie="'.$scan_rg.'" and angreifer_planet="'.$scan_rp.'" and verteidiger_galaxie="'.$ziel1_gala.'" and verteidiger_planet="'.$ziel1_planet.'";')or die(mysql_errno()." - ".mysql_error());
-                }
-                }
-                }
-            }
-                if($scan_ziel2!='Orbit'){
-                if($scan_status2==1||$scan_status2==2){
-                $SQL_Result = mysql_query('SELECT gala,planet FROM `gn4gnuser` WHERE name="'.$scan_ziel2.'";') or die(mysql_errno()." - ".mysql_error());
-                $SQL_Num=mysql_num_rows($SQL_Result);
-                if($SQL_Num==1){
-                $ziel2_gala = mysql_result($SQL_Result,0,'gala');
-                $ziel2_planet=mysql_result($SQL_Result,0,'planet');
-                $SQL_Result = mysql_query('SELECT eta FROM `gn4flottenbewegungen` WHERE angreifer_galaxie="'.$scan_rg.'" and angreifer_planet="'.$scan_rp.'" and verteidiger_galaxie="'.$ziel2_gala.'" and verteidiger_planet="'.$ziel2_planet.'";') or die(mysql_errno()." - ".mysql_error());
-                if(mysql_num_rows($SQL_Result) ==1){
-                mysql_query('UPDATE `gn4flottenbewegungen` SET flottennr="2" WHERE angreifer_galaxie="'.$scan_rg.'" and angreifer_planet="'.$scan_rp.'" and verteidiger_galaxie="'.$ziel2_gala.'" and verteidiger_planet="'.$ziel2_planet.'";')or die(mysql_errno()." - ".mysql_error());
-                }
-                }
-                }
-            }
-            }
+					$SQL_Result = tic_mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$scan_rg.'" AND rp="'.$scan_rp.'" AND type="'.$scan_type.'";', $SQL_DBConn);
+					$insert_names = 'sfj, sfb, sff, sfz, sfkr, sfsa, sft, sfko, sfka, sfsu';
+					$insert_values = '"'.$scan_sfj.'", "'.$scan_sfb.'", "'.$scan_sff.'", "'.$scan_sfz.'", "'.$scan_sfkr.'", "'.$scan_sfsa.'", "'.$scan_sft.'", "'.$scan_sfko.'", "'.$scan_sfka.'", "'.$scan_sfsu.'"';
+					$SQL_Result = tic_mysql_query('INSERT INTO `gn4scans` (type, zeit, g, p, rg, rp, gen, '.$insert_names.') VALUES ("'.$scan_type.'", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$Benutzer['galaxie'].'", "'.$Benutzer['planet'].'", "'.$scan_rg.'", "'.$scan_rp.'", "'.$scan_gen.'", '.$insert_values.');', $SQL_DBConn) or die('ERROR 2 Konnte Datensatz nicht schreiben');
+				}
             if ($scan_typ == 'Geschützscan') {
                 $scan_type = 3;
                 $daten = parseLine( $zeilen[3]);            // Leichtes Orbitalgeschütz 400
@@ -712,10 +728,10 @@ function parseLine( $line_in) {
                 $daten = parseLine( $zeilen[7]);            // Abfangjäger 1000
                 $scan_ga = trim($daten[3]);
                 addgnuser($scan_rg, $scan_rp, $scan_rn);
-                $SQL_Result = mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$scan_rg.'" and rp="'.$scan_rp.'" AND type="'.$scan_type.'";', $SQL_DBConn);
+                $SQL_Result = tic_mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$scan_rg.'" and rp="'.$scan_rp.'" AND type="'.$scan_type.'";', $SQL_DBConn);
                 $insert_names = 'glo, glr, gmr, gsr, ga';
                 $insert_values = '"'.$scan_glo.'", "'.$scan_glr.'", "'.$scan_gmr.'", "'.$scan_gsr.'", "'.$scan_ga.'"';
-                $SQL_Result = mysql_query('INSERT INTO `gn4scans` (type, zeit, g, p, rg, rp, gen, '.$insert_names.') VALUES ("'.$scan_type.'", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$Benutzer['galaxie'].'", "'.$Benutzer['planet'].'", "'.$scan_rg.'", "'.$scan_rp.'", "'.$scan_gen.'", '.$insert_values.');', $SQL_DBConn) or die('ERROR 2 Konnte Datensatz nicht schreiben');
+                $SQL_Result = tic_mysql_query('INSERT INTO `gn4scans` (type, zeit, g, p, rg, rp, gen, '.$insert_names.') VALUES ("'.$scan_type.'", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$Benutzer['galaxie'].'", "'.$Benutzer['planet'].'", "'.$scan_rg.'", "'.$scan_rp.'", "'.$scan_gen.'", '.$insert_values.');', $SQL_DBConn) or die('ERROR 2 Konnte Datensatz nicht schreiben');
             }
             CountScans($Benutzer['id']);
             $modul = 'scans';

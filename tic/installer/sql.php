@@ -5,31 +5,34 @@ CREATE TABLE `gn4accounts` (
   `ticid` varchar(5) NOT NULL default '',
   `name` varchar(50) NOT NULL default '',
   `passwort` varchar(50) NOT NULL default '',
-  `pwdandern` enum('0','1') NOT NULL default '1',
-  `galaxie` int(11) unsigned NOT NULL default '0',
-  `planet` tinyint(2) unsigned NOT NULL default '0',
-  `rang` tinyint(11) NOT NULL default '0',
+  `session` varchar(50) default NULL,
+  `pwdandern` int(11) NOT NULL default '1',
+  `galaxie` int(11) NOT NULL default '0',
+  `planet` int(11) NOT NULL default '0',
+  `rang` int(11) NOT NULL default '0',
   `allianz` int(11) NOT NULL default '0',
   `authnick` varchar(20) NOT NULL default '',
-  `scantyp` enum('0','1','2') NOT NULL default '0',
-  `svs` bigint(20) unsigned NOT NULL default '0',
-  `sbs` bigint(20) unsigned NOT NULL default '0',
-  `deff` int(11) unsigned NOT NULL default '0',
-  `lastlogin` int(11) NOT NULL default '0',
+  `scantyp` int(11) NOT NULL default '0',
+  `svs` bigint(11) NOT NULL default '0',
+  `sbs` bigint(20) NOT NULL default '0',
+  `deff` int(11) NOT NULL default '0',
+  `unreadnews` int(11) NOT NULL default '1',
+  `lastlogin` varchar(20) NOT NULL default '',
+  `lastlogin_time` int(11) NOT NULL default '0',
   `umod` varchar(21) NOT NULL default '',
   `scans` bigint(20) NOT NULL default '0',
-  `spy` enum('0','1') NOT NULL default '0',
+  `spy` int(11) NOT NULL default '0',
   `pwdStore` varchar(50) NOT NULL default '',
   `handy` varchar(50) NOT NULL default '',
   `messangerID` varchar(100) NOT NULL default '',
   `infotext` varchar(50) NOT NULL default '',
-  `style_location` varchar(10) default NULL,
+  `ip` varchar(32) NOT NULL default '',
   `zeitformat` varchar(8) NOT NULL default 'hh:mm',
   `taktiksort` varchar(10) NOT NULL default '0 asc',
   `help` int(1) NOT NULL default '1',
   `tcausw` char(1) NOT NULL default '0',
-  `ip` varchar(15) binary NOT NULL default '',
-  `versuche` tinyint(1) unsigned NOT NULL default '0',
+  `versuche` int(1) NOT NULL default '0',
+  `attplaner` tinyint(4) default '0',
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM;";
 
@@ -117,7 +120,9 @@ CREATE TABLE `gn4log` (
   `rang` int(11) NOT NULL default '0',
   `allianz` int(11) NOT NULL default '0',
   `zeit` varchar(20) NOT NULL default '',
-  `aktion` varchar(255) NOT NULL default '',
+  `aktion` text NOT NULL default '',
+  `type` tinyint(1) NOT NULL default '0',
+  `ip` varchar(15) NOT NULL default '',
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM;";
 
@@ -246,6 +251,44 @@ CREATE TABLE `gn4vars` (
   `value` text NOT NULL,
   `ticid` varchar(5) NOT NULL default '',
   PRIMARY KEY  (`id`)
+) TYPE=MyISAM;";
+
+$sqlquery['gn4meta'] = "
+DROP TABLE IF EXISTS `gn4meta`;
+CREATE TABLE `gn4meta` (
+  `id` tinyint(3) unsigned NOT NULL auto_increment,
+  `name` varchar(20) NOT NULL default '',
+  `sysmsg` text NOT NULL,
+  `bnds` varchar(255) NOT NULL default '',
+  `naps` varchar(255) NOT NULL default '',
+  `wars` varchar(255) NOT NULL default '',
+  `duell` varchar(20) default NULL,
+  PRIMARY KEY  (`id`)
+) TYPE=MyISAM;";
+
+$sqlquery['gn4attplanung'] = "DROP TABLE IF EXISTS `gn4attplanung`;
+CREATE TABLE `gn4attplanung` (
+  `lfd` int(11) NOT NULL auto_increment,
+  `id` int(11) default NULL,
+  `galaxie` int(11) default NULL,
+  `planet` int(11) default NULL,
+  `attdatum` date default NULL,
+  `attzeit` time default NULL,
+  `attstatus` int(11) default '0',
+  `freigabe` tinyint(4) default '0',
+  `info` varchar(255) default NULL,
+  `forall` tinyint(4) default '0',
+  `formeta` int(11) default '0',
+  `forallianz` int(11) default '0',
+  PRIMARY KEY  (`lfd`),
+  UNIQUE KEY `lfd` (`lfd`)
+) TYPE=MyISAM;";
+
+$sqlquery['gn4attflotten'] = "DROP TABLE IF EXISTS `gn4attflotten`;
+CREATE TABLE `gn4attflotten` (
+  `lfd` int(11) default NULL,
+  `id` int(11) default NULL,
+  `flottenr` tinyint(4) default '1'
 ) TYPE=MyISAM;";
 
 ?>

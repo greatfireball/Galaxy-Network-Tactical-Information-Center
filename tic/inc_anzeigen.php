@@ -3,7 +3,7 @@
     if (isset($_GET['id'])) $id=$_GET['id'];
     if (!isset($id)) $id = 0;
     if ($id == 0) $error_code = 8;
-    $SQL_Result = mysql_query('SELECT * FROM `gn4accounts` WHERE id="'.$id.'";', $SQL_DBConn) or $error_code = 4;
+    $SQL_Result = tic_mysql_query('SELECT * FROM `gn4accounts` WHERE id="'.$id.'";', $SQL_DBConn) or $error_code = 4;
     if (mysql_num_rows($SQL_Result) != 1) $error_code = 8;
     if ($error_code != 0)
         include('./inc_errors.php');
@@ -18,7 +18,10 @@
         $zeig_sbs = mysql_result($SQL_Result, 0, 'sbs');
         $zeig_umod = mysql_result($SQL_Result, 0, 'umod');
         $zeig_scantyp = mysql_result($SQL_Result, 0, 'scantyp');
-        $SQL_Result2 = mysql_query('SELECT me, ke FROM `gn4scans` WHERE rg="'.$zeig_galaxie.'" AND rp="'.$zeig_planet.'" and ticid="'.$Benutzer['ticid'].'" AND type="0";', $SQL_DBConn) or $error_code = 4;
+        $user_ll = mysql_result($SQL_Result, 0, 'lastlogin');
+        $zeit_scaneintraege = mysql_result($SQL_Result, 0, 'scans');
+
+        $SQL_Result2 = tic_mysql_query('SELECT me, ke FROM `gn4scans` WHERE rg="'.$zeig_galaxie.'" AND rp="'.$zeig_planet.'" and ticid="'.$Benutzer['ticid'].'" AND type="0";', $SQL_DBConn) or $error_code = 4;
         if (mysql_num_rows($SQL_Result2) == 1) {
             $zeig_exen_m = mysql_result($SQL_Result2, 0, 'me');
             $zeig_exen_k = mysql_result($SQL_Result2, 0, 'ke');
@@ -26,13 +29,14 @@
             $zeig_exen_m = 0;
             $zeig_exen_k = 0;
         }
-        $SQL_Result2 = mysql_query('SELECT COUNT(*) FROM `gn4forum` WHERE autorid="'.$zeig_id.'" and ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn);
+        $SQL_Result2 = tic_mysql_query('SELECT COUNT(*) FROM `gn4forum` WHERE autorid="'.$zeig_id.'" and ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn);
         $SQL_Row2 = mysql_fetch_row($SQL_Result2);
         $zeig_posts = $SQL_Row2[0];
 
         $flottennr[0] = '<B><I>Unbekannt</I></B>';
         $flottennr[1] = '<B>1. Flotte</B>';
         $flottennr[2] = '<B>2. Flotte</B>';
+
 ?>
 <CENTER>
   <TABLE WIDTH=70%>
@@ -55,7 +59,10 @@
     </TR>
     <TR>
       <TD>
-        <P CLASS="dunkel"><B><font size="-1">Spielerinformationen:</font></B></P>
+<?
+// Anzeige des Lastlogins in der Headline
+       echo '<P CLASS="dunkel"><B><font size="-1">Spielerinformationen: (last login '.($user_ll?date("d.m.Y H:i", $user_ll):"<i>nie</i>").')</font></B></P>';
+?>
       </TD>
     </TR>
     <TR>
@@ -92,6 +99,13 @@
               <?=$zeig_exen_k?>
               </font></TD>
           </TR>
+
+          <TR>
+            <TD><font size="-1">ScanEinträge im TIC:</font></TD>
+            <TD><font size="-1"><?=$zeit_scaneintraege?>
+              </font></TD>
+          </TR>
+
           <TR>
             <TD><font size="-1">Foren Posts:</font></TD>
             <TD><font size="-1">
@@ -159,7 +173,7 @@
     <TR>
       <TD> <font size="-1">
         <?
-                    $SQL_Result = mysql_query('SELECT * FROM `gn4flottenbewegungen` WHERE modus="1" AND angreifer_galaxie="'.$zeig_galaxie.'" AND angreifer_planet="'.$zeig_planet.'" ORDER BY eta;', $SQL_DBConn) or $error_code = 4;
+                    $SQL_Result = tic_mysql_query('SELECT * FROM `gn4flottenbewegungen` WHERE modus="1" AND angreifer_galaxie="'.$zeig_galaxie.'" AND angreifer_planet="'.$zeig_planet.'" ORDER BY eta;', $SQL_DBConn) or $error_code = 4;
                     $SQL_Num = mysql_num_rows($SQL_Result);
                     if ($SQL_Num == 0)
                         echo '<P CLASS="hell"><font size="-1">Seine/Ihre Flotten greifen nicht an.</font></P>';
@@ -168,12 +182,12 @@
                         echo '  Seine/Ihre Flotten sind auf dem Weg zu folgenden Spielern:';
                         echo '  <TABLE>';
                         for ($n = 0; $n < $SQL_Num; $n++) {
-                            $scan = ' <A HREF="./main.php?modul=showgalascans&displaymode=0&xgala='.mysql_result($SQL_Result, $n, 'verteidiger_galaxie').'&xplanet='.mysql_result($SQL_Result, $n, 'verteidiger_planet').'">'.GetScans($SQL_DBConn, mysql_result($SQL_Result, $n, 'verteidiger_galaxie'), mysql_result($SQL_Result, $n, 'verteidiger_planet')).'</A>';
+                            $scan = ' <A HREF="./main.php?modul=showgalascans&displaymode=0&xgala='.mysql_result($SQL_Result, $n, 'verteidiger_galaxie').'&xplanet='.mysql_result($SQL_Result, $n, 'verteidiger_planet').'">'.GetScans2($SQL_DBConn, mysql_result($SQL_Result, $n, 'verteidiger_galaxie'), mysql_result($SQL_Result, $n, 'verteidiger_planet')).'</A>';
                             echo '<TR><TD><font size="-1">Name: </td><td><B>'.mysql_result($SQL_Result, $n, 'verteidiger_galaxie').':'.mysql_result($SQL_Result, $n, 'verteidiger_planet').'</B></font></TD>';
-                            $disptime = mysql_result($SQL_Result, $n, 'eta') * 15 - $tick_abzug;
+                            $disptime = mysql_result($SQL_Result, $n, 'eta') * $Ticks['lange'] - $tick_abzug;
                             $disptime = getime4display( $disptime );
                             echo '<TD><font size="-1">ETA: </td><td><B>'.$disptime.'</B></font></TD>';
-                            echo '<TD><font size="-1">Angriffslänge: </td><td><B>'.getime4display(mysql_result($SQL_Result, $n, 'flugzeit') * 15).'</B></font></TD>';
+                            echo '<TD><font size="-1">Angriffslänge: </td><td><B>'.getime4display(mysql_result($SQL_Result, $n, 'flugzeit') * $Ticks['lange']).'</B></font></TD>';
                             echo '<TD><font size="-1">Flotte: </td><td>'.$flottennr[mysql_result($SQL_Result, $n, 'flottennr')].'</font></TD>';
                             echo '<TD><font size="-1">'.$scan.'</font> <td>';
                             /* anstelle von */
@@ -227,7 +241,7 @@
     <TR>
       <TD> <font size="-1">
         <?
-                    $SQL_Result = mysql_query('SELECT * FROM `gn4flottenbewegungen` WHERE modus="2" AND angreifer_galaxie="'.$zeig_galaxie.'" AND angreifer_planet="'.$zeig_planet.'" ORDER BY eta;', $SQL_DBConn) or $error_code = 4;
+                    $SQL_Result = tic_mysql_query('SELECT * FROM `gn4flottenbewegungen` WHERE modus="2" AND angreifer_galaxie="'.$zeig_galaxie.'" AND angreifer_planet="'.$zeig_planet.'" ORDER BY eta;', $SQL_DBConn) or $error_code = 4;
                     $SQL_Num = mysql_num_rows($SQL_Result);
                     if ($SQL_Num == 0)
                         echo '<P CLASS="hell"><font size="-1">Seine/Ihre Flotten verteidigen niemanden.</font></P>';
@@ -236,12 +250,12 @@
                         echo '<font size="-1">  Seine/Ihre Flotten sind auf dem Weg zu folgenden Spielern:</font>';
                         echo '  <TABLE>';
                         for ($n = 0; $n < $SQL_Num; $n++) {
-                            $scan = ' <A HREF="./main.php?modul=showgalascans&displaymode=0&xgala='.mysql_result($SQL_Result, $n, 'verteidiger_galaxie').'&xplanet='.mysql_result($SQL_Result, $n, 'verteidiger_planet').'">'.GetScans($SQL_DBConn, mysql_result($SQL_Result, $n, 'verteidiger_galaxie'), mysql_result($SQL_Result, $n, 'verteidiger_planet')).'</A>';
+                            $scan = ' <A HREF="./main.php?modul=showgalascans&displaymode=0&xgala='.mysql_result($SQL_Result, $n, 'verteidiger_galaxie').'&xplanet='.mysql_result($SQL_Result, $n, 'verteidiger_planet').'">'.GetScans2($SQL_DBConn, mysql_result($SQL_Result, $n, 'verteidiger_galaxie'), mysql_result($SQL_Result, $n, 'verteidiger_planet')).'</A>';
                             echo '<TR><TD><font size="-1">Name:</td><td> <B>'.mysql_result($SQL_Result, $n, 'verteidiger_galaxie').':'.mysql_result($SQL_Result, $n, 'verteidiger_planet').'</B></font></TD>';
-                            $disptime = mysql_result($SQL_Result, $n, 'eta') * 15 - $tick_abzug;
+                            $disptime = mysql_result($SQL_Result, $n, 'eta') * $Ticks['lange'] - $tick_abzug;
                             $disptime = getime4display( $disptime );
                             echo '<TD><font size="-1">ETA:</td><td><B>'.$disptime.'</B></font></TD>';
-                            echo '<TD><font size="-1">Verteidigungslänge:</td><td> <B>'.getime4display(mysql_result($SQL_Result, $n, 'flugzeit') * 15).'</B></font></TD>';
+                            echo '<TD><font size="-1">Verteidigungslänge:</td><td> <B>'.getime4display(mysql_result($SQL_Result, $n, 'flugzeit') * $Ticks['lange']).'</B></font></TD>';
                             echo '<TD><font size="-1">Flotte:</td><td> '.$flottennr[mysql_result($SQL_Result, $n, 'flottennr')].'</font></TD>';
                             echo '<TD><font size="-1">'.$scan.'</font></td><td>';
 //                            if ($Benutzer['rang'] > $Rang_GC || !($Benutzer['rang'] <= $Rang_GC && $Benutzer['galaxie'] != $zeig_galaxie)) echo ', <A HREF="./main.php?modul=anzeigen&id='.$id.'&action=flotteloeschen&flottenid='.mysql_result($SQL_Result, $n, 'id').'">Löschen</A>, <A HREF="./main.php?modul=flotteaendern&id='.$id.'&flottenid='.mysql_result($SQL_Result, $n, 'id').'">&Auml;ndern</A>';
@@ -294,7 +308,7 @@
       <TD> <font size="-1">
         <?
                     $zeig_deff='0';
-					$SQL_Result = mysql_query('SELECT * FROM `gn4flottenbewegungen` WHERE modus="1" AND verteidiger_galaxie="'.$zeig_galaxie.'" AND verteidiger_planet="'.$zeig_planet.'" ORDER BY eta;', $SQL_DBConn) or $error_code = 4;
+					$SQL_Result = tic_mysql_query('SELECT * FROM `gn4flottenbewegungen` WHERE modus="1" AND verteidiger_galaxie="'.$zeig_galaxie.'" AND verteidiger_planet="'.$zeig_planet.'" ORDER BY eta;', $SQL_DBConn) or $error_code = 4;
                     $SQL_Num = mysql_num_rows($SQL_Result);
 					for ($x=0;$x<$SQL_Num;$x++){
 					$save = mysql_result($SQL_Result,$x,'save');
@@ -302,7 +316,7 @@
 					  }
 
 					if ($SQL_Num == 0) {
-                        $SQL_Result = mysql_query('UPDATE `gn4accounts` SET deff="0" WHERE id="'.$id.'";', $SQL_DBConn) or $error_code = 7;
+                        $SQL_Result = tic_mysql_query('UPDATE `gn4accounts` SET deff="0" WHERE id="'.$id.'";', $SQL_DBConn) or $error_code = 7;
                         echo '<P CLASS="hell"><font size="-1">Er/Sie wird von niemandem angegriffen.</font></P>';
                     } else {
                         if (!$zeig_deff > 0)
@@ -312,12 +326,12 @@
                         echo '  Folgende Flotten sind im Anflug:';
                         echo '  <TABLE>';
                         for ($n = 0; $n < $SQL_Num; $n++) {
-                            $scan = ' <A HREF="./main.php?modul=showgalascans&displaymode=0&xgala='.mysql_result($SQL_Result, $n, 'angreifer_galaxie').'&xplanet='.mysql_result($SQL_Result, $n, 'angreifer_planet').'">'.GetScans($SQL_DBConn, mysql_result($SQL_Result, $n, 'angreifer_galaxie'), mysql_result($SQL_Result, $n, 'angreifer_planet')).'</A>';
+                            $scan = ' <A HREF="./main.php?modul=showgalascans&displaymode=0&xgala='.mysql_result($SQL_Result, $n, 'angreifer_galaxie').'&xplanet='.mysql_result($SQL_Result, $n, 'angreifer_planet').'">'.GetScans2($SQL_DBConn, mysql_result($SQL_Result, $n, 'angreifer_galaxie'), mysql_result($SQL_Result, $n, 'angreifer_planet')).'</A>';
                             echo '<TR><TD><font size="-1">Name: </td><td><B>'.mysql_result($SQL_Result, $n, 'angreifer_galaxie').':'.mysql_result($SQL_Result, $n, 'angreifer_planet').'</B></font></TD>';
-                            $disptime = mysql_result($SQL_Result, $n, 'eta') * 15 - $tick_abzug;
+                            $disptime = mysql_result($SQL_Result, $n, 'eta') * $Ticks['lange'] - $tick_abzug;
                             $disptime = getime4display( $disptime );
                             echo '<TD><font size="-1">ETA: </td><td><B>'.$disptime.'</B></font></TD>';
-                            echo '<TD><font size="-1">Angriffslänge: </td><td><B>'.getime4display(mysql_result($SQL_Result, $n, 'flugzeit') * 15).'</B></font></TD>';
+                            echo '<TD><font size="-1">Angriffslänge: </td><td><B>'.getime4display(mysql_result($SQL_Result, $n, 'flugzeit') * $Ticks['lange']).'</B></font></TD>';
                             echo '<TD><font size="-1">Flotte: </td><td>'.$flottennr[mysql_result($SQL_Result, $n, 'flottennr')].'</font></TD>';
                             echo '<TD><font size="-1">'.$scan.'</font><td>';
 //                            if ($Benutzer['rang'] > $Rang_GC || !($Benutzer['rang'] <= $Rang_GC && $Benutzer['galaxie'] != $zeig_galaxie)) echo ', <A HREF="./main.php?modul=anzeigen&id='.$id.'&action=flotteloeschen&flottenid='.mysql_result($SQL_Result, $n, 'id').'">Löschen</A>, <A HREF="./main.php?modul=flotteaendern&id='.$id.'&flottenid='.mysql_result($SQL_Result, $n, 'id').'">Ändern</A>';
@@ -374,7 +388,7 @@
     <TR>
       <TD> <font size="-1">
         <?
-                    $SQL_Result = mysql_query('SELECT * FROM `gn4flottenbewegungen` WHERE modus="2" AND verteidiger_galaxie="'.$zeig_galaxie.'" AND verteidiger_planet="'.$zeig_planet.'" ORDER BY eta;', $SQL_DBConn) or $error_code = 4;
+                    $SQL_Result = tic_mysql_query('SELECT * FROM `gn4flottenbewegungen` WHERE modus="2" AND verteidiger_galaxie="'.$zeig_galaxie.'" AND verteidiger_planet="'.$zeig_planet.'" ORDER BY eta;', $SQL_DBConn) or $error_code = 4;
                     $SQL_Num = mysql_num_rows($SQL_Result);
                     if ($SQL_Num == 0)
                         echo '<P CLASS="hell">Er/Sie wird von niemandem verteidigt.</P>';
@@ -383,13 +397,13 @@
                         echo '  Folgende Flotten sind im Anflug:';
                         echo '  <TABLE>';
                         for ($n = 0; $n < $SQL_Num; $n++) {
-                            $scan = ' <A HREF="./main.php?modul=showgalascans&displaymode=0&xgala='.mysql_result($SQL_Result, $n, 'angreifer_galaxie').'&xplanet='.mysql_result($SQL_Result, $n, 'angreifer_planet').'">'.GetScans($SQL_DBConn, mysql_result($SQL_Result, $n, 'angreifer_galaxie'), mysql_result($SQL_Result, $n, 'angreifer_planet')).'</A>';
+                            $scan = ' <A HREF="./main.php?modul=showgalascans&displaymode=0&xgala='.mysql_result($SQL_Result, $n, 'angreifer_galaxie').'&xplanet='.mysql_result($SQL_Result, $n, 'angreifer_planet').'">'.GetScans2($SQL_DBConn, mysql_result($SQL_Result, $n, 'angreifer_galaxie'), mysql_result($SQL_Result, $n, 'angreifer_planet')).'</A>';
 
                             echo '<TR><TD><font size="-1">Name: </td><td><B>'.mysql_result($SQL_Result, $n, 'angreifer_galaxie').':'.mysql_result($SQL_Result, $n, 'angreifer_planet').'</B></font></TD>';
-                            $disptime = mysql_result($SQL_Result, $n, 'eta') * 15 - $tick_abzug;
+                            $disptime = mysql_result($SQL_Result, $n, 'eta') * $Ticks['lange'] - $tick_abzug;
                             $disptime = getime4display( $disptime );
                             echo '<TD><font size="-1">ETA: </td><td><B>'.$disptime.'</B></font></TD>';
-                            echo '<TD><font size="-1">Verteidigungslänge: </td><td><B>'.getime4display(mysql_result($SQL_Result, $n, 'flugzeit') * 15).'</B></font></TD>';
+                            echo '<TD><font size="-1">Verteidigungslänge: </td><td><B>'.getime4display(mysql_result($SQL_Result, $n, 'flugzeit') * $Ticks['lange']).'</B></font></TD>';
                             echo '<TD><font size="-1">Flotte: </td><td>'.$flottennr[mysql_result($SQL_Result, $n, 'flottennr')].'</font></TD>';
                             echo '<TD><font size="-1">'.$scan.'</font><td>';
 //                            if ($Benutzer['rang'] > $Rang_GC || !($Benutzer['rang'] <= $Rang_GC && $Benutzer['galaxie'] != $zeig_galaxie)) echo ', <A HREF="./main.php?modul=anzeigen&id='.$id.'&action=flotteloeschen&flottenid='.mysql_result($SQL_Result, $n, 'id').'">Löschen</A>, <A HREF="./main.php?modul=flotteaendern&id='.$id.'&flottenid='.mysql_result($SQL_Result, $n, 'id').'">Ändern</A>';
@@ -441,7 +455,7 @@
     <TR>
       <TD> <font size="-1">
         <?
-                    $SQL_Result = mysql_query('SELECT * FROM `gn4flottenbewegungen` WHERE ( modus="0" or modus="3" or modus="4" ) AND angreifer_galaxie="'.$zeig_galaxie.'" AND angreifer_planet="'.$zeig_planet.'" ORDER BY eta;', $SQL_DBConn) or $error_code = 4;
+                    $SQL_Result = tic_mysql_query('SELECT * FROM `gn4flottenbewegungen` WHERE ( modus="0" or modus="3" or modus="4" ) AND angreifer_galaxie="'.$zeig_galaxie.'" AND angreifer_planet="'.$zeig_planet.'" ORDER BY eta;', $SQL_DBConn) or $error_code = 4;
                     $SQL_Num = mysql_num_rows($SQL_Result);
                     if ($SQL_Num == 0)
                         echo '<P CLASS="hell">Es befindet sich keine Flotte auf dem Rückflug.</P>';
@@ -452,7 +466,7 @@
                         for ($n = 0; $n < $SQL_Num; $n++) {
                             echo '<TR><TD><font size="-1">Name: <B>'.mysql_result($SQL_Result, $n, 'verteidiger_galaxie').':'.mysql_result($SQL_Result, $n, 'verteidiger_planet').'</B></font></TD>';
 
-                            $disptime = mysql_result($SQL_Result, $n, 'eta') * 15 - $tick_abzug;
+                            $disptime = mysql_result($SQL_Result, $n, 'eta') * $Ticks['lange'] - $tick_abzug;
                             $disptime = getime4display( $disptime );
                             echo '<TD><font size="-1">ETA: <B>'.$disptime.'</B></font></TD>';
 

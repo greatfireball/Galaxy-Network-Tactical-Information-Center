@@ -60,7 +60,7 @@ function berechne($ang,$ver,$roids,$tick)
   $erg[25]=$roids['kristall'];
 
   //Berechnung 2. Ticks vor Ankunft
-  if ($tick==(-15))
+  if ($tick==(-$Ticks['lang']))
   {
     //Centurion
     if (($ang[5]==0) or ($ang[6]==0)) //Nur einer der beiden Schiffstypen vorhanden
@@ -74,7 +74,7 @@ function berechne($ang,$ver,$roids,$tick)
      $erg[6]=($erg[6]-(floor($ver[12]*$this->werte['centra']*$this->werte['cen2']*$this->werte['cenfern2'])));
     }
   }
-  if (($tick>-15) and ($tick<15)) //berechnung 1 tick vor kampf
+  if (($tick>-$Ticks['lang']) and ($tick<$Ticks['lang'])) //berechnung 1 tick vor kampf
   {
     //Centurion
     if (($ang[5]==0) or ($ang[6]==0)) //Nur einer der beiden Schiffstypen vorhanden

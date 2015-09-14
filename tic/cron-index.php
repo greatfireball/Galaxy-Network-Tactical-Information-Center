@@ -15,7 +15,7 @@
     include('./vars.php');
 	
 	// Ticks
-	$res = mysql_query('SELECT time, count FROM `gn4cron`;');
+	$res = tic_mysql_query('SELECT time, count FROM `gn4cron`;');
 
 	$null_ticks = (int)(time() / ( 60*15));
 	$alt_ticks = mysql_result($res,0);
