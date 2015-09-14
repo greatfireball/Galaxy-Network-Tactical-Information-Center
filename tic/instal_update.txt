@@ -1,0 +1,153 @@
+#########################################################
+#                                                       #
+#  T.I.C. | Tactical Information Center                 #
+#                                                       #
+#  Allianzorganisationstool für Galaxy-Network          #
+#  Orginal von NataS alias Tobias Sarnowski             #
+#  E-Mail:  natas@hell-coder.net                        #
+#							#
+#########################################################
+#							#
+#  Weiterentwickelt und Angepasst an die laufende	#
+#  Runde von den TIC-Entwicklern			#
+#  Email: Webmaster@TIC-Entwickler.de 			#
+#  Coder: Pretoreaner, AlbertLast und Elkano		#
+#  Webseite: http://www.tic-entwickler.de		#
+#                                                       #
+#########################################################
+#                                                       #
+#  Installationsanweisungen                             #
+#                                                       #
+#########################################################
+
+
+Inhalt
+1. Copyright
+2. Vorraussetzungen
+3. Datenbank vorbereiten
+4. Dateien installieren
+5. Tick-Engine installieren
+6. Zusatzfunktionen
+7. Hinweise
+8. Update(erklärung des NW scriptes)
+
+
+1. Copyright
+
+Sie sind berechtigt die Scripte nach belieben zu ändern
+mit Ausnahme des Urhebernamens. Das Programm unterliegt der GPL
+
+
+2. Vorraussetzungen
+
+Sie benötigen einen Apache Webserver mit PHP, eine MySQL
+Ein phpMyAdmin und ein eggdrop sind nicht notwendig jedoch
+dringenst zu empfehlen um das TIC vollkommen auszureizen.
+
+
+3. Datenbank vorbereiten
+
+Um die Datenbank einzurichten müssen sie nur die Datei
+"ticdb.sql" öffnen, alles makieren und dann phpmyadmin -> Sql
+rein kopieren OK klicken und fertig die db ist hoch geladen.
+Nun müssen sie eine Allianz anlegen. Dazu fügen sie
+im Table `gn3allianzen` einen Datensatz hinzu. Entweder
+einfach mit phpMyAdmin oder manuell:
+
+INSERT INTO `gn4allianzen` (ticid, name , tag) VALUES ('1', 'NAME DER ALLIANZ', 'ALLIANZTAG');
+
+
+Nun legen sie einen Administrator für das TIC an. Das ist der
+höchste Rang noch über einem Admiral mit vollem Zugriff
+aufs TIC. Sollten sie mehrere Allianzen im TIC ausnehmen
+sollte diese Person eine Vertrauensperson beider Allianzen
+sein, da diese die Möglichkeit hat auch die internen Daten
+der anderen Allianzen einzuschauen!
+Entweder legen sie den Datensatz wieder bequem über
+phpMyAdmin an oder manuell:
+
+INSERT INTO `gn4accounts` (ticid, name, passwort, galaxie, planet, rang, allianz) VALUES ('1', 'TECHNIKER INGAMENICK', MD5('PASSWORT DES TECHNIKERS'), '117', '15', '5', '1');
+
+117 und 15 sind die Koordinaten 117:15. Diese also auch
+ändern. Rang muß 5 sein und Allianz 1 und ticid 1 .
+
+
+4. Dateien installieren
+
+Editieren sie die "accdata.php" und schreiben sie dort
+die Zugangsdaten ihrer MySQL Datenbank hinein. Laden sie
+nun alle Dateien auf ihren Webspace hoch.
+
+
+5. Tick-Engine installieren
+
+ GIBS NICHT MEHR !
+
+
+##########################################################
+#  Das T.I.C. ist nun betriebsbereit!                    #
+##########################################################
+
+
+6. Zusatzfunktionen
+
+Sehr zu empfehlen ist noch einen eggdrop laufen zu lassen.
+Er erleichtert die Organisation im IRC. Der eggdrop braucht
+keine speziellen Funktionen und jeder eggdrop kann dafür
+genutzt werden. Sie müssen jediglich das Script "deff.tcl"
+editieren und dann laden. (Zu finden in ./eggdrop/) Sie müssen
+Pfad und Passwort anpassen.
+Informationen wie man einen eggdrop installiert finden sie
+hier:
+http://www.eggdrops.de/hilfe/eggdrop/eggdrop_installieren.htm
+
+Desweiteren gibt es einen Scan-Parser für das T.I.C.. Es ist
+eine Modifikation des Argh-Scan-Parsers. Der Unterschied liegt
+darin das wenn man mit dem TIC-Parser etwas parst alles
+automatisch in die Scan-Datenbank des T.I.C.s übertragen wird.
+Desweiteren kann man mit dem Parser nicht nur Sector-, Unit-,
+Mili- und Geschützscan parsen sondern auch Newsscan und noch
+ein paar Sachen. Bevor sie die Datei laden editieren sie bitte
+das Script und ändern sie die Pfade zu ihrem TIC!
+Scripter sind Mahon und 5n4k3. Anzutreffen in #teamplay.gn oder
+#TIC.
+(Script: ./mirc/taktik.rar)
+
+
+7. Hinweise
+
+Ich gebe keine Grantie auf irgendeine Funktion oder Richtigkeit
+der zur Verfügung gestellten Daten. Ich distanziere mich
+ausdrücklich von allen genannten Links. Ich bin für deren Inhalt
+nicht verantwortlich.
+
+##########################################################
+Support können sie erhalten im Quakenet im Channel #TIC-progger
+wenn wir Zeit und Lust haben!
+##########################################################
+
+Um sicherzugehen das alles funktioniert sollten sie alle Dateien
+nochmal durchgehen und nach Passwörtern und Pfadangaben schauen.
+(Suchstichwörter: "NEUES_PASSWORT", "PFAD.ZUM.TIC" und
+"HOST.ZUM.TIC")
+
+Die Dateien "scan.php" und "taktik.php" sind Schnittstellen für
+zum Beispiel externe Scripte (u.a. Scanparser). Wenn sie sie mit
+einem Browser anschauen erhalten sie eine Hilfe der Parameter.
+
+
+8. 
+RC10: um von Rc7 oder höher bis rc9 auf rc 10 zu updaten muss man nur alle daten neu hoch laden auser accdata.php
+und dan die http://www.ticurl.de/updatscript.php?version=rc10 so ist es notig wen man eine version unter rc7 hat muss man erst
+http://www.ticurl.de/updatscript.php?version=rc7 ausführen
+danach update ordner und updatscript.php löschen!
+Funktionweise des NW script normal user können sich immer nur eine woche vorher eintragen und wenn die zeit schon vergeben ist können
+sich andere user nicht mehr eintragen nur gc und alles drüber könne nauch noch in der laufende woche noch die
+nachtwachen ändern. Kontroliert wird es in dem wen der user in den zeit im tic aktiv ist wird dies vermerkt und als 
+grün gekennzeichnet am näcshten tag das die nw gemacht wurde. Rot ist nicht gemacht.
+
+
+hf
+
+mfg
+Die TIC-Entwickler

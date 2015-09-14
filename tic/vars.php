@@ -1,0 +1,38 @@
+<?
+	$SQL_Result = mysql_query('SELECT * FROM `gn4vars` where ticid="'.$Benutzer['ticid'].'" ORDER BY id;', $SQL_DBConn);
+	for ($n = 0; $n < mysql_num_rows($SQL_Result); $n++) {
+		$var = mysql_result($SQL_Result, $n, 'name');
+		$$var = mysql_result($SQL_Result, $n, 'value');
+	}
+	// Allianzen
+    $SQL_Result = mysql_query("SELECT gn4allianzen.*, gn4vars.value as metaname FROM `gn4allianzen` LEFT JOIN gn4vars USING (ticid) WHERE gn4vars.name = 'ticeb' ORDER BY tag;", $SQL_DBConn) or $error_code = 4;
+    $SQL_Num = mysql_num_rows($SQL_Result);
+    if ($SQL_Num == 0)
+    	$error_code = 12;
+    else {
+    	for ($n = 0; $n < $SQL_Num; $n++) {
+			$AllianzName[mysql_result($SQL_Result, $n, 'id')] = mysql_result($SQL_Result, $n, 'name');
+			$AllianzTag[mysql_result($SQL_Result, $n, 'id')] = mysql_result($SQL_Result, $n, 'tag');
+			$AllianzInfo[mysql_result($SQL_Result, $n, 'id')]['name']			= mysql_result($SQL_Result, $n, 'name');
+			$AllianzInfo[mysql_result($SQL_Result, $n, 'id')]['tag']			= mysql_result($SQL_Result, $n, 'tag');
+			$AllianzInfo[mysql_result($SQL_Result, $n, 'id')]['meta']			= mysql_result($SQL_Result, $n, 'ticid');
+			$AllianzInfo[mysql_result($SQL_Result, $n, 'id')]['metaname']			= mysql_result($SQL_Result, $n, 'metaname');
+			$AllianzInfo[mysql_result($SQL_Result, $n, 'id')]['info_bnds']			= mysql_result($SQL_Result, $n, 'info_bnds');
+			$AllianzInfo[mysql_result($SQL_Result, $n, 'id')]['info_naps']			= mysql_result($SQL_Result, $n, 'info_naps');
+			$AllianzInfo[mysql_result($SQL_Result, $n, 'id')]['info_inoffizielle_naps']	= mysql_result($SQL_Result, $n, 'info_inoffizielle_naps');
+			$AllianzInfo[mysql_result($SQL_Result, $n, 'id')]['info_kriege']		= mysql_result($SQL_Result, $n, 'info_kriege');
+			$AllianzInfo[mysql_result($SQL_Result, $n, 'id')]['code']			= mysql_result($SQL_Result, $n, 'code');
+			$AllianzInfo[mysql_result($SQL_Result, $n, 'id')]['blind']			= mysql_result($SQL_Result, $n, 'blind');
+		}
+	}
+
+	$Ticks['lange']=15;
+	$SQL_Result = mysql_query('SELECT value FROM `gn4vars` WHERE name="tickdauer" and ticid="'.$Benutzer['ticid'].'" and value<>"";', $SQL_DBConn);
+	if(mysql_affected_rows($SQL_DBConn)==1)
+	{
+		$Ticks['lange'] = mysql_result($SQL_Result,0);
+	}
+
+	$tick_abzug = intval(date('i') / $Ticks['lange']);
+	$tick_abzug = date('i') - $tick_abzug * $Ticks['lange'];
+?>

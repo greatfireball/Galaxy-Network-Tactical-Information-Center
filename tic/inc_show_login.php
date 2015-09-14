@@ -1,0 +1,82 @@
+<!-- START: inc_show_login -->
+<?php
+	if ( !isset( $sort ) ) {
+		$sort = 'ASC';
+		$newsort = 'ASC';
+	} else {
+		if ( $sort=='ASC') {
+			$newsort = 'DESC';
+		} else {
+			$newsort = 'ASC';
+		}
+	}
+?>
+<center>
+	<font size="+2">Liste der letzten Anmeldungen</font><br>
+	<table width="400" align="center" BORDER="0" cellspacing="3" cellpadding="0" bordercolor="#FFFFFF">
+		<tr BGCOLOR='#333333' >
+			<th><font size="-1" color="#ffffff">Nummer</font></th>
+			<th><font size="-1" color="#ffffff">Allianz</font></th>
+			<th><font size="-1" color="#ffffff">Name</font></th>
+			<th><font size="-1"><a href="./main.php?modul=show_login&sort=<?=$newsort?>"><font color="#dddd66">Anmeldedatum</font></a></font></th>
+		</tr>
+<?php
+	$action = "";
+	$SQL_Result = mysql_query('SELECT name, lastlogin, allianz FROM `gn4accounts` where ticid="'.$Benutzer['ticid'].'" ORDER BY lastlogin '.$sort.', name;', $SQL_DBConn) or $error_code = 4;
+	for ( $i=0; $i<mysql_num_rows($SQL_Result); $i++) {
+		if ( $i%2 == 0 ) {
+			$colour='BGCOLOR=#eeeeee';
+		} else {
+			$colour='BGCOLOR=#dddddd';
+		}
+		$tmp_name = mysql_result($SQL_Result, $i, 'name');
+
+		// determine alli-name
+		$tmp_alli = mysql_result($SQL_Result, $i, 'allianz');
+		$SQL_Result2 = mysql_query('SELECT tag FROM `gn4allianzen` WHERE id="'.$tmp_alli.'";', $SQL_DBConn) or $error_code = 4;
+		$tmp_tag = mysql_result($SQL_Result2, 0, 'tag');
+
+		$tmp_lastlogin = mysql_result($SQL_Result, $i, 'lastlogin');
+		if ( $tmp_lastlogin == '' )
+			$tmp_lastlogin = "0";  /* in old format!! - because all new ones are '' - force the update in db */
+
+		/* change the format (if old format xx.xx.xxxx found) - update in db */
+		if ( substr( $tmp_lastlogin, 2,1 )== '.' ) {
+			$xdate = explode( ".", $tmp_lastlogin );
+			if ( $xdate[0] && $xdate[1] && $xdate[2] ) {
+				$tmp_lastlogin = mktime(0,0,0,$xdate[1],$xdate[0],$xdate[2]);
+			} else {
+				$tmp_lastlogin = 0;
+			}
+			if ( $tmp_lastlogin == -1 ) $tmp_lastlogin = 0;
+			mysql_query('update `gn4accounts` SET lastlogin="'.$tmp_lastlogin.'" WHERE name="'.$tmp_name.'" and ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn) or $error_code = 4;
+		}
+
+		/* change the format (if old format xxxx-xx-xx found) - update in db */
+		if ( substr( $tmp_lastlogin, 4,1 )== '-' ) {
+			$xdate = explode( "-", $tmp_lastlogin );
+			if ( $xdate[0] && $xdate[1] && $xdate[2] ) {
+				$tmp_lastlogin = mktime(0,0,0,$xdate[1],$xdate[2],$xdate[0]);
+			} else {
+				$tmp_lastlogin = 0;
+			}
+			if ( $tmp_lastlogin == -1 ) $tmp_lastlogin = 0;
+			mysql_query('update `gn4accounts` SET lastlogin="'.$tmp_lastlogin.'" WHERE name="'.$tmp_name.'" and ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn) or $error_code = 4;
+		}
+
+		if ( $tmp_lastlogin == -1 ) {
+			$tmp_lastlogin = 0;
+			mysql_query('update `gn4accounts` SET lastlogin="'.$tmp_lastlogin.'" WHERE name="'.$tmp_name.'" and ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn) or $error_code = 4;
+		}
+
+		$j=$i+1;
+		echo "		<tr ".$colour.">";
+		echo "<td align=\"right\"><font size=\"-1\">".$j.".)&nbsp;</font></td>\n";
+		echo "<td align=\"center\"><font size=\"-1\">[".$tmp_tag."]</font></td>";
+		echo "<td><font size=\"-1\">".$tmp_name."</font></td>";
+		echo "<td align=\"center\"><font size=\"-1\"><nobr>".($tmp_lastlogin?strftime("%d.%m.%Y %H:%M", $tmp_lastlogin):"nie")."</nobr></font></td></tr>\n";
+	}
+?>
+	</table>
+</center>
+<!-- ENDE: inc_show_login -->

@@ -1,0 +1,254 @@
+.title {
+	background-color:#5e6cd4;
+	padding:0px;
+	margin:0px;
+	font-family: Verdana;
+	font-size: large;
+	div.bg background-image: url(../images/bg.jpg);
+}
+
+.tabletext { background-color:#888888; padding:0px; margin:0px; ; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: -1}
+.hell { background-color:#eeeeee; padding:0px; margin:0px; ; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: -1px}
+.dunkel { background-color:#dddddd; padding:0px; margin:0px; }
+.hell_rot { background-color:#ffaaaa; padding:0px; margin:0px; ; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: -1}
+.dunkel_rot { background-color:#ff8888; padding:0px; margin:0px; ; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: -1}
+.hell_gruen { background-color:#aaffaa; padding:0px; margin:0px; ; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: -1}
+.dunkel_gruen { background-color:#88ff88; padding:0px; margin:0px; ; font-family: Verdana; font-size: small}
+BODY {
+	scrollbar-DarkShadow-Color:#333333;
+	scrollbar-Track-Color:#F5F5F5;
+	scrollbar-Face-Color:#FFFFFF;
+	scrollbar-Shadow-Color:#555555;
+	scrollbar-Highlight-Color:#999999;
+	scrollbar-3dLight-Color:#BBBBBB;
+	scrollbar-Arrow-Color:#0000FF;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 9pt;
+}
+
+TABLE {
+	font-size: 9pt;
+}
+
+A {
+	text-decoration: none;
+	color: #000000;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+A:visited {
+    text-decoration: none; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: -1: #ffffff
+}
+A:active {
+    text-decoration: none; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: -1: ##FFFFFF
+}
+A:hover {
+    color: #FF0000;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: -1
+}
+.normal {  font-family: Verdana; font-size: small}
+.normalrechts { font-family: Verdana; font-size: x-small; text-align: right}
+.stand { background-color:#5e6cd4; padding:0px; margin:0px; ; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: x-small; text-align: right}
+.textdunkel { background-color:#FFFFFF; padding:0px; margin:0px; ; font-family: Verdana; font-size: small}
+
+.menutop {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10pt;
+	font-weight: bold;
+	cursor: hand;
+	color: #99FF00;
+}
+
+.menu {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 9pt;
+	font-weight: bold;
+	cursor: hand;
+	color: #FFFFFF;
+}
+
+.menu A {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	text-decoration: none;
+	color: #FFFFFF;
+}
+
+.menu A:hover {
+	color: #FF0000;
+}
+
+#ticsummary {
+	font-size: 10pt;
+	padding: 5px 5px 5px 5px;
+	vertical-align: bottom;
+	white-space: nowrap;
+}
+
+#ticsummary td {
+	background-color: #CCCCCC;
+	color:#000000;
+	white-space: nowrap;
+}
+
+.textincnone {
+	color: #000000;
+}
+
+.textincopen {
+	color: #F00000;
+}
+
+.textincsafe {
+	color: #008000;
+}
+
+.textincovertime {
+	color: #333333;
+}
+
+#ticktime {
+	font-size: 8pt;
+	padding: 2px 2px 2px 2px;
+	white-space: nowrap;
+}
+
+.sysmessage {
+	border-style: solid;
+	border-color: #FF0000;
+	border-width: 1px;
+	background-color: #FFAAAA;
+	color: #FF0000;
+	margin: 3px;
+	padding: 3px;
+	font-size: 8pt;
+	font-weight: bold;
+	text-align: left;
+}
+
+.sysmessage FONT {
+	color: #FF0000;
+	font-size: 8pt;
+	font-weight: bold;
+}
+
+
+
+.datatable {
+	font-size: 8pt;
+	color: #000000;	
+	white-space: nowrap;
+}
+
+.datatable a:link {
+	color: #0000CC;
+	text-decoration: none;
+}
+
+.datatable a:visited {
+	color: #0000CC;
+	text-decoration: none;
+}
+
+.datatable a:hover {
+	color: #6666CC;
+	text-decoration: none;
+}
+
+.datatable a:active {
+	color: #0000CC;
+	text-decoration: none;
+}
+
+.datatablehead {
+	font-size: 9pt;
+	background-color: #666666;
+	color: #FFFFFF;	
+	white-space: nowrap;
+}
+
+.datatablefoot {
+    background-color:#999999;
+}
+
+.datatablesort {
+	color: #DDDD66;	
+}
+
+.datatablesortselected {
+	color: #DD6666;	
+}
+
+.fieldinclight {
+	background-color: #FFAAAA;
+	color: #000000;	
+}
+
+.fieldincdark {
+	background-color: #FF8888;
+	color: #000000;	
+}
+
+.fieldincsafelight {
+	background-color: #AAFFAA;
+	color: #000000;	
+}
+
+.fieldincsafedark {
+	background-color: #88FF88;
+	color: #000000;	
+}
+
+.fieldumodelight {
+	background-color: #AAAAFF;
+	color: #000000;	
+}
+
+.fieldumodedark {
+	background-color: #8888FF;
+	color: #000000;	
+}
+
+.fieldownlight {
+	background-color: #FFFFAA;
+	color: #000000;	
+}
+
+.fieldowndark {
+	background-color: #FFFF88;
+	color: #000000;	
+}
+
+.fieldnormallight {
+	background-color: #EEEEEE;
+	color: #000000;	
+}
+
+.fieldnormaldark {
+	background-color: #DDDDDD;
+	color: #000000;	
+}
+
+.texttaktik {
+	color: #000000;
+}
+
+.fleetatt {
+	color: #CC0000;
+}
+
+.fleetdeff {
+	color: #009900;
+}
+
+.scanok {
+	color: #009900;
+}
+
+.scanwarn {
+	color: #999900;
+}
+
+.scanold {
+	color: #CC0000;
+}
