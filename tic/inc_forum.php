@@ -6,6 +6,7 @@
     if (isset($_POST['p_alli'])) $p_alli = $_POST['p_alli'];
     if (isset($_POST['p_topic'])) $p_topic = $_POST['p_topic'];
     if (isset($_POST['p_text'])) $p_text = $_POST['p_text'];
+    if (isset($_POST['p_topicid'])) $p_topicid = $_POST['p_topicid'];
     if (!isset($faction)) $faction = 'show';
     if (!isset($ftopic)) $ftopic = 0;
     if (!isset($falli)) $falli = 0;
