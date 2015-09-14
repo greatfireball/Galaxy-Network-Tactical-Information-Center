@@ -100,7 +100,7 @@
 					$f1_liste_namen = $f1_liste_namen."				".$v_gala.":".$v_plan." <a href=\"./main.php?modul=flotteaendern&id=".mysql_result($SQL_Result_user, $n, 'id')."&flottenid=".$fbid."\" onmouseover=\"return overlib('Eingetragen von ".mysql_result($SQL_Result_fleets, $x, 'erfasser')." um ".mysql_result($SQL_Result_fleets, $x, 'erfasst_am')." ');\" onmouseout=\"return nd();\">".gnuser($v_gala, $v_plan)."</a> ".$lnk." ".$scan."<br>\n";
 					$f1_liste_eta = $f1_liste_eta ."				".getime4display(eta($time1) * $Ticks['lange'] - $tick_abzug)."<br>\n";
 				} else {
-					$f1_liste_namen = $f2_liste_namen."				Rückflug (".$v_gala.":".$v_plan." ".gnuser($v_gala, $v_plan).")<br>\n";
+					$f1_liste_namen = $f1_liste_namen."				Rückflug (".$v_gala.":".$v_plan." ".gnuser($v_gala, $v_plan).")<br>\n";
 					$f1_liste_eta = $f1_liste_eta ."				".getime4display(eta($time3) * $Ticks['lange'] - $tick_abzug)."<br>\n";
 				}
 				if ($_GET['mode'] == 2) $display_line=1;
