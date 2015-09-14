@@ -21,7 +21,7 @@
     else
     {
         $newsave = 1;
-        LogAction($row[0].":".$row[1]." -> Unafe", LOG_SETSAFE);
+        LogAction($row[0].":".$row[1]." -> Unsafe", LOG_SETSAFE);
     }
     
     tic_mysql_query("UPDATE `gn4flottenbewegungen` SET save='".$newsave."' WHERE id='".$_GET['fbid']."'") or die(tic_mysql_error(__FILE__,__LINE__));

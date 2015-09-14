@@ -115,7 +115,7 @@ if($div_ticks > 0)
 //	echo 'UPDATE `gn4vars` SET value="'.date('H').':'.date('i').':'.date('s').'" WHERE name="lasttick";';
 //	$SQL_Result = tic_mysql_query('UPDATE `gn4vars` SET value="'.$minute_naechste.'" WHERE name="lasttick_minute";', $SQL_DBConn) or $error_code = 7;
 	$time = $null_ticks * ($tsec);
-	$SQL_Result = tic_mysql_query('UPDATE `gn4vars` SET value="'.date('H',$time).':'.date('i',$time).':'.date('s',$time).'" WHERE name="lasttick";', $SQL_DBConn) or die(mysql_errno()." - ".mysql_error());
+	$SQL_Result = tic_mysql_query('UPDATE `gn4vars` SET value="'.date("H:i:s", $time).'" WHERE name="lasttick";', $SQL_DBConn) or die(mysql_errno()." - ".mysql_error());
 
 	include "cleanscans.php";
 }

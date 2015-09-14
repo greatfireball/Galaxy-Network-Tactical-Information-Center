@@ -27,7 +27,6 @@ Inhalt
 1. Copyright
 2. Vorraussetzungen
 3. Installation
-  3.1 Update
 4. Zusatzfunktionen
 5. Weiteres
 
@@ -59,14 +58,6 @@ Inhalt
        #tic-progger@irc.quakenet.org melden. Wir werden dann versuchen dir
        bei der Lösung des Problems zu helfen.
 
-3.1 Update
-
-Update ist genauso einfach:
-    i. Alle Dateien ,außer dier accdata.php, löschen und auch alle anderen Ordner
-       sollten gelöscht werden.
-   ii. Neue Dateien hoch laden!
-  iii. Update.php im installer ordner aufrufen und betten das alles funtzt wenn erfolgreich passiert,
-       installer ordner löschen und spaß haben mit dem Tic!
 
 ##########################################################
 #  Das TIC ist nun betriebsbereit!                       #
@@ -94,7 +85,7 @@ Update ist genauso einfach:
 ##########################################################
 
 5. Weiteres
- Die Datei "scan.php" ist eine Schnittstelle für
+ Die Dateien "scan.php" und "taktik.php" sind Schnittstellen für
  zum Beispiel externe Scripte (u.a. Scanparser). Wenn sie sie mit
  einem Browser anschauen erhalten sie eine Hilfe der Parameter.
 

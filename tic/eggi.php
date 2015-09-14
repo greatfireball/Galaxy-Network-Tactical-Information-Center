@@ -12,7 +12,7 @@
     if (mysql_num_rows($SQL_Result0) != 1) die('Incorrect password');
 
 
-
+    include('./globalvars.php');
     include('./vars.php');
 
     $irc_text['fett'] = '';

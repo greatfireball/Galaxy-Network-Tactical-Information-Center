@@ -1,16 +1,18 @@
 <?PHP
-    if (!isset($passwort)) $passwort = '';
-    if ($passwort != 'ewatio') die('Incorrect password');
+
+    $passwort = $_GET['passwort'];
+    if (!isset($_GET['passwort'])) $passwort = '';
+    if ($passwort != 'test') die('Incorrect password');
 
 //passwort für den eggdrop muss mit dem im script übereinstimmen
 
     include('./functions.php');
-
     include('./accdata.php');
+    include('./globvars.php');
 
-    $irc_text['fett'] = '';
-    $irc_text['unterstrichen'] = '';
-    $irc_text['farbe'] = '';
+    $irc_text['fett'] = '';
+    $irc_text['unterstrichen'] = '';
+    $irc_text['farbe'] = chr(3);
     $irc_farbe['weiss'] = '0';
     $irc_farbe['schwarz'] = '1';
     $irc_farbe['dunkelblau'] = '2';
@@ -28,20 +30,26 @@
     $irc_farbe['dunkelgrau'] = '14';
     $irc_farbe['hellgrau'] = '15';
 
+    include('./globalvars.php');
+
     $irc_listfarbe[0] = $irc_farbe['weiss'];
     $irc_listfarbe[1] = $irc_farbe['hellgrau'];
 
-    include('./globalvars.php');
-
-    $tick_abzug = intval(date('i') / 15);
-    $tick_abzug = date('i') - $tick_abzug * 15;
+    $tick_abzug = intval(date('i') / $Ticks['lange']);
+    $tick_abzug = date('i') - $tick_abzug * $Ticks['lange'];
 
     $SQL_DBConn = mysql_connect($db_info['host'], $db_info['user'], $db_info['password']);
     mysql_select_db($db_info['dbname'], $SQL_DBConn);
 
     include('./vars.php');
 
-    if (!isset($modus)) $modus = 0;
+    if (!isset($_GET['modus'])) {
+    $modus = 0;
+    } else {
+    $modus = $_GET['modus'];
+    }
+    $koord = $_GET['koord'];
+    $istscanart = $_GET['istscanart'];
 
 // Alle Atts anzeigen
     if ($modus == 0) {
@@ -60,39 +68,47 @@
             $ziel_planet = mysql_result($SQL_Result1, $n, 'planet');
             $ziel_name = gnuser($ziel_galaxie, $ziel_planet);
             $ziel_allianz = $AllianzTag[mysql_result($SQL_Result1, $n, 'allianz')];
+            //$eta = mysql_result($SQL_Result2, $n, 'eta');
             $incomming_counter = 0;
 
             for ($x = 0; $x < $SQL_Num2; $x++) {
-                if ($ziel_galaxie == mysql_result($SQL_Result2, $x, 'verteidiger_galaxie') && $ziel_planet == mysql_result($SQL_Result2, $x, 'verteidiger_planet')) {    // && mysql_result($SQL_Result2, $x, 'eta') >= 18
+                if ($ziel_galaxie == mysql_result($SQL_Result2, $x, 'verteidiger_galaxie') && $ziel_planet == mysql_result($SQL_Result2, $x, 'verteidiger_planet') && mysql_result($SQL_Result2, $x, 'eta') >= 18) {    // && mysql_result($SQL_Result2, $x, 'eta') >= 18
                     $incomming_counter++;
-                    $atter_eta = (mysql_result($SQL_Result2, $x, 'eta') * 15 - $tick_abzug);
+                    $atter_eta = (mysql_result($SQL_Result2, $x, 'eta') * $Ticks['lange']) - $tick_abzug;
+                    $atter_eta_tic = preg_replace('/(\.)(.*)/', '', $atter_eta / $Ticks['lange']);
+
                     if ($incomming_counter == 1) {
-                        $etas = $irc_text['farbe'].$irc_farbe['blau'].','.$irc_listfarbe[$farbe].' '.mysql_result($SQL_Result2, $x, 'angreifer_galaxie').':'.mysql_result($SQL_Result2, $x, 'angreifer_planet').$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_listfarbe[$farbe].' ('.GetScans($SQL_DBConn, mysql_result($SQL_Result2, $x, 'angreifer_galaxie'), mysql_result($SQL_Result2, $x, 'angreifer_planet')).' ETA'.$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['blau'].','.$irc_listfarbe[$farbe].' '.$atter_eta.$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_listfarbe[$farbe].')';
+                        $etas = $irc_text['farbe'].$irc_farbe['blau'].','.$irc_listfarbe[$farbe].' '.mysql_result($SQL_Result2, $x, 'angreifer_galaxie').':'.mysql_result($SQL_Result2, $x, 'angreifer_planet').$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_listfarbe[$farbe].' ('.GetScans_irc($SQL_DBConn, mysql_result($SQL_Result2, $x, 'angreifer_galaxie'), mysql_result($SQL_Result2, $x, 'angreifer_planet')).' ETA'.$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['blau'].','.$irc_listfarbe[$farbe].' '.$atter_eta."min|".$atter_eta_tic."Ticks".$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_listfarbe[$farbe].')';
                     } else {
-                        $etas = $etas.$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_listfarbe[$farbe].','.$irc_text['farbe'].$irc_farbe['blau'].','.$irc_listfarbe[$farbe].' '.mysql_result($SQL_Result2, $x, 'angreifer_galaxie').':'.mysql_result($SQL_Result2, $x, 'angreifer_planet').$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_listfarbe[$farbe].' ('.GetScans($SQL_DBConn, mysql_result($SQL_Result2, $x, 'angreifer_galaxie'), mysql_result($SQL_Result2, $x, 'angreifer_planet')).' ETA'.$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['blau'].','.$irc_listfarbe[$farbe].' '.$atter_eta.$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_listfarbe[$farbe].')';
+                        $etas = $etas.$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_listfarbe[$farbe].','.$irc_text['farbe'].$irc_farbe['blau'].','.$irc_listfarbe[$farbe].' '.mysql_result($SQL_Result2, $x, 'angreifer_galaxie').':'.mysql_result($SQL_Result2, $x, 'angreifer_planet').$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_listfarbe[$farbe].' ('.GetScans_irc($SQL_DBConn, mysql_result($SQL_Result2, $x, 'angreifer_galaxie'), mysql_result($SQL_Result2, $x, 'angreifer_planet')).' ETA'.$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['blau'].','.$irc_listfarbe[$farbe].' '.$atter_eta."min|".$atter_eta_tic."Ticks".$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_listfarbe[$farbe].')';
                     }
                 }
             }
 
             if ($incomming_counter > 0) {
                 $text = $text.'° '.$irc_text['farbe'].$irc_farbe['blau'].','.$irc_listfarbe[$farbe].' '.$ziel_galaxie.':'.$ziel_planet.' ['.$ziel_allianz.'] '.$ziel_name.$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_listfarbe[$farbe].' hat'.$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['blau'].','.$irc_listfarbe[$farbe].' '.$incomming_counter.$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_listfarbe[$farbe].' Incomming(s):'.$irc_text['farbe'].$etas;
-                if ($farbe == 0)
+                if ($farbe == 0) {
                     $farbe = 1;
-                else
+                } else {
                     $farbe = 0;
+                }
             }
         }
 
-        if ($text == '') $text = '° '.$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_farbe['weiss'].' Es werden momentan keine Verteidiger benötigt.';
+        if ($text == '') {
+            $text = '° '.$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_farbe['weiss'].' Es werden momentan keine Verteidiger benötigt.';
+        } else {
+            $text = $text.'° '.$irc_text['farbe'].$irc_farbe['rot'].','.$irc_listfarbe[$farbe].'!inc !deff';
+        }
 
-// Einzelnen Att anzeigen
+        // Einzelnen Att anzeigen
     } elseif($modus == 1) {
 
         if (!isset($koord))
             $text = '° Sie müssen eine Koordinate angeben!';
         else {
-            $tmp_pos = strpos($koord, ':');
-            if ($tmp_pos == 0)
+        $tmp_pos = strpos($koord, ':');
+        if ($tmp_pos == 0)
                 $text = '° Sie müssen eine gültige Koordinate angeben! ('.$koord.')';
             else {
                 $tmp_galaxie = substr($koord, 0, $tmp_pos);
@@ -105,19 +121,22 @@
                 for ($n = 0; $n < mysql_num_rows($SQL_Result); $n++) {
                     if (mysql_result($SQL_Result, $n, 'modus') == 1) {
                         $incomming_counter++;
-                        $atter_eta = (mysql_result($SQL_Result, $n, 'eta') * 15 - $tick_abzug);
+                        $atter_eta = (mysql_result($SQL_Result, $n, 'eta') * $Ticks['lange']) - $tick_abzug;
+                        $atter_eta_tic = preg_replace('/(\.)(.*)/', '', $atter_eta / $Ticks['lange']);
+
                         if ($incomming_counter == 1) {
-                            $tmp_atter = $irc_text['farbe'].$irc_farbe['blau'].','.$irc_farbe['weiss'].' '.mysql_result($SQL_Result, $n, 'angreifer_galaxie').':'.mysql_result($SQL_Result, $n, 'angreifer_planet').$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_farbe['weiss'].' ('.GetScans($SQL_DBConn, mysql_result($SQL_Result, $n, 'angreifer_galaxie'), mysql_result($SQL_Result, $n, 'angreifer_planet')).' ETA'.$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['blau'].','.$irc_farbe['weiss'].' '.$atter_eta.$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_farbe['weiss'].')';
+                            $tmp_atter = $irc_text['farbe'].$irc_farbe['blau'].','.$irc_farbe['weiss'].' '.mysql_result($SQL_Result, $n, 'angreifer_galaxie').':'.mysql_result($SQL_Result, $n, 'angreifer_planet').$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_farbe['weiss'].' ('.GetScans_irc($SQL_DBConn, mysql_result($SQL_Result, $n, 'angreifer_galaxie'), mysql_result($SQL_Result, $n, 'angreifer_planet')).' ETA'.$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['blau'].','.$irc_farbe['weiss'].' '.$atter_eta."min|".$atter_eta_tic."Ticks".$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_farbe['weiss'].')';
                         } else {
-                            $tmp_atter = $tmp_atter.$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_farbe['weiss'].', '.$irc_text['farbe'].$irc_farbe['blau'].','.$irc_farbe['weiss'].' '.mysql_result($SQL_Result, $n, 'angreifer_galaxie').':'.mysql_result($SQL_Result, $n, 'angreifer_planet').$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_farbe['weiss'].' ('.GetScans($SQL_DBConn, mysql_result($SQL_Result, $n, 'angreifer_galaxie'), mysql_result($SQL_Result, $n, 'angreifer_planet')).' ETA'.$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['blau'].','.$irc_farbe['weiss'].' '.$atter_eta.$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_farbe['weiss'].')';
+                            $tmp_atter = $tmp_atter.$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_farbe['weiss'].', '.$irc_text['farbe'].$irc_farbe['blau'].','.$irc_farbe['weiss'].' '.mysql_result($SQL_Result, $n, 'angreifer_galaxie').':'.mysql_result($SQL_Result, $n, 'angreifer_planet').$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_farbe['weiss'].' ('.GetScans_irc($SQL_DBConn, mysql_result($SQL_Result, $n, 'angreifer_galaxie'), mysql_result($SQL_Result, $n, 'angreifer_planet')).' ETA'.$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['blau'].','.$irc_farbe['weiss'].' '.$atter_eta."min|".$atter_eta_tic."Ticks".$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_farbe['weiss'].')';
                         }
                     } elseif (mysql_result($SQL_Result, $n, 'modus') == 2) {
                         $deff_counter++;
-                        $deffer_eta = (mysql_result($SQL_Result, $n, 'eta') * 15 - $tick_abzug);
+                        $deffer_eta = (mysql_result($SQL_Result, $n, 'eta') * $Ticks['lange']) - $tick_abzug;
+                        $deffer_eta_tic = preg_replace('/(\.)(.*)/', '', $deffer_eta / $Ticks['lange']);
                         if ($deff_counter == 1) {
-                            $tmp_deffer = $irc_text['farbe'].$irc_farbe['blau'].','.$irc_farbe['weiss'].' '.mysql_result($SQL_Result, $n, 'angreifer_galaxie').':'.mysql_result($SQL_Result, $n, 'angreifer_planet').$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_farbe['weiss'].' ('.GetScans($SQL_DBConn, mysql_result($SQL_Result, $n, 'angreifer_galaxie'), mysql_result($SQL_Result, $n, 'angreifer_planet')).' ETA'.$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['blau'].','.$irc_farbe['weiss'].' '.$deffer_eta.$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_farbe['weiss'].')';
+                            $tmp_deffer = $irc_text['farbe'].$irc_farbe['blau'].','.$irc_farbe['weiss'].' '.mysql_result($SQL_Result, $n, 'angreifer_galaxie').':'.mysql_result($SQL_Result, $n, 'angreifer_planet').$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_farbe['weiss'].' ('.GetScans_irc($SQL_DBConn, mysql_result($SQL_Result, $n, 'angreifer_galaxie'), mysql_result($SQL_Result, $n, 'angreifer_planet')).' ETA'.$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['blau'].','.$irc_farbe['weiss'].' '.$deffer_eta."min|".$deffer_eta_tic."Ticks".$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_farbe['weiss'].')';
                         } else {
-                            $tmp_deffer = $tmp_deffer.$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_farbe['weiss'].', '.$irc_text['farbe'].$irc_farbe['blau'].','.$irc_farbe['weiss'].' '.mysql_result($SQL_Result, $n, 'angreifer_galaxie').':'.mysql_result($SQL_Result, $n, 'angreifer_planet').$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_farbe['weiss'].' ('.GetScans($SQL_DBConn, mysql_result($SQL_Result, $n, 'angreifer_galaxie'), mysql_result($SQL_Result, $n, 'angreifer_planet')).' ETA'.$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['blau'].','.$irc_farbe['weiss'].' '.$deffer_eta.$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_farbe['weiss'].')';
+                            $tmp_deffer = $tmp_deffer.$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_farbe['weiss'].', '.$irc_text['farbe'].$irc_farbe['blau'].','.$irc_farbe['weiss'].' '.mysql_result($SQL_Result, $n, 'angreifer_galaxie').':'.mysql_result($SQL_Result, $n, 'angreifer_planet').$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_farbe['weiss'].' ('.GetScans_irc($SQL_DBConn, mysql_result($SQL_Result, $n, 'angreifer_galaxie'), mysql_result($SQL_Result, $n, 'angreifer_planet')).' ETA'.$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['blau'].','.$irc_farbe['weiss'].' '.$deffer_eta."min|".$deffer_eta_tic."Ticks".$irc_text['farbe'].$irc_text['farbe'].$irc_farbe['schwarz'].','.$irc_farbe['weiss'].')';
                         }
                     }
                 }
@@ -136,26 +155,26 @@
 elseif($modus == 2) {
 
 
-				$tmp_pos = strpos($koord, ':');
+                $tmp_pos = strpos($koord, ':');
 
             if ($tmp_pos == 0)
 
                 $text = '° Sie müssen eine gültige Koordinate angeben! ('.$koord.')';
 
-				else { $tmp_galaxie = substr($koord, 0, $tmp_pos);
+                else { $tmp_galaxie = substr($koord, 0, $tmp_pos);
                 $tmp_planet = substr($koord, $tmp_pos + 1);
 
 
-		$sql='select * from `gn4scans` where rg='.$tmp_galaxie.' and rp='.$tmp_planet.' ';
-			$SQL_Result = tic_mysql_query( $sql, $SQL_DBConn );
-		 $count =  mysql_num_rows($SQL_Result);
+        $sql='select * from `gn4scans` where rg='.$tmp_galaxie.' and rp='.$tmp_planet.' ';
+            $SQL_Result = tic_mysql_query( $sql, $SQL_DBConn );
+         $count =  mysql_num_rows($SQL_Result);
     if ( $count == 0 ) {
         echo 'Sorry - Keine Scans vorhanden.';
         return;
     } else {
 
 
-					// all
+                    // all
         // sektor
         $pts = 0; $me  = 0; $ke  = 0; $sgen=0; $szeit='-'; $s=0; $d=0; $a=0;
         // unit init
@@ -171,7 +190,7 @@ elseif($modus == 2) {
         for ( $i=0; $i<$count; $i++ ) {
 
 
-		if ( $i<($count-1) )
+        if ( $i<($count-1) )
                 $rpnext = mysql_result($SQL_Result, $i+1, 'rp' );
             else
                 $rpnext = 999;
@@ -251,72 +270,72 @@ elseif($modus == 2) {
                     echo '????huh?!??? - Ohooooh';
                     break;
             }
-						// echo '('.$rpnext.' <>'. $rp.')';
+                        // echo '('.$rpnext.' <>'. $rp.')';
         if ( $rpnext <> $rp ) {
 
-						if($istscanart == 'sek') {
+                        if($istscanart == 'sek') {
 
-						$text = 	  '° Name: ('.$rg.':'.$rp.') - '.$rname.' ';
-						$text = $text.'° Punkte: '.number_format($pts, 0, ',', '.').'';
-						$text = $text.'° Metall Exxen: '.$me.'';
-						$text = $text.'° Kristall Exxen: '.$ke.'';
-						$text = $text.'° Schiffe: '.$s.'';
-						$text = $text.'° Verteidigung: '.$d.'';
-						$text = $text.'° Astros: '.$a.'';
-						$text = $text.'° Genauigkeit: '.$sgen.' %';
-						$text = $text.'° Datum: '.$szeit.'';
+                        $text =       '° Name: ('.$rg.':'.$rp.') - '.$rname.' ';
+                        $text = $text.'° Punkte: '.number_format($pts, 0, ',', '.').'';
+                        $text = $text.'° Metall Exxen: '.$me.'';
+                        $text = $text.'° Kristall Exxen: '.$ke.'';
+                        $text = $text.'° Schiffe: '.$s.'';
+                        $text = $text.'° Verteidigung: '.$d.'';
+                        $text = $text.'° Astros: '.$a.'';
+                        $text = $text.'° Genauigkeit: '.$sgen.' %';
+                        $text = $text.'° Datum: '.$szeit.'';
 
-						}
-
-
-						if($istscanart == 'einheit') {
-
-						$text = 	  '° Name: ('.$rg.':'.$rp.') - '.$rname.' ';
-						$text = $text.'° Jäger: '.$ja.'';
-						$text = $text.'° Bomber: '.$bo.'';
-						$text = $text.'° Fregatte: '.$fr.'';
-						$text = $text.'° Zerstörer: '.$ze.'';
-						$text = $text.'° Kreuzer: '.$kr.'';
-						$text = $text.'° Schlachtschiff: '.$sl.'';
-						$text = $text.'° Trägerschiff: '.$tr.'';
-						$text = $text.'° Kaperschiff: '.$ka.'';
-						$text = $text.'° Schutzschiff: '.$ca.'';
-						$text = $text.'° Genauigkeit: '.$ugen.' %';
-						$text = $text.'° Datum: '.$uzeit.'';
+                        }
 
 
-						}
+                        if($istscanart == 'einheit') {
 
-						if($istscanart == 'gscan') {
+                        $text =       '° Name: ('.$rg.':'.$rp.') - '.$rname.' ';
+                        $text = $text.'° Jäger: '.$ja.'';
+                        $text = $text.'° Bomber: '.$bo.'';
+                        $text = $text.'° Fregatte: '.$fr.'';
+                        $text = $text.'° Zerstörer: '.$ze.'';
+                        $text = $text.'° Kreuzer: '.$kr.'';
+                        $text = $text.'° Schlachtschiff: '.$sl.'';
+                        $text = $text.'° Trägerschiff: '.$tr.'';
+                        $text = $text.'° Kaperschiff: '.$ka.'';
+                        $text = $text.'° Schutzschiff: '.$ca.'';
+                        $text = $text.'° Genauigkeit: '.$ugen.' %';
+                        $text = $text.'° Datum: '.$uzeit.'';
 
-						$text = 	  '° Name: ('.$rg.':'.$rp.') - '.$rname.' ';
-						$text = $text.'° Leichtes Orbitalgeschütz: '.$lo.'';
-						$text = $text.'° Leichtes Raumgeschütz: '.$lr.'';
-						$text = $text.'° Mittleres Raumgeschütz: '.$mr.'';
-						$text = $text.'° Schweres Raumgeschütz: '.$sr.'';
-						$text = $text.'° Abfangjäger: '.$aj.'';
-						$text = $text.'° Genauigkeit: '.$ggen.' %';
-						$text = $text.'° Datum: '.$gzeit.'';
 
+                        }
 
+                        if($istscanart == 'gscan') {
 
-						}
-
-						if($istscanart == 'mili') {
-
-						$text = 	  '° Name: ('.$rg.':'.$rp.') - '.$rname.' ';
-						$text = $text.'° Orbit: '.$ja0.' Leo | '.$bo0.' Aquilae | '.$fr0.' Fornax | '.$ze0.' Draco | '.$kr0.' Goron | '.$sl0.' Pentalin | '.$tr0.' Zenit | '.$ka0.' Cleptor | '.$ca0.' Cancri ';
-						$text = $text.'° Flotte1: '.$ja1.' Leo | '.$bo1.' Aquilae | '.$fr1.' Fornax | '.$ze1.' Draco | '.$kr1.' Goron | '.$sl1.' Pentalin | '.$tr1.' Zenit | '.$ka1.' Cleptor | '.$ca1.' Cancri ';
-						$text = $text.'° Flotte2: '.$ja2.' Leo | '.$bo2.' Aquilae | '.$fr2.' Fornax | '.$ze2.' Draco | '.$kr2.' Goron | '.$sl2.' Pentalin | '.$tr2.' Zenit | '.$ka2.' Cleptor | '.$ca2.' Cancri ';
-						$text = $text.'° Genauigkeit: '.$mgen.' %';
-						$text = $text.'° Datum: '.$mzeit.'';
-
-						}
+                        $text =       '° Name: ('.$rg.':'.$rp.') - '.$rname.' ';
+                        $text = $text.'° Leichtes Orbitalgeschütz: '.$lo.'';
+                        $text = $text.'° Leichtes Raumgeschütz: '.$lr.'';
+                        $text = $text.'° Mittleres Raumgeschütz: '.$mr.'';
+                        $text = $text.'° Schweres Raumgeschütz: '.$sr.'';
+                        $text = $text.'° Abfangjäger: '.$aj.'';
+                        $text = $text.'° Genauigkeit: '.$ggen.' %';
+                        $text = $text.'° Datum: '.$gzeit.'';
 
 
 
+                        }
 
-		// all
+                        if($istscanart == 'mili') {
+
+                        $text =       '° Name: ('.$rg.':'.$rp.') - '.$rname.' ';
+                        $text = $text.'° Orbit: '.$ja0.' Leo | '.$bo0.' Aquilae | '.$fr0.' Fornax | '.$ze0.' Draco | '.$kr0.' Goron | '.$sl0.' Pentalin | '.$tr0.' Zenit | '.$ka0.' Cleptor | '.$ca0.' Cancri ';
+                        $text = $text.'° Flotte1: '.$ja1.' Leo | '.$bo1.' Aquilae | '.$fr1.' Fornax | '.$ze1.' Draco | '.$kr1.' Goron | '.$sl1.' Pentalin | '.$tr1.' Zenit | '.$ka1.' Cleptor | '.$ca1.' Cancri ';
+                        $text = $text.'° Flotte2: '.$ja2.' Leo | '.$bo2.' Aquilae | '.$fr2.' Fornax | '.$ze2.' Draco | '.$kr2.' Goron | '.$sl2.' Pentalin | '.$tr2.' Zenit | '.$ka2.' Cleptor | '.$ca2.' Cancri ';
+                        $text = $text.'° Genauigkeit: '.$mgen.' %';
+                        $text = $text.'° Datum: '.$mzeit.'';
+
+                        }
+
+
+
+
+        // all
             // sektor
             $pts = 0; $me  = 0; $ke  = 0; $sgen=0; $szeit='-'; $s=0; $d=0; $a=0;
             // unit init
@@ -330,34 +349,62 @@ elseif($modus == 2) {
             $rscans = '';
 
 
-		}
+        }
 
 
 
-										}
+                                        }
 
-			}
-
-
+            }
 
 
 
-	}
+
+
+    }
 
 
 
 }
 
-
-
-
-
-
-
-
-
     $text = $irc_text['fett'].$irc_text['farbe'].$irc_farbe['weiss'].','.$irc_farbe['dunkelblau'].'[ T.I.C. | Tactical Information Center      ]'.$irc_text['farbe'].$irc_text['fett'].$text;
-    $text = $text.'°'.$irc_text['farbe'].$irc_farbe['weiss'].','.$irc_farbe['dunkelgrau'].'[ http://'.$HTTP_HOST.'/stic     coding by ShadowoftheDragon + Pchen]'.$irc_text['farbe'];
+    //$text = $text.'°'.$irc_text['farbe'].$irc_farbe['weiss'].','.$irc_farbe['dunkelgrau'].'[ http://'.$HTTP_HOST.'/stic     coding by ShadowoftheDragon + Pchen]'.$irc_text['farbe'];
 
     echo $text;
+
+function GetScans_irc($SQL_DBConn, $galaxie, $planet) {
+    global $irc_text, $irc_farbe, $irc_listfarbe, $farbe;
+
+    $scan_type[0] = 'S';
+    $scan_type[1] = 'E';
+    $scan_type[2] = 'M';
+    $scan_type[3] = 'G';
+    $scan_type[4] = 'N';
+
+    $datumx = date('d.m.Y');
+
+    $SQL_Result = tic_mysql_query('SELECT * FROM `gn4scans` WHERE rg="'.$galaxie.'" AND rp="'.$planet.'" ORDER BY type;') or die(tic_mysql_error(__FILE__,__LINE__));
+    //echo "Scan: ".'SELECT * FROM `gn4scans` WHERE rg="'.$galaxie.'" AND rp="'.$planet.'" ORDER BY type;<br />';
+    $SQL_Num = mysql_num_rows($SQL_Result);
+    if ($SQL_Num == 0) {
+        return '[-]';
+    } else {
+        $tmp_result = '[';
+        for ($n = 0; $n < $SQL_Num; $n++) {
+            if ($datumx == substr(mysql_result($SQL_Result, $n, 'zeit'),-10)) {
+                $fc1 = "";
+                $fc2 = "";
+            } else {
+                $fc1 = $irc_text['farbe']."04";
+                $fc2 = $irc_text['farbe'].$irc_farbe['schwarz'].$irc_listfarbe[$farbe];
+            }
+
+            $tmp_result = $tmp_result.$fc1.$scan_type[mysql_result($SQL_Result, $n, 'type')].$fc2;
+        }
+        $tmp_result = $tmp_result.']';
+        //    echo "Scan=>$tmp_result<br />";
+        return $tmp_result;
+    }
+    return null;
+}
 ?>

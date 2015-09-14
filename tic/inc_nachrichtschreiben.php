@@ -24,6 +24,7 @@
                   echo '<option selected="selected" value="META">MetaInfo</option>';
                   echo '<option value="HC">HC-META-Info</option>';
                   echo '<option value="SHC">SUPER HC INFO</option>';
+                  echo '<option value="alle">ALLE</option>';
               echo '</select>';
             } else {
                echo '<input type="hidden" name="txtHC" value="META">';

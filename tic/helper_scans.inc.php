@@ -158,9 +158,11 @@
 	}
 
 	function getScanAge($scan_time, $eta_time) {
-		if (time() - $scan_time > 24 * 3600) {
+		global $Ticks;
+		$tsec = $Ticks['lange']*60;
+		if (time() - $scan_time > 96 * $tsec) {
 			return "scanold";
-		} elseif ($eta_time - $scan_time > 7.5 * 3600) {
+		} elseif ($eta_time - $scan_time > 30 * $tsec) {
 			return "scanwarn";
 		} else {
 			return "scanok";

@@ -18,6 +18,8 @@
                     $ticid="H".$Benutzer['ticid'];
                 } else if ($_POST['txtHC'] == 'SHC') {
                     $ticid="SHC";
+                } else if ($_POST['txtHC'] == 'alle') {
+                    $ticid="alle";
                 }
                 $SQL_Result = tic_mysql_query('INSERT INTO `gn4nachrichten` (ticid, name, zeit, titel, text) VALUES ("'.$ticid.'", "'.$Benutzer['galaxie'].':'.$Benutzer['planet'].' '.$Benutzer['name'].' ('.$RangName[$Benutzer['rang']].' @ ['.$AllianzTag[$Benutzer['allianz']].'])", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$_POST['txtTitel'].'", "'.$_POST['txtText'].'")', $SQL_DBConn) or $error_code = 7;
                 if ($error_code == 0) LogAction("Nachricht geschrieben: Titel='".$_POST['txtTitel']."';");

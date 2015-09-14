@@ -155,6 +155,7 @@ function GetUserInfos($id) {
     {
         global $Benutzer;
         global $displayflag;
+        global $Ticks;
         if ($time_in_min < 0)
             $time_in_min=0;
         if (!isset($displayflag))
@@ -185,16 +186,17 @@ function GetUserInfos($id) {
 
     function addgnuser($gala, $planet, $name, $kommentare="")
     {
-        if ($name != "" && ctype_digit($planet)== 1 && $planet != '' && ctype_digit($gala)== 1 && $gala != '')
+        if ($name != "" && is_numeric($planet) && $planet != '' && is_numeric($gala)&& $gala != '')
         {
-            tic_mysql_query('DELETE FROM `gn4gnuser` WHERE gala="'.$gala.'" AND planet="'.$planet.'"') or die(tic_mysql_error(__FILE__,__LINE__));
-            tic_mysql_query('INSERT INTO `gn4gnuser` (gala, planet, name, kommentare, erfasst) VALUES ("'.$gala.'", "'.$planet.'", "'.$name.'", "'.$kommentare.'", "'.time().'")') or die(tic_mysql_error(__FILE__,__LINE__));
+            tic_mysql_query("DELETE FROM gn4gnuser WHERE name='".$name."'") or die(tic_mysql_error(__FILE__,__LINE__));
+            tic_mysql_query("DELETE FROM gn4gnuser WHERE gala='".$gala."' AND planet='".$planet."'") or die(tic_mysql_error(__FILE__,__LINE__));
+            tic_mysql_query("INSERT INTO gn4gnuser (gala, planet, name, kommentare, erfasst) VALUES ('".$gala."', '".$planet."', '".$name."', '".$kommentare."', '".time()."')") or die(tic_mysql_error(__FILE__,__LINE__));
         }
     }
 
     function gnuser($gala, $planet)
     {
-        if($gala != "" && $planet != "" && ctype_digit($planet)== 1 && ctype_digit($gala)== 1)
+        if($gala != "" && $planet != "" && is_numeric($planet)&& is_numeric($gala))
         {
             $SQL_Result = tic_mysql_query('SELECT name FROM `gn4gnuser` WHERE gala="'.$gala.'" AND planet="'.$planet.'"') or die(tic_mysql_error(__FILE__,__LINE__));
             if($user = mysql_fetch_row($SQL_Result))
@@ -267,7 +269,7 @@ function GetUserInfos($id) {
   }
 
   function printselect($nr) {
-// ausgabe der Funktion im der Suchseite für Ziele
+// ausgabe der Funktion im der Suchseite fuer Ziele
     echo '<td><center><select name=fkt'.$nr.'><option>=</option><option><=</option><option>>=</option></select></center></td>';
   }
 
@@ -328,7 +330,7 @@ function GetUserInfos($id) {
                       $d[9]     = mysql_result($SQL_Result, $i, 'sfsu' );
                     }
 
-                case 2: // MilitärScan
+                case 2: // MilitaerScan
                     if ($stype == "M") {
                       $uzeit  = mysql_result($SQL_Result, $i, 'zeit' );
                       $ugen   = mysql_result($SQL_Result, $i, 'gen' );
@@ -357,7 +359,7 @@ function GetUserInfos($id) {
                         $d[9]     = mysql_result($SQL_Result, $i, 'sf'.$stype.'su' );
                     }
 
-                case 3: // geschtz
+                case 3: // geschuetz
                     $uzeit  = mysql_result($SQL_Result, $i, 'zeit' );
                     $ugen   = mysql_result($SQL_Result, $i, 'gen' );
                     $xzeit[3] = "<b>G-Scan: ".$uzeit." ".$ugen."%:</b><br>";
@@ -423,8 +425,8 @@ function GetUserInfos($id) {
 
 function check_attflottenstatus($id,$flnr,$rg,$rp,$AttStatus,$lfd) {
       // 0 Vorbereitung gelb
-      // 1 abgeflogen / gestartert grün
-      // 2 rückflug / Abbruch rot
+      // 1 abgeflogen / gestartert gruen
+      // 2 rueckflug / Abbruch rot
       global $ATTETA;
       global $tick_abzug;
 
@@ -442,9 +444,9 @@ function check_attflottenstatus($id,$flnr,$rg,$rp,$AttStatus,$lfd) {
         $SQL_Num = mysql_num_rows($SQL_Result);
   		  if ($SQL_Num != 0) {
             // 1 angriff
-            // 2 deff rückflug
-            // 3 rückflug att
-            // 4 rückflug deff
+            // 2 deff rueckflug
+            // 3 rueckflug att
+            // 4 rueckflug deff
             $modus = mysql_result($SQL_Result, 0, 'modus');
             $flottennr = mysql_result($SQL_Result, 0, 'flottennr');
             if ($modus == 1 ) {
@@ -456,7 +458,7 @@ function check_attflottenstatus($id,$flnr,$rg,$rp,$AttStatus,$lfd) {
 
                $ret = 1;
                if ($AttStatus < 2) {
-                   // eine flotte ist gestaret .. Status wird geändert
+                   // eine flotte ist gestaret .. Status wird geaendert
                   $SQL = 'UPDATE gn4attplanung set attstatus = 2 where lfd='.$lfd.';';
                   $SQL_Result = tic_mysql_query($SQL) or die(tic_mysql_error(__FILE__,__LINE__));
                }
@@ -475,7 +477,7 @@ function check_attflottenstatus($id,$flnr,$rg,$rp,$AttStatus,$lfd) {
 
         $SQL = 'DELETE FROM gn4attplanung WHERE lfd ='.$lfd.';';
         $SQL_Result = tic_mysql_query($SQL) or die(tic_mysql_error(__FILE__,__LINE__));
-        // echo 'ATT-Ziel Nr. '.$lfd.' gelöscht!';
+        // echo 'ATT-Ziel Nr. '.$lfd.' geloescht!';
   }
 
 function AttAnzahl($Ally,$Meta,$type) {
@@ -572,5 +574,7 @@ function GetAllianzName($id) {
 		     }
       }
 }
-?>
 
+include('functions2.php');
+
+?>

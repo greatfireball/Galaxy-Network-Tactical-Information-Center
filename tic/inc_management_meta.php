@@ -1,7 +1,7 @@
 <center>
-<?php 
+<?php
 
-if($Benutzer['rang']== RANG_STECHNIKER){
+if($Benutzer['rang']>= RANG_TECHNIKER){
     if(isset($metaerror))
 	   echo "<div class=\"error\">".$metaerror."</div>";
 echo'<form action="./main.php?modul=management_meta" method="post">
@@ -11,7 +11,9 @@ echo'<form action="./main.php?modul=management_meta" method="post">
 	<tr class="datatablehead" align="center"><td colspan="4">Meta-Managment</td></tr>
 <tr>
 	<td class="fieldnormallight" colspan="4">Meta: <select onchange="this.form.submit();" name="selectMeta">';
-		$SQL_Result=tic_mysql_query('select id,name,sysmsg,duell,wars,naps,bnds FROM `gn4meta` order by id asc;',__FILE__,__LINE__);
+    $query='';
+    if($Benutzer['rang']== RANG_TECHNIKER) $query='where id="'.$Benutzer['ticid'].'"';
+		$SQL_Result=tic_mysql_query('select id,name,sysmsg,duell,wars,naps,bnds FROM `gn4meta` '.$query.' order by id asc;',__FILE__,__LINE__);
 		$SQL_Num=mysql_num_rows($SQL_Result);
         if(isset($newmetaid)) $selectMeta=$newmetaid;
         else if(isset($_POST['selectMeta'])) $selectMeta=$_POST['selectMeta'];
@@ -44,7 +46,11 @@ echo'<form action="./main.php?modul=management_meta" method="post">
                 $bnds=mysql_result($SQL_Result,0,'bnds');
                 $naps=mysql_result($SQL_Result,0,'naps');
         }
-	
+        if($Benutzer['rang']==RANG_TECHNIKER) $schaltflaeche='<td align="center">&nbsp;</td><td colspan="2" align="center"><input name="metaspeichern" value="Speichern" type="submit" /></td>
+	  <td align="center">&nbsp;</td>';
+        else $schaltflaeche='<td align="center"><input name="metadelet" value="L&ouml;schen" type="submit" /></td><td colspan="2" align="center"><input name="metaspeichern" value="Speichern" type="submit" /></td>
+	  <td align="center"><input align="right" type="submit" name="newmeta" value="Neuer Meta" /></td>';
+
 		echo '</select><noscript> <input type="submit" value="Ausw&auml;hlen" /></noscript></td></tr>	<tr class="fieldnormaldark"><td>Name:</td>
 	<td align="left"><input size="16" type="text" name="meta" value="'.$metaname.'" /></td>
 	<td >Duell:</td>
@@ -66,8 +72,7 @@ echo'<form action="./main.php?modul=management_meta" method="post">
 	  <td><input name="wars" value="'.$wars.'" /></td>
 	  </tr>
 
-	<tr class="fieldnormaldark"><td align="center"><input name="metadelet" value="L&ouml;schen" type="submit" /></td><td colspan="2" align="center"><input name="metaspeichern" value="Speichern" type="submit" /></td>
-	  <td align="center"><input align="right" type="submit" name="newmeta" value="Neuer Meta" /></td>
+	<tr class="fieldnormaldark">'.$schaltflaeche.'
 	</tr></table>
 	</form>';
 

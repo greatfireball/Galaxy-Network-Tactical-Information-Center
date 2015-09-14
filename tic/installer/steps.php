@@ -95,7 +95,8 @@
                                   "gn4scans",
                                   "gn4attflotten",
                                   "gn4attplanung",
-                                  "gn4vars");
+                                  "gn4vars",
+                                  "gn4channels");
 
         $mysql->query("SHOW TABLE STATUS") or die($mysql->error(__FILE__,__LINE__));
 

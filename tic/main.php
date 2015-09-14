@@ -41,7 +41,7 @@
 	$mtime = $mtime[1] + $mtime[0];
 	$start_time = $mtime;
 
-	$version = "1.14.2";
+	$version = "1.17.1";
 
 	include("./accdata.php");
 	include("./globalvars.php");
@@ -179,6 +179,10 @@
 		tic_mysql_query("UPDATE `gn4flottenbewegungen` SET save='1' WHERE verteidiger_galaxie='".$_GET['needno_galaxie']."' AND verteidiger_planet='".$_GET['needno_planet']."'") or die(tic_mysql_error(__FILE__,__LINE__));
 	}
 
+	if (isset($irc_log)) {
+		if ($irc_log)
+			include('irc-scans.inc.php');
+	}
 	// Funktion einbinden
 	if ($action != "")
 		include("./function.".$action.".php");
@@ -187,7 +191,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de" dir="ltr">
 	<head>
-		<title>T.I.C. | Tactical Information Center - Meta <?=$MetaInfo['name']?></title>
+		<title>TIC - <?=$MetaInfo['name']?></title>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 		<meta http-equiv="refresh" content="900; URL=./main.php?<?=(isset($_GET['auto']) ? "" : "auto").($_SERVER['QUERY_STRING'] != "" ? (isset($_GET['auto']) ? "" : "&amp;").str_replace("&", "&amp;", $_SERVER['QUERY_STRING']) : "")?>" />
 		<link rel="stylesheet" href="./tic.css" type="text/css" />
@@ -207,12 +211,13 @@
 	</head>
 	<body>
 		<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
-		<div style="z-index:10;background-image:url('bilder/skin/background.bmp');width:100%">
-		<div align="center" style="width:100%"><img src="bilder/skin/banner.jpg" alt="" align="middle" /></div>
+		<div style="position:absolute; z-index:10;background-image:url('bilder/skin/background.bmp');width:100%">
+		<!-- <div align="center" style="width:100%"><img src="bilder/skin/banner.jpg" alt="" align="middle" /></div> --> <!-- Banner -->
 <?php
 	include("./menu.inc.php");
 ?>
-		<div style="position:relative;margin-left:200px;margin-right:30px;"><div class="info" align="center">
+		<div style="position:relative; margin-left:200px; margin-right:30px;">
+			<div class="info" align="center">
 			<!--<font size="5"><b>T.I.C. | Tactical Information Center der Meta <?=$MetaInfo['name']?></b></font>//-->
 <?php
 	if ($error_code != 0)
@@ -220,7 +225,7 @@
 	else
 	{
 		include("./inc_accinfo.php");
-		echo "</div>";
+		echo "			</div>\n";
 		$mtime = microtime();
 		$mtime = explode(" ", $mtime);
 		$mtime = $mtime[1] + $mtime[0];
@@ -232,21 +237,19 @@
 			include("./inc_".$modul.".php");
 		else
 			include("./inc_pwdandern.php");
-		echo "</div>";
 
 		if ($error_code != 0)
 			include("./inc_errors.php");
 	}
 ?>
-		</div>
-		<div style="position:relative;top:50px;margin-left:200px;margin-right:30px;">
+		<div style="position:relative; width:100%; margin-top:10px;">
 			<hr />
 			<table width="100%"><tr>
-				<td align="left" valign="top" width="40%">
+				<td align="left" valign="top">
 					<font size="-1">T.I.C. v<?=$version?></font><br />
-					<a href="http://game.galaxynet.4players.de/game/login.php" target="_blank"><img src="http://portal.galaxynet.4players.de/banner_images/gn-button.gif"/></a>
+					<a href="http://www.galaxy-network.de/game/login.php" target="_blank"><img style="border:0px" src="http://www.galaxy-network.de/banner_images/gn-button.gif" alt="Galax-Network" /></a>
 				</td>
-				<td align="center">
+				<td align="center" style="white-space:nowrap;">
 					erstellt in
 <?php
 	$mtime = microtime();
@@ -256,15 +259,26 @@
 	echo sprintf("%01.3f", $end_time - $start_time)." sek.";
 	if (isset($mid_time) && $mid_time != 0)
 	{
-		echo "(".sprintf("%01.3f", $mid_time - $start_time)." sek.)\n";
+		echo " (".sprintf("%01.3f", $mid_time - $start_time)." sek.)<br />\n";
 	}
 	echo "<br />".count_querys(false)." Datenbankabfragen\n";
 ?>
 				</td>
-				<td align="right" valign="top" width="40%">
-					<a href="http://www.tic-entwickler.de" target="_blank"><img src="./bilder/TICELogo.jpg"/></a>
+				<td align="right" valign="top">
+					<a href="http://www.tic-entwickler.de" target="_blank"><img style="border:0px" src="./bilder/TICELogo.jpg" alt="Tic-Entwickler" /></a>
 				</td>
 			</tr></table>
-		</div></div>
+		</div></div></div></div>
+<?
+	if ($_REQUEST['autoclose'] == "now") {
+?>
+	<script language="javascript" type="text/javascript">
+	<!--
+	window.close();
+	-->
+	</script>
+<?
+	}
+?>
 	</body>
 </html>
