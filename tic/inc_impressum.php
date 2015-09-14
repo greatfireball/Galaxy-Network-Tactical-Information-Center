@@ -1,13 +1,13 @@
-<CENTER>
-
-  <TABLE WIDTH=70%>
-    <TR>
-      <TD BGCOLOR=#333333><font color="#FFFFFF" size="-1"><B>Impressum</B></font></TD>
-    </TR>
-    <TR>
-      <TD>
-        <UL>
-          <LI> <font size="-1"><B>Geschichte:</B><BR>
+<table width="70%" align="center">
+  <tr>
+    <td class="datatablehead">Impressum</td>
+  </tr>
+  <tr><td align="left" class="fieldnormallight">
+  <table>
+    <tr>
+      <td>
+        <ul>
+          <li><b>Geschichte:</b><br />
             Das T.I.C. ist entstanden aus der Idee heraus für die MEDUSA-FIGHTER
             einen Taktikscreen zu programmieren, welcher alle Galaxie-Taktikscreens
             der Allianz vereint. Und das sollte dann auch noch legal ablaufen,
@@ -18,80 +18,79 @@
             In Runde 5 nun habe ich eine neue Version programmiert, die nun auf
             einer anderen Technick basiert. Die Ticks werden in Echtzeit berechnet
             und nicht bei jedem Seitenaufruf, wie noch in Version 1. Seitdem ist
-            immer mehr und immer mehr dazugekommen. </font></LI>
-          <BR>
-          <LI> <font size="-1"><B>Mithelfer:</B><BR>
+            immer mehr und immer mehr dazugekommen. </li>
+          <li><b>Mithelfer:</b><br />
             Mein Dank gilt natürlich denjenigen die aktiv am T.I.C. mitgeholfen
-            haben.<BR>
-            <BR>
-            </font>
-            <UL>
-              <LI><font size="-1">Einen Dank an <I>El-Rocko</I> der in der Anfangsphase
+            haben.<br />
+            <br />
+            <ul>
+              <li>Einen Dank an <i>El-Rocko</i> der in der Anfangsphase
                 des T.I.C.s die Kosten übernahnm. Ohne ihn wäre das T.I.C. wahrscheinlich
-                schon in den Kinderschuhen gestorben.</font></LI>
-              <LI><font size="-1">Einen Dank an <I>5n4k3</I> und <I>Mahon</I>,
-                die den T.I.C.-Parser geschrieben bzw. modifiziert haben.</font></LI>
-              <LI><font size="-1">Einen Dank an <I>Tuxos</I>, der das ganze Projekt
-                geistig und finanziell unterstützt.</font></LI>
-              <LI><font size="-1">Einen Dank an <I>Puschkin</I>, der die Berechnungs-Class
-                für den Kampfrechner geschrieben hat.</font></LI>
-              <LI><font size="-1">Und einen großen Dank in Erinnerung an die (ehemalige)
+                schon in den Kinderschuhen gestorben.</li>
+              <li>Einen Dank an <i>5n4k3</i> und <i>Mahon</i>,
+                die den T.I.C.-Parser geschrieben bzw. modifiziert haben.</li>
+              <li>Einen Dank an <i>Tuxos</i>, der das ganze Projekt
+                geistig und finanziell unterstützt.</li>
+              <li>Einen Dank an <i>Puschkin</i>, der die Berechnungs-Class
+                für den Kampfrechner geschrieben hat.</li>
+              <li>Und einen großen Dank in Erinnerung an die (ehemalige)
                 [M-F] MEDUSA-FIGHTER. Durch sie wurde das Projekt gestartet und
-                sie gaben mir immer wieder Ideen und Motivation weiterzumachen.</font></LI>
-            </UL>
-            <font size="-1"><BR>
-            <BR>
-            Euer<BR>
-            NataS<BR>
-            </font></LI>
-        </UL>
-        </TD>
-    </TR>
+                sie gaben mir immer wieder Ideen und Motivation weiterzumachen.</li>
+            </ul>
+            <br />
+            <br />
+            Euer<br />
+            NataS<br />
+          </li>
+        </ul>
+        </td>
+    </tr>
     <tr>
-      <td> <font size="-1">
+      <td> 
         <ul>
-          <li><font size="-1"><B>Weiterentwicklung:</B><BR>
+          <li><b>Weiterentwicklung:</b><br />
             Seit Mitte Runde 9 wurde das T.I.C. mit mäßigem Erfolg bei S-B Schokobons eingesetzt und
             dort weiterentwickelt, aufgehübscht und an die geänderten GN-Layouts angepaßt.
-            Nach und nach kamen weitere Scan-Möglichkeiten (über Clip-Board und Handeingabe) rein. <br>
-            Seit Runde 10 ist es bei xXx eXtreme eXperianced eXperts mit ca. 260 Usern im Einsatz.<br>
-            Vielen Dank auch an Abrafax, der seinen Progger-Einstand mit einem Taktikschirm-Parser feierte.<br>
-            Weitere Änderungen und weitere Verbesserungen sind in Arbeit...<br>
-            <br>
-            </font>Gruß<br>
-            Pomelchen </li>
+            Nach und nach kamen weitere Scan-Möglichkeiten (über Clip-Board und Handeingabe) rein. <br />
+            Seit Runde 10 ist es bei xXx eXtreme eXperianced eXperts mit ca. 260 Usern im Einsatz.<br />
+            Vielen Dank auch an Abrafax, der seinen Progger-Einstand mit einem Taktikschirm-Parser feierte.<br />
+            Weitere Änderungen und weitere Verbesserungen sind in Arbeit...<br />
+            <br />
+            Gruß<br />
+            Pomelchen</li>
         </ul>
-        </font> </td>
+      </td>
     </tr>
     <tr>
-      <td> <font size="-1">
+      <td> 
         <ul>
-          <li><font size="-1"><B>Weiterentwicklung (>1.11.1):</B><BR>
+          <li><b>Weiterentwicklung (>1.11.1):</b><br />
             In Runde 11 wurde das T.I.C. dann von der Meta NoFear eingesetzt, wo sich zuerst <i>Pretoreaner</i>,
-            später dann auch <i>Elkano</i> um die Weiterentwicklung kümmerten.<br>
+            später dann auch <i>Elkano</i> um die Weiterentwicklung kümmerten.<br />
             So wurden mehrere grössere Layout-Veränderungen vorgenommen und einige Bugs in Bezug auf
-            Mozilla/Firefox behoben. Auch wurde die Online-Anzeige eingebaut...<br>
-            Mal sehen, was die Zukunft bringt...<br>
-            <br>
-            </font>Gruß<br>
-            NoFear-Entwicklerteam </li>
+            Mozilla/Firefox behoben. Auch wurde die Online-Anzeige eingebaut...<br />
+            Mal sehen, was die Zukunft bringt...<br />
+            <br />
+            Gruß<br />
+            NoFear-Entwicklerteam</li>
         </ul>
-        </font> </td>
+      </td>
     </tr>
     <tr>
-      <td> <font size="-1">
+      <td> 
         <ul>
-          <li><font size="-1"><B>TIC-Entwickler.de(>1.12.1:</B><BR>
-            Gleichzeitig hat auch die Ally GAS (German Alpha Squad) weiterentwicklet. Auf einen Forum Post<br>
-            von Pretoreaner hin hat sich AlbertLast bei ihm gemeldet und beide haben entschieden das es<br>
-            doch im Prinziep nichts bring wenn jeder aleine an seinem eigenen TIC bastelt.<br>
-            So wurde das Team der TIC-Entwickler geboren, was jetzt die weitere Entwicklung<br>
+          <li><b>TIC-Entwickler.de(>1.12.1:</b><br />
+            Gleichzeitig hat auch die Ally GAS (German Alpha Squad) weiterentwicklet. Auf einen Forum Post
+            von Pretoreaner hin hat sich AlbertLast bei ihm gemeldet und beide haben entschieden das es
+            doch im Prinziep nichts bring wenn jeder aleine an seinem eigenen TIC bastelt.<br />
+            So wurde das Team der TIC-Entwickler geboren, was jetzt die weitere Entwicklung
             des TIC voran treibt...
-            <br>
-            </font>Gruß<br>
-            das Team der TIC-Entwickler </li>
+            <br />
+            Gruß<br />
+            das Team der TIC-Entwickler</li>
         </ul>
-        </font> </td>
+      </td>
     </tr>
-  </TABLE>
-</CENTER>
+  </table>
+  </td></tr>
+</table>

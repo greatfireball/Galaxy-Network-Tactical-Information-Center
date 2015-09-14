@@ -1,7 +1,7 @@
 <?PHP
 // Account erstellen
     if ($_POST['action'] == 'accounterstellen') {
-        $SQL_Result = mysql_query('SELECT * FROM `gn4accounts` WHERE UPPER(name)=UPPER("'.$_POST['txtAccName'].'") OR (galaxie="'.$_POST['txtAccGalaxie'].'" AND planet="'.$_POST['txtAccPlanet'].'");', $SQL_DBConn) or $error_code = 4;
+        $SQL_Result = tic_mysql_query('SELECT * FROM `gn4accounts` WHERE UPPER(name)=UPPER("'.$_POST['txtAccName'].'") OR (galaxie="'.$_POST['txtAccGalaxie'].'" AND planet="'.$_POST['txtAccPlanet'].'");', $SQL_DBConn) or $error_code = 4;
         if (mysql_num_rows($SQL_Result) != 0)
             $error_code = 9;
         else {
@@ -19,8 +19,8 @@
                 if ($Benutzer['rang'] <= $_POST['lstRang'])
                     $error_code = 5;
                 else {
-                    addgnuser($_POST['txtAccGalaxie'], $_POST['txtAccPlanet'], $$_POST['txtAccName']);
-                    $SQL_Result = mysql_query('INSERT INTO `gn4accounts` (ticid, name, passwort, galaxie, planet, rang, allianz) VALUES ("'.$AllianzInfo[$_POST['lstAllianz']]['meta'].'", "'.$_POST['txtAccName'].'", "'.md5($_POST['txtAccPasswort']).'","'.$_POST['txtAccGalaxie'].'", "'.$_POST['txtAccPlanet'].'", "'.$_POST['lstRang'].'", "'.$_POST['lstAllianz'].'")', $SQL_DBConn) or $error_code = 7;
+                    addgnuser($_POST['txtAccGalaxie'], $_POST['txtAccPlanet'], $_POST['txtAccName']);
+                    $SQL_Result = tic_mysql_query('INSERT INTO `gn4accounts` (ticid, name, passwort, galaxie, planet, rang, allianz) VALUES ("'.$AllianzInfo[$_POST['lstAllianz']]['meta'].'", "'.$_POST['txtAccName'].'", "'.md5($_POST['txtAccPasswort']).'","'.$_POST['txtAccGalaxie'].'", "'.$_POST['txtAccPlanet'].'", "'.$_POST['lstRang'].'", "'.$_POST['lstAllianz'].'")', $SQL_DBConn) or $error_code = 7;
                     if ($error_code == 0) LogAction("Account erstellt: Name=".$_POST['txtAccName']."; Koordinaten=".$_POST['txtAccGalaxie'].":".$_POST['txtAccPlanet']."; Rang=".$_POST['lstRang']."; Allianz=".$_POST['lstAllianz'].";");
                 }
             }

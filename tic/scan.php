@@ -12,7 +12,7 @@
 
     $action=$_GET['action'];
     $g=$_GET['g'];
-    $p=$_GET['g'];
+    $p=$_GET['p'];
     $pw=$_GET['pw'];
     $rg=$_GET['rg'];
     $rp=$_GET['rp'];
@@ -77,7 +77,7 @@
 
     if (!isset($action)) $action = '';
     if (!isset($g)) $g = 0;
-    if (!isset($p)) $g = 0;
+    if (!isset($p)) $p = 0;
     if (!isset($pw)) $pw = '';
     if (!isset($rg)) $rg = 0;
     if (!isset($rp)) $rp = 0;
@@ -145,41 +145,40 @@
 
 
 
-    $SQL_Result = mysql_query('SELECT id, name, passwort FROM `gn4accounts` WHERE galaxie="'.$g.'" and passwort="'.md5($pw).'" AND planet="'.$p.'";', $SQL_DBConn);
-    if (mysql_num_rows($SQL_Result) != 1) die('ERROR 0 Spieler nicht gefunden');
+    $SQL_Result = tic_mysql_query('SELECT id, name, passwort FROM `gn4accounts` WHERE galaxie="'.$g.'" and passwort="'.md5($pw).'" AND planet="'.$p.'";', $SQL_DBConn);
+    if (mysql_num_rows($SQL_Result) != 1) die("<html>\n<body>\nERROR 0 Spieler nicht gefunden\n</body>\n</html>");
     $name = mysql_result($SQL_Result, 0, 'name');
     CountScans(mysql_result($SQL_Result, 0, 'id'));
-    $Benutzer['ticid']=mysql_result($SQL_Result, 0, 'ticid');
 
     addgnuser($rg, $rp, $rn);
 
     if ($action == 'ss') {
-        $SQL_Result = mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$rg.'" and ticid="'.$Benutzer['ticid'].'" AND rp="'.$rp.'" AND type="0";', $SQL_DBConn);
+        $SQL_Result = tic_mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$rg.'" AND rp="'.$rp.'" AND type="0";', $SQL_DBConn);
         $insert_names = 'pts, s, d, me, ke, a';
         $insert_values = '"'.$pts.'", "'.$s.'", "'.$d.'", "'.$me.'", "'.$ke.'", "'.$a.'"';
-        $SQL_Result = mysql_query('INSERT INTO `gn4scans` (ticid, type, zeit, g, p, rg, rp, gen, '.$insert_names.') VALUES ("'.$Benutzer['ticid'].'", "0", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$g.'", "'.$p.'", "'.$rg.'", "'.$rp.'", "'.$gen.'", '.$insert_values.');', $SQL_DBConn) or die('ERROR 2 Konnte Datensatz nicht schreiben');
+        $SQL_Result = tic_mysql_query('INSERT INTO `gn4scans` (type, zeit, g, p, rg, rp, gen, '.$insert_names.') VALUES ("0", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$g.'", "'.$p.'", "'.$rg.'", "'.$rp.'", "'.$gen.'", '.$insert_values.');', $SQL_DBConn) or die("<html>\n<body>\nERROR 2 Konnte Datensatz nicht schreiben\n</body>\n</html>");
     }
     if ($action == 'se') {
-        $SQL_Result = mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$rg.'" and ticid="'.$Benutzer['ticid'].'" AND rp="'.$rp.'" AND type="1";', $SQL_DBConn);
+        $SQL_Result = tic_mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$rg.'" AND rp="'.$rp.'" AND type="1";', $SQL_DBConn);
         $insert_names = 'sfj, sfb, sff, sfz, sfkr, sfsa, sft, sfko, sfka, sfsu';
         $insert_values = '"'.$sfj.'", "'.$sfb.'", "'.$sff.'", "'.$sfz.'", "'.$sfkr.'", "'.$sfsa.'", "'.$sft.'", "'.$sfko.'", "'.$sfka.'", "'.$sfsu.'"';
-        $SQL_Result = mysql_query('INSERT INTO `gn4scans` (ticid, type, zeit, g, p, rg, rp, gen, '.$insert_names.') VALUES ("'.$Benutzer['ticid'].'", "1", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$g.'", "'.$p.'", "'.$rg.'", "'.$rp.'", "'.$gen.'", '.$insert_values.');', $SQL_DBConn) or die('ERROR 2 Konnte Datensatz nicht schreiben');
+        $SQL_Result = tic_mysql_query('INSERT INTO `gn4scans` (type, zeit, g, p, rg, rp, gen, '.$insert_names.') VALUES ("1", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$g.'", "'.$p.'", "'.$rg.'", "'.$rp.'", "'.$gen.'", '.$insert_values.');', $SQL_DBConn) or die("<html>\n<body>\nERROR 2 Konnte Datensatz nicht schreiben\n</body>\n</html>");
     }
     if ($action == 'sm') {
-        $SQL_Result = mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$rg.'" and ticid="'.$Benutzer['ticid'].'" AND rp="'.$rp.'" AND type="2";', $SQL_DBConn);
+        $SQL_Result = tic_mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$rg.'" AND rp="'.$rp.'" AND type="2";', $SQL_DBConn);
         $insert_names = 'sf0j, sf0b, sf0f, sf0z, sf0kr, sf0sa, sf0t, sf0ko, sf0ka, sf0su';
         $insert_names = $insert_names.', sf1j, sf1b, sf1f, sf1z, sf1kr, sf1sa, sf1t, sf1ko, sf1ka, sf1su, status1';
         $insert_names = $insert_names.', sf2j, sf2b, sf2f, sf2z, sf2kr, sf2sa, sf2t, sf2ko, sf2ka, sf2su, status2';
         $insert_values = '"'.$sf0j.'", "'.$sf0b.'", "'.$sf0f.'", "'.$sf0z.'", "'.$sf0kr.'", "'.$sf0sa.'", "'.$sf0t.'", "'.$sf0ko.'", "'.$sf0ka.'", "'.$sf0su.'"';
         $insert_values = $insert_values.', "'.$sf1j.'", "'.$sf1b.'", "'.$sf1f.'", "'.$sf1z.'", "'.$sf1kr.'", "'.$sf1sa.'", "'.$sf1t.'", "'.$sf1ko.'", "'.$sf1ka.'", "'.$sf1su.'", "'.$status1.'"';
         $insert_values = $insert_values.', "'.$sf2j.'", "'.$sf2b.'", "'.$sf2f.'", "'.$sf2z.'", "'.$sf2kr.'", "'.$sf2sa.'", "'.$sf2t.'", "'.$sf2ko.'", "'.$sf2ka.'", "'.$sf2su.'", "'.$status2.'"';
-        $SQL_Result = mysql_query('INSERT INTO `gn4scans` (ticid, type, zeit, g, p, rg, rp, gen, '.$insert_names.') VALUES ("'.$Benutzer['ticid'].'", "2", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$g.'", "'.$p.'", "'.$rg.'", "'.$rp.'", "'.$gen.'", '.$insert_values.');', $SQL_DBConn) or die('ERROR 2 Konnte Datensatz nicht schreiben');
+        $SQL_Result = tic_mysql_query('INSERT INTO `gn4scans` (type, zeit, g, p, rg, rp, gen, '.$insert_names.') VALUES ("2", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$g.'", "'.$p.'", "'.$rg.'", "'.$rp.'", "'.$gen.'", '.$insert_values.');', $SQL_DBConn) or die("<html>\n<body>\nERROR 2 Konnte Datensatz nicht schreiben\n</body>\n</html>");
     }
     if ($action == 'sg') {
-        $SQL_Result = mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$rg.'" and ticid="'.$Benutzer['ticid'].'" AND rp="'.$rp.'" AND type="3";', $SQL_DBConn);
+        $SQL_Result = tic_mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$rg.'" AND rp="'.$rp.'" AND type="3";', $SQL_DBConn);
         $insert_names = 'glo, glr, gmr, gsr, ga, gr';
         $insert_values = '"'.$glo.'", "'.$glr.'", "'.$gmr.'", "'.$gsr.'", "'.$ga.'", "'.$gr.'"';
-        $SQL_Result = mysql_query('INSERT INTO `gn4scans` (ticid, type, zeit, g, p, rg, rp, gen, '.$insert_names.') VALUES ("'.$Benutzer['ticid'].'", "3", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$g.'", "'.$p.'", "'.$rg.'", "'.$rp.'", "'.$gen.'", '.$insert_values.');', $SQL_DBConn) or die('ERROR 2 Konnte Datensatz nicht schreiben');
+        $SQL_Result = tic_mysql_query('INSERT INTO `gn4scans` (type, zeit, g, p, rg, rp, gen, '.$insert_names.') VALUES ("3", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$g.'", "'.$p.'", "'.$rg.'", "'.$rp.'", "'.$gen.'", '.$insert_values.');', $SQL_DBConn) or die("<html>\n<body>\nERROR 2 Konnte Datensatz nicht schreiben\n</body>\n</html>");
     }
-    die('OK');
+    die("<html>\n<body>\nOK\n</body>\n</html>");
 ?>

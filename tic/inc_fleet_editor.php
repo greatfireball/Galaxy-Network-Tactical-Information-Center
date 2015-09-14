@@ -9,7 +9,7 @@
     $qry = $qry . 'sf1j, sf1b, sf1f, sf1z, sf1kr, sf1sa, sf1t, sf1ko, sf1ka, sf1su,';
     $qry = $qry . 'sf2j, sf2b, sf2f, sf2z, sf2kr, sf2sa, sf2t, sf2ko, sf2ka, sf2su';
 
-    $SQL_Result2 = mysql_query('SELECT '.$qry.' FROM `gn4scans` WHERE rg="'.$_POST['galakoord'].'" AND rp="'.$_POST['planetkoord'].'" AND type="2";', $SQL_DBConn) or die(mysql_errno()." - ".mysql_error());
+    $SQL_Result2 = tic_mysql_query('SELECT '.$qry.' FROM `gn4scans` WHERE rg="'.$_POST['galakoord'].'" AND rp="'.$_POST['planetkoord'].'" AND type="2";', $SQL_DBConn) or die(mysql_errno()." - ".mysql_error());
     $SQL_Num = mysql_num_rows($SQL_Result2);
     if ($SQL_Num == 0) {
         // keine scans da
@@ -110,214 +110,84 @@
         $scan_sf2su = mysql_result($SQL_Result2, 0, 'sf2su');
     }
 ?>
+<form name="form1" method="post" action="./main.php?modul=scans">
+  <input type="hidden" name="action" value="fleet_edit" />
+  <input type="hidden" name="galakoord" value="<?=$_POST['galakoord']?>" />
+  <input type="hidden" name="planetkoord" value="<?=$_POST['planetkoord']?>" />
+  <input type="hidden" name="txtScanGalaxie" value="<?=$_POST['galakoord']?>" />
+  <input type="hidden" name="txtScanPlanet" value="<?=$_POST['planetkoord']?>" />
+  <table align="center">
+    <tr>
+      <td colspan="4" class="datatablehead">Manuelle Flottenbearbeitung (<?echo $_POST['galakoord'].':'.$_POST['planetkoord']; ?>)</td>
+    </tr>
+    <tr class="fieldnormaldark" align="left">
+      <td>Name:</td><td colspan="3"><input type="text" name="trn" value="<?=$scan_rn?>" /></td>
+    </tr>
+    <tr class="fieldnormallight" style="font-weight:bold;">
+      <td></td>
+      <td>Orbit</td>
+      <td>Flotte 1</td>
+      <td>Flotte 2</td>
+    </tr>
+    <tr class="fieldnormaldark" align="left">
+      <td>J&auml;ger &quot;Leo&quot;:</td>
+      <td><input type="text" name="tsf0j" size="8" value="<?=$scan_sf0j?>" /></td>
+      <td><input type="text" name="tsf1j" size="8" value="<?=$scan_sf1j?>" /></td>
+      <td><input type="text" name="tsf2j" size="8" value="<?=$scan_sf2j?>" /></td>
+    </tr>
+    <tr class="fieldnormallight" align="left">
+      <td>Bomber &quot;Aquilae&quot;:</td>
+      <td><input type="text" name="tsf0b" size="8" value="<?=$scan_sf0b?>" /></td>
+      <td><input type="text" name="tsf1b" size="8" value="<?=$scan_sf1b?>" /></td>
+      <td><input type="text" name="tsf2b" size="8" value="<?=$scan_sf2b?>" /></td>
+    </tr>
+    <tr class="fieldnormaldark" align="left">
+      <td>Fregatten &quot;Fornax&quot;:</td>
+      <td><input type="text" name="tsf0f" size="8" value="<?=$scan_sf0f?>" /></td>
+      <td><input type="text" name="tsf1f" size="8" value="<?=$scan_sf1f?>" /></td>
+      <td><input type="text" name="tsf2f" size="8" value="<?=$scan_sf2f?>" /></td>
+    </tr>
+    <tr class="fieldnormallight" align="left">
+      <td>Zerst&ouml;rer &quot;Draco&quot;:</td>
+      <td><input type="text" name="tsf0z" size="8" value="<?=$scan_sf0z?>" /></td>
+      <td><input type="text" name="tsf1z" size="8" value="<?=$scan_sf1z?>" /></td>
+      <td><input type="text" name="tsf2z" size="8" value="<?=$scan_sf2z?>" /></td>
+    </tr>
+    <tr class="fieldnormaldark" align="left">
+      <td>Kreuzer &quot;Goron&quot;:</td>
+      <td><input type="text" name="tsf0kr" size="8" value="<?=$scan_sf0kr?>" /></td>
+      <td><input type="text" name="tsf1kr" size="8" value="<?=$scan_sf1kr?>" /></td>
+      <td><input type="text" name="tsf2kr" size="8" value="<?=$scan_sf2kr?>" /></td>
+    </tr>
+    <tr class="fieldnormallight" align="left">
+      <td>Schlachtschiffe &quot;Pentalin&quot;:</td>
+      <td><input type="text" name="tsf0sa" size="8" value="<?=$scan_sf0sa?>" /></td>
+      <td><input type="text" name="tsf1sa" size="8" value="<?=$scan_sf1sa?>" /></td>
+      <td><input type="text" name="tsf2sa" size="8" value="<?=$scan_sf2sa?>" /></td>
+    </tr>
+    <tr class="fieldnormaldark" align="left">
+      <td>Tr&auml;ger &quot;Zenit&quot;:</td>
+      <td><input type="text" name="tsf0t" size="8" value="<?=$scan_sf0t?>" /></td>
+      <td><input type="text" name="tsf1t" size="8" value="<?=$scan_sf1t?>" /></td>
+      <td><input type="text" name="tsf2t" size="8" value="<?=$scan_sf2t?>" /></td>
+    </tr>
+    <tr class="fieldnormallight" align="left">
+      <td>Kaperschiffe &quot;Kleptor&quot;&quot;:</td>
+      <td><input type="text" name="tsf0ka" size="8" value="<?=$scan_sf0ka?>" /> </td>
+      <td><input type="text" name="tsf1ka" size="8" value="<?=$scan_sf1ka?>" /></td>
+      <td><input type="text" name="tsf2ka" size="8" value="<?=$scan_sf2ka?>" /></td>
+    </tr>
+    <tr class="fieldnormaldark" align="left">
+      <td>Schutzschiffe &quot;Cancri&quot;:</td>
+      <td><input type="text" name="tsf0su" size="8" value="<?=$scan_sf0su?>" /></td>
+      <td><input type="text" name="tsf1su" size="8" value="<?=$scan_sf1su?>" /></td>
+      <td><input type="text" name="tsf2su" size="8" value="<?=$scan_sf2su?>" /></td>
+    </tr>
+    <tr class="datatablefoot">
+      <td colspan="4"><input type="submit" name="Abschicken" value="&Auml;nderungen speichern" /></td>
+    </tr>
+  </table>
+</form>
 
-<table width="500" border="0" cellspacing="1" cellpadding="0" align="center">
-  <tr>
-    <td>
-      <div align="center">Manuelle Flottenbearbeitung (<?echo $_POST['galakoord'].':'.$_POST['planetkoord']; ?>)</div>
-    </td>
-  </tr>
-</table>
-<form name="form1" method="post" action="./main.php">
-  <table width="500" border="0" cellspacing="1" cellpadding="0" align="center">
-    <tr>
-      <td>
-        <div align="center"><font size="-1">Name
-          <input type="text" name="trn" size="40" value="<?=$scan_rn?>">
-          </font></div>
-      </td>
-    </tr>
-  </table>
-  <table width="500" border="1" cellspacing="1" cellpadding="0" align="center">
-    <tr bgcolor="#CCCCCC">
-      <td width="70%"><font size="-1">Bezeichnung</font></td>
-      <td width="10%">
-        <div align="center"><font size="-1">Orbit</font></div>
-      </td>
-      <td width="10%">
-        <div align="center"><font size="-1">Flotte 1</font></div>
-      </td>
-      <td width="10%">
-        <div align="center"><font size="-1">Flotte 2</font></div>
-      </td>
-    </tr>
-    <tr>
-      <td width="70%"><font size="-1">J&auml;ger &quot;Leo&quot;</font></td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf0j" size="8" value="<?=$scan_sf0j?>">
-          </font></div>
-      </td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf1j" size="8" value="<?=$scan_sf1j?>">
-          </font></div>
-      </td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf2j" size="8" value="<?=$scan_sf2j?>">
-          </font></div>
-      </td>
-    </tr>
-    <tr>
-      <td width="70%"><font size="-1">Bomber &quot;Aquilae&quot;</font></td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf0b" size="8" value="<?=$scan_sf0b?>">
-          </font></div>
-      </td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf1b" size="8" value="<?=$scan_sf1b?>">
-          </font></div>
-      </td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf2b" size="8" value="<?=$scan_sf2b?>">
-          </font></div>
-      </td>
-    </tr>
-    <tr>
-      <td width="70%"><font size="-1">Fregatten &quot;Fornax&quot;</font></td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf0f" size="8" value="<?=$scan_sf0f?>">
-          </font></div>
-      </td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf1f" size="8" value="<?=$scan_sf1f?>">
-          </font></div>
-      </td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf2f" size="8" value="<?=$scan_sf2f?>">
-          </font></div>
-      </td>
-    </tr>
-    <tr>
-      <td width="70%"><font size="-1">Zerst&ouml;rer &quot;Draco&quot;</font></td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf0z" size="8" value="<?=$scan_sf0z?>">
-          </font></div>
-      </td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf1z" size="8" value="<?=$scan_sf1z?>">
-          </font></div>
-      </td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf2z" size="8" value="<?=$scan_sf2z?>">
-          </font></div>
-      </td>
-    </tr>
-    <tr>
-      <td width="70%"><font size="-1">Kreuzer &quot;Goron&quot;</font></td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf0kr" size="8" value="<?=$scan_sf0kr?>">
-          </font></div>
-      </td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf1kr" size="8" value="<?=$scan_sf1kr?>">
-          </font></div>
-      </td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf2kr" size="8" value="<?=$scan_sf2kr?>">
-          </font></div>
-      </td>
-    </tr>
-    <tr>
-      <td width="70%"><font size="-1">Schlachtschiffe &quot;Pentalin&quot;</font></td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf0sa" size="8" value="<?=$scan_sf0sa?>">
-          </font></div>
-      </td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf1sa" size="8" value="<?=$scan_sf1sa?>">
-          </font></div>
-      </td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf2sa" size="8" value="<?=$scan_sf2sa?>">
-          </font></div>
-      </td>
-    </tr>
-    <tr>
-      <td width="70%"><font size="-1">Tr&auml;ger &quot;Zenit&quot;</font></td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf0t" size="8" value="<?=$scan_sf0t?>">
-          </font></div>
-      </td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf1t" size="8" value="<?=$scan_sf1t?>">
-          </font></div>
-      </td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf2t" size="8" value="<?=$scan_sf2t?>">
-          </font></div>
-      </td>
-    </tr>
-    <tr>
-      <td width="70%"><font size="-1">Kaperschiffe &quot;Kleptor&quot;&quot;</font></td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf0ka" size="8" value="<?=$scan_sf0ka?>">
-          </font></div>
-      </td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf1ka" size="8" value="<?=$scan_sf1ka?>">
-          </font></div>
-      </td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf2ka" size="8" value="<?=$scan_sf2ka?>">
-          </font></div>
-      </td>
-    </tr>
-    <tr>
-      <td width="70%"><font size="-1">Schutzschiffe &quot;Cancri&quot;</font></td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf0su" size="8" value="<?=$scan_sf0su?>">
-          </font></div>
-      </td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf1su" size="8" value="<?=$scan_sf1su?>">
-          </font></div>
-      </td>
-      <td width="10%">
-        <div align="right"> <font size="-1">
-          <input type="text" name="tsf2su" size="8" value="<?=$scan_sf2su?>">
-          </font></div>
-      </td>
-    </tr>
-  </table>
-  <table width="500" border="0" cellspacing="1" cellpadding="0" align="center">
-    <tr>
-      <td>
-        <div align="right"><br>
-          <INPUT TYPE="hidden" NAME="action" VALUE="fleet_edit">
-          <INPUT TYPE="hidden" NAME="modul" VALUE="scans">
-          <input type="hidden" name="galakoord" value="<?=$_POST['galakoord']?>">
-          <input type="hidden" name="planetkoord" value="<?=$_POST['planetkoord']?>">
-          <input type="hidden" name="txtScanGalaxie" value="<?=$_POST['galakoord']?>">
-          <input type="hidden" name="txtScanPlanet" value="<?=$_POST['planetkoord']?>">
-          <input type="submit" name="Abschicken" value="&Auml;nderungen speichern">
-        </div>
-      </td>
-    </tr>
-  </table>
-  </form>
+
 

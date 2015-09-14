@@ -1,14 +1,13 @@
-<center>
-  <table border="0" cellspacing="3" cellpadding="0" width="80%">
-    <tr bgcolor="#333333">
-      <td><b><font color="#FFFFFF" size="-1">Gala</font></b></td>
-      <td><b><font color="#FFFFFF" size="-1">Name</font></b></td>
-      <td><b><font color="#FFFFFF" size="-1">Telefon</font></b></td>
-      <td><b><font color="#FFFFFF" size="-1">ICQ</font></b></td>
-      <td><b><font color="#FFFFFF" size="-1">Zusatzinfos</font></b></td>
+  <table align="center" width="80%">
+    <tr class="datatablehead">
+      <td>Gala</td>
+      <td>Name</td>
+      <td>Telefon</td>
+      <td>ICQ</td>
+      <td>Zusatzinfos</td>
       <?php
         if ($Benutzer['rang'] > $Rang_GC) { // vize admiral oder mehr
-            echo '<td><b><font color="#FFFFFF" size="-1">Aktion</font></b></td>';
+            echo '<td>Aktion</td>';
         }
       ?>
     </tr>
@@ -17,10 +16,10 @@
             $sql .= 'messangerID, infotext, id ';
             $sql .= 'FROM `gn4accounts`';
             $sql .= 'where ticid="'.$Benutzer['ticid'].'" ORDER BY galaxie, planet';
-
-            $SQL_Result = mysql_query( $sql, $SQL_DBConn );
+            $color = 0;
+            $SQL_Result = tic_mysql_query( $sql, $SQL_DBConn );
             for ( $i=0; $i<mysql_num_rows($SQL_Result); $i++ ) {
-
+                $color = !$color;
                 $name = mysql_result($SQL_Result, $i, 'name' );
                 $gala =  mysql_result($SQL_Result, $i, 'galaxie' );
                 $gala = $gala .':'. mysql_result($SQL_Result, $i, 'planet' );
@@ -30,20 +29,18 @@
                 $infotext = mysql_result($SQL_Result, $i, 'infotext' );
                 $teleid = mysql_result($SQL_Result, $i,  'id' ); // used later, to delete the record
 
-                echo '<tr>';
-                echo '<td bgcolor="#e0e0e0"><font color="#111111" size="-1">'.$gala.'</font></td>';
-                echo '<td bgcolor="#e0e0e0"><font color="#111111" size="-1">'.$name.'</font></td>';
-                echo '<td bgcolor="#e0e0e0"><font color="#111111" size="-1">'.$telno.'</font></td>';
-                echo '<td bgcolor="#e0e0e0"><font color="#111111" size="-1">'.$icq.'</font></td>';
-                echo '<td bgcolor="#e0e0e0"><font color="#111111" size="-1">'.$infotext.'</font></td>';
+                echo '<tr align="left" class="fieldnormal'.($color ? 'light' : 'dark').'">';
+                echo '<td align="center">'.$gala.'</td>';
+                echo '<td>'.$name.'</td>';
+                echo '<td>'.$telno.'</td>';
+                echo '<td>'.$icq.'</td>';
+                echo '<td>'.$infotext.'</td>';
                 if ($Benutzer['rang'] > $Rang_GC) { // vize admiral oder mehr
 
-                    echo '<td bgcolor="#e0e0e0"><font color="#111111" size="-1"><A HREF="./main.php?modul=telelist&action=deltelentry&teleid='.$teleid.'">löschen</a></font></td>';
+                    echo '<td align="center"><a href="./main.php?modul=telelist&amp;action=deltelentry&amp;teleid='.$teleid.'">löschen</a></td>';
                 }
                 echo '</tr>';
 
             }
         ?>
   </table>
-
-</center>

@@ -58,7 +58,7 @@
 				);
 
 		$SQL_Query = "SELECT * FROM `gn4scans` WHERE rg='".$scan_galaxie."' AND rp='".$scan_planet."' ORDER BY type;";
-		$SQL_Result = mysql_query($SQL_Query, $SQL_DBConn);
+		$SQL_Result = tic_mysql_query($SQL_Query, $SQL_DBConn);
 
 		for ($n = 0; $n < mysql_num_rows($SQL_Result); $n++) {
 			$timestamp = 0;

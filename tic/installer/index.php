@@ -15,14 +15,14 @@
 //
 /////////////////////////////////////////////////////
 
-    $status = array("Beta", 7);
-    $version = array(1,13,1);
+    $status = array("Vollerversion");
+    $version = array(1,14,2);
 
     include("mysql.php");
     include("steps.php");
-    
+
     session_start();
-    
+
     $step = (isset($_POST['step']) ? intval($_POST['step']) : 1);
     if($step < 1 || $step > 5)
         $step = 1;
@@ -42,5 +42,5 @@
         callstep($step-1, array("errormsg" => $r));
 
     echo "    </div>\n  </body>\n</html>";
-    
+
 ?>

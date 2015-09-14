@@ -1,16 +1,31 @@
-<CENTER>
-<TABLE>
+<table align="center">
+<?/*
   <tr>
-    <td width="3">&nbsp;</td>
-    <td bgcolor="#6490BB" class="menu"><font size="-1" color="#99FF00"><b>Attplanung</b></font></td>
+    <td class="datatablehead">Attplaner I</td>
   </tr>
   <tr>
-    <td bgcolor="#0000FF" class="menu" width="3">&nbsp;</td>
-    <td bgcolor="#6490BB" class="menu" width="137"><font face="Verdana" size="-1"><a href="./main.php?modul=massinc">Koordination</a></font></td>
+    <td class="fieldnormallight"><a href="?modul=massinc">Koordination</a></td>
   </tr>
   <tr>
-    <td bgcolor="#0000FF" class="menu" width="3">&nbsp;</td>
-    <td bgcolor="#6490BB" class="menu" width="137"><font face="Verdana" size="-1"><a href="./main.php?modul=massincadmin">Administration</a></font></td>
+    <td class="fieldnormallight"><a href="?modul=massincadmin">Administration</a></td>
   </tr>
-  </TABLE>
-</CENTER>
+  */?>
+  <tr>
+    <td class="datatablehead">Attplaner II</td>
+  </tr>
+<?
+  // Erweierung von Bytehoppers 20.07.05 fr Attplaner2
+   if ($Benutzer['rang'] >= $Rang_VizeAdmiral) {
+
+   echo "  <tr>
+       <td class=\"fieldnormallight\"><a href=\"?modul=attplaneradmin\">Attplaner Config</a></td>
+          </tr>";
+   }
+?>
+  <tr>
+    <td class="fieldnormallight"><a href="?modul=attplanerlist">Attplaner Liste</a></td>
+  </tr>
+  <tr>
+    <td class="fieldnormallight"><a href="?modul=atteinplanen">Neues Att-Ziel erfassen</a></td>
+  </tr>
+</table>

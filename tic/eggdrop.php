@@ -34,19 +34,19 @@
 #############################################
 
     include('./accdata.php');
+    include('./functions.php');
 
     $SQL_DBConn = mysql_connect($db_info['host'], $db_info['user'], $db_info['password']);
     mysql_select_db($db_info['dbname'], $SQL_DBConn);
 
 
     if (!isset($_GET['passwort'])) $_GET['passwort'] = '';
-    $SQL_Result0 = mysql_query('SELECT ticid FROM `gn4vars` WHERE name="botpw" AND value="'.$_GET['passwort'].'";', $SQL_DBConn);
+    $SQL_Result0 = tic_mysql_query('SELECT ticid FROM `gn4vars` WHERE name="botpw" AND value="'.$_GET['passwort'].'";', $SQL_DBConn);
 
     if (mysql_num_rows($SQL_Result0) != 1) die('Incorrect password');
 
     $Benutzer['ticid']=mysql_result($SQL_Result0,0,'ticid');
 
-    include('./functions.php');
     include('./vars.php');
 
     $irc_text['fett'] = '';
@@ -83,8 +83,8 @@
 // Alle Atts anzeigen
     if ($_GET['modus'] == 0) {
 
-        $SQL_Result1 = mysql_query('SELECT galaxie, planet, name, allianz FROM `gn4accounts` where ticid="'.$Benutzer['ticid'].'" ORDER BY galaxie, planet;', $SQL_DBConn);
-        $SQL_Result2 = mysql_query('SELECT * FROM `gn4flottenbewegungen` WHERE modus="1" && save="1" and ticid="'.$Benutzer['ticid'].'" ORDER BY eta, verteidiger_galaxie, verteidiger_planet;', $SQL_DBConn);
+        $SQL_Result1 = tic_mysql_query('SELECT galaxie, planet, name, allianz FROM `gn4accounts` where ticid="'.$Benutzer['ticid'].'" ORDER BY galaxie, planet;', $SQL_DBConn);
+        $SQL_Result2 = tic_mysql_query('SELECT * FROM `gn4flottenbewegungen` WHERE modus="1" && save="1" and ticid="'.$Benutzer['ticid'].'" ORDER BY eta, verteidiger_galaxie, verteidiger_planet;', $SQL_DBConn);
 
         $SQL_Num1 = mysql_num_rows($SQL_Result1);
         $SQL_Num2 = mysql_num_rows($SQL_Result2);
@@ -135,7 +135,7 @@
             else {
                 $tmp_galaxie = substr($_GET['koord'], 0, $tmp_pos);
                 $tmp_planet = substr($_GET['koord'], $tmp_pos + 1);
-                $SQL_Result = mysql_query('SELECT * FROM `gn4flottenbewegungen` WHERE verteidiger_galaxie="'.$tmp_galaxie.'" AND verteidiger_planet="'.$tmp_planet.'" and ticid="'.$Benutzer['ticid'].'" ORDER BY eta, angreifer_galaxie, angreifer_planet;', $SQL_DBConn);
+                $SQL_Result = tic_mysql_query('SELECT * FROM `gn4flottenbewegungen` WHERE verteidiger_galaxie="'.$tmp_galaxie.'" AND verteidiger_planet="'.$tmp_planet.'" ORDER BY eta, angreifer_galaxie, angreifer_planet;', $SQL_DBConn);
                 $incomming_counter = 0;
                 $deff_counter = 0;
                 $tmp_atter = '';
@@ -160,7 +160,7 @@
                         }
                     }
                 }
-                $SQL_Result = mysql_query('SELECT * FROM `gn4flottenbewegungen` WHERE verteidiger_galaxie="'.$tmp_galaxie.'" AND verteidiger_planet="'.$tmp_planet.'" and ticid="'.$Benutzer['ticid'].'" ORDER BY verteidiger_galaxie;', $SQL_DBConn);
+                $SQL_Result = tic_mysql_query('SELECT * FROM `gn4flottenbewegungen` WHERE verteidiger_galaxie="'.$tmp_galaxie.'" AND verteidiger_planet="'.$tmp_planet.'" ORDER BY verteidiger_galaxie;', $SQL_DBConn);
                 $count =  mysql_num_rows($SQL_Result);
                 if ( $count == 0 ){
                     echo 'Der hat kein inc du depp!!!';
@@ -192,8 +192,9 @@ elseif($_GET['modus'] == 2) {
                 $tmp_planet = substr($_GET['koord'], $tmp_pos + 1);
 
 
-		$sql='select * from `gn4scans` where rg='.$tmp_galaxie.' and rp='.$tmp_planet.' and ticid="'.$Benutzer['ticid'].'" ';
-			$SQL_Result = mysql_query( $sql, $SQL_DBConn );
+				$sql='select * from `gn4scans` where rg='.$tmp_galaxie.' and rp='.$tmp_planet.'';
+
+			$SQL_Result = tic_mysql_query( $sql, $SQL_DBConn );
 		 $count =  mysql_num_rows($SQL_Result);
     if ( $count == 0 ) {
         echo 'Keine Scans vorhanden.';
@@ -306,8 +307,21 @@ elseif($_GET['modus'] == 2) {
 						// echo '('.$rpnext.' <>'. $rp.')';
         if ( $rpnext <> $rp ) {
 
+            if ($sgen >= "90") { $sgencolor = "01,03"; }
+        	  elseif ($sgen >= "50" && $sgen <= "89") { $sgencolor = "01,08"; }
+        	  else { $sgencolor = "01,04"; }
+        	  if ($ugen >= "90") { $ugencolor = "01,03"; }
+        	  elseif ($ugen >= "50" && $ugen <= "89") { $ugencolor = "01,08"; }
+        	  else { $ugencolor = "01,04"; }
+        	  if ($ggen >= "90") { $ggencolor = "01,03"; }
+        	  elseif ($ggen >= "51" && $ggen <= "89") { $ggencolor = "01,08"; }
+        	  else { $ggencolor = "01,04"; }
+        	  if ($mgen >= "90") { $mgencolor = "01,03"; }
+        	  elseif ($mgen >= "50" && $mgen <= "89") { $mgencolor = "01,08"; }
+        	  else { $mgencolor = "01,04"; }
+
 						if($_GET['istscanart'] == 'sek') {
-                        			$text =       	  "°".'00,10Sektorscan (01,10 '.$sgen.' %00,10 ) '.$rname.' (01,10'.$rg.':'.$rp.'00,10)';
+                        			$text =       	  "°".'00,10Sektorscan (01,10 '.$sgencolor.' '.$sgen.' %00,10 ) '.$rname.' (01,10'.$rg.':'.$rp.'00,10)';
                         			$text = $text."°".'00,01Punkte: 07,01'.number_format($pts, 0, ',', '.').' 00,01Astros: 07,01'.$a;
                         			$text = $text."°".'00,01Schiffe: 07,01'.$s.' 00,01Geschtze: 07,01'.$d.'';
                         			$text = $text."°".'00,01Metall-Exen: 07,01'.$me.' 00,01Kristall-Exen: 07,01'.$ke.'';
@@ -317,7 +331,7 @@ elseif($_GET['modus'] == 2) {
 
 						if($_GET['istscanart'] == 'einheit') {
 
-						$text = 	  "°".'00,10Einheitenscan (01,10 '.$ugen.' %00,10 ) '.$rname.' (01,10'.$rg.':'.$rp.'00,10)';
+						$text = 	  "°".'00,10Einheitenscan (01,10 '.$ugencolor.' '.$ugen.' %00,10 ) '.$rname.' (01,10'.$rg.':'.$rp.'00,10)';
 						$text = $text."°".'00,01Leo: 07,01'.$ja.' 00,01Aquilae: 07,01'.$bo.' 00,01Fronax: 07,01'.$fr.' 00,01Draco: 07,01'.$ze.' 00,01Goron: 07,01'.$kr.'';
 						$text = $text."°".'00,01Pentalin: 07,01'.$sl.' 00,01Zenit: 07,01'.$tr.' 00,01Cleptor: 07,01'.$ka.' 00,01Cancri: 07,01'.$ca.'';
 						$text = $text."°".'00,01Datum: 07,01'.$uzeit.' 00,01gescannt von: 07,01'.$uname.'';
@@ -327,7 +341,7 @@ elseif($_GET['modus'] == 2) {
 
 						if($_GET['istscanart'] == 'gscan') {
 
-						$text = 	  "°".'00,10Geschtzscan (01,10 '.$ggen.' %00,10 ) '.$rname.' (01,10'.$rg.':'.$rp.'00,10)';
+						$text = 	  "°".'00,10Geschtzscan (01,10 '.$ggencolor.' '.$ggen.' %00,10 ) '.$rname.' (01,10'.$rg.':'.$rp.'00,10)';
 						$text = $text."°".'00,01Rubium: 07,01'.$lo.' 00,01Pulsar: 07,01'.$lr.' 00,01Coon: 07,01'.$mr.'';
 						$text = $text."°".'00,01Centurion: 07,01'.$sr.' 00,01Horus: 07,01'.$aj.'';
 						$text = $text."°".'00,01Datum: 07,01'.$gzeit.' 00,01gescannt von: 07,01'.$gname.'';
@@ -337,7 +351,7 @@ elseif($_GET['modus'] == 2) {
 
 						if($_GET['istscanart'] == 'mili') {
 
-						$text = 	  "°".'00,10Militrscan (01,10 '.$mgen.' %00,10 ) '.$rname.' (01,10'.$rg.':'.$rp.'00,10)';
+						$text = 	  "°".'00,10Militrscan (01,10 '.$mgencolor.' '.$mgen.' %00,10 ) '.$rname.' (01,10'.$rg.':'.$rp.'00,10)';
 						$text = $text."°".'00,1Orbit: 07,01'.$ja0.' 00,1Leo 07,01'.$bo0.' 00,1Aquilae 07,01'.$fr0.' 00,1Fornax 07,01'.$ze0.' 00,1Draco 07,01'.$kr0.' 00,1Goron 07,01'.$sl0.' 00,1Pentalin 07,01'.$tr0.' 00,1Zenit 07,01'.$ka0.' 00,1Cleptor 07,01'.$ca0.' 00,1Cancri ';
 						$text = $text."°".'00,01Flotte1: 07,01'.$ja1.' 00,01Leo 07,01'.$bo1.' 00,01Aquilae 07,01'.$fr1.' 00,01Fornax 07,01'.$ze1.' 00,01Draco 07,01'.$kr1.' 00,01Goron 07,01'.$sl1.' 00,01Pentalin 07,01'.$tr1.' 00,01Zenit 07,01'.$ka1.' 00,01Cleptor 07,01'.$ca1.' 00,01Cancri ';
 						$text = $text."°".'00,01Flotte2: 07,01'.$ja2.' 00,01Leo 07,01'.$bo2.' 00,01Aquilae 07,01'.$fr2.' 00,01Fornax 07,01'.$ze2.' 00,01Draco 07,01'.$kr2.' 00,01Goron 07,01'.$sl2.' 00,01Pentalin 07,01'.$tr2.' 00,01Zenit 07,01'.$ka2.' 00,01Cleptor 07,01'.$ca2.' 00,01Cancri ';
@@ -381,7 +395,7 @@ elseif($_GET['modus'] == 2) {
 
 	### Ally Status abfragen
 	elseif($_GET['modus']==3) {
-   $SQL_Result5 = mysql_query('SELECT id, name, tag, info_bnds, info_naps, info_inoffizielle_naps, info_kriege, code FROM `gn4allianzen` where ticid="'.$Benutzer['ticid'].'" ;', $SQL_DBConn);
+   $SQL_Result5 = tic_mysql_query('SELECT id, name, tag, info_bnds, info_naps, info_inoffizielle_naps, info_kriege, code FROM `gn4allianzen` where ticid="'.$Benutzer['ticid'].'" ;', $SQL_DBConn);
 
    $SQL_Num5=mysql_num_rows($SQL_Result5);
 
@@ -405,21 +419,21 @@ elseif($_GET['modus'] == 2) {
  }
     ###Tic Statistiken
    	elseif($_GET['modus']==4) {
-           		$SQL_Result1 = mysql_query('SELECT COUNT(*) FROM `gn4flottenbewegungen` where ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn);
+           		$SQL_Result1 = tic_mysql_query('SELECT COUNT(*) FROM `gn4flottenbewegungen` where ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn);
                 $SQL_Row1 = mysql_fetch_row($SQL_Result1);
-                $SQL_Result2 = mysql_query('SELECT COUNT(*) FROM `gn4flottenbewegungen` where modus=1 and ticid="'.$Benutzer['ticid'].'"' , $SQL_DBConn);
+                $SQL_Result2 = tic_mysql_query('SELECT COUNT(*) FROM `gn4flottenbewegungen` where modus=1 and ticid="'.$Benutzer['ticid'].'"' , $SQL_DBConn);
                 $SQL_Row2 = mysql_fetch_row($SQL_Result2);
-                $SQL_Result3 = mysql_query('SELECT COUNT(*) FROM `gn4flottenbewegungen` where modus=2and ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn);
+                $SQL_Result3 = tic_mysql_query('SELECT COUNT(*) FROM `gn4flottenbewegungen` where modus=2and ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn);
                 $SQL_Row3 = mysql_fetch_row($SQL_Result3);
-                $SQL_Result4 = mysql_query('SELECT COUNT(*) FROM `gn4flottenbewegungen` where modus>2 and ticid="'.$Benutzer['ticid'].'" or modus=0 and ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn);
+                $SQL_Result4 = tic_mysql_query('SELECT COUNT(*) FROM `gn4flottenbewegungen` where modus>2 and ticid="'.$Benutzer['ticid'].'" or modus=0 and ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn);
                 $SQL_Row4 = mysql_fetch_row($SQL_Result4);
-                $SQL_Result5 = mysql_query('SELECT COUNT(*) FROM `gn4accounts` where ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn);
+                $SQL_Result5 = tic_mysql_query('SELECT COUNT(*) FROM `gn4accounts` where ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn);
                 $SQL_Row5 = mysql_fetch_row($SQL_Result5);
-                $SQL_Result8 = mysql_query('SELECT COUNT(*) FROM `gn4forum` WHERE belongsto="0" and ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn);
+                $SQL_Result8 = tic_mysql_query('SELECT COUNT(*) FROM `gn4forum` WHERE belongsto="0" and ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn);
                 $SQL_Row8 = mysql_fetch_row($SQL_Result8);
-                $SQL_Result9 = mysql_query('SELECT COUNT(*) FROM `gn4forum` WHERE NOT belongsto="0" and ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn);
+                $SQL_Result9 = tic_mysql_query('SELECT COUNT(*) FROM `gn4forum` WHERE NOT belongsto="0" and ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn);
                 $SQL_Row9 = mysql_fetch_row($SQL_Result9);
-                $SQL_Result10 = mysql_query('SELECT COUNT(*) FROM `gn4scans` where ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn);
+                $SQL_Result10 = tic_mysql_query('SELECT COUNT(*) FROM `gn4scans` where ticid="'.$Benutzer['ticid'].'"', $SQL_DBConn);
                 $SQL_Row10 = mysql_fetch_row($SQL_Result10);
                 $text= "00,01Anzahl Flottenbewegungen: 07,01".ZahlZuText($SQL_Row1[0])."°00,01Anzahl Verteidingungsflge: 07,01".ZahlZuText($SQL_Row2[0])."°00,01Anzahl Angriffsflge: 07,01".ZahlZuText($SQL_Row3[0])."°00,01Anzahl Rckflge: 07,01".ZahlZuText($SQL_Row4[0])."°"."00,01Anzahl der T.I.C. Accounts: 07,01".ZahlZuText($SQL_Row5[0])."°"."00,01Forenstatistik: 07,01"."°"."00,01Themen: 07,01".ZahlZuText($SQL_Row8[0])."°"."00,01Antworten: 07,01".ZahlZuText($SQL_Row9[0])."°"."00,01Scan Datenbank: 07,01"."°"."00,01Anzahl Scans: 07,01".ZahlZuText($SQL_Row10[0])."°"."00,01Letzte Scansuberung: 07,01".$lastscanclean;
 
@@ -432,7 +446,7 @@ elseif($_GET['modus'] == 2) {
    	}
     ### Top5 Scaner
    	elseif($_GET['modus']==5) {
-	 		$SQL_Result11 = mysql_query('SELECT * FROM `gn4accounts` WHERE scantyp = 1 and ticid="'.$Benutzer['ticid'].'" ORDER BY svs DESC;', $SQL_DBConn);
+	 		$SQL_Result11 = tic_mysql_query('SELECT * FROM `gn4accounts` WHERE scantyp = 1 and ticid="'.$Benutzer['ticid'].'" ORDER BY svs DESC;', $SQL_DBConn);
 			$text=$text."°".$irc_text['farbe'].$irc_farbe['orange']."MILI-SCANNER";
 			for ($n = 0; $n < 5; $n++) {
 					$name  = mysql_result($SQL_Result11, $n, 'name' );
@@ -441,7 +455,7 @@ elseif($_GET['modus'] == 2) {
 					$planet = mysql_result($SQL_Result11, $n, 'planet' );
 					$text=$text."°".$name." ( ".$gala.":".$planet." ) hat ".$svs." svs";
 			}
-			$SQL_Result12 = mysql_query('SELECT * FROM `gn4accounts` WHERE scantyp = 2 and ticid="'.$Benutzer['ticid'].'" ORDER BY svs DESC;', $SQL_DBConn);
+			$SQL_Result12 = tic_mysql_query('SELECT * FROM `gn4accounts` WHERE scantyp = 2 and ticid="'.$Benutzer['ticid'].'" ORDER BY svs DESC;', $SQL_DBConn);
 						$text=$text."°".$irc_text['farbe'].$irc_farbe['orange']."NEWS-SCANNER";
 						for ($m = 0; $m < 5; $m++) {
 								$name  = mysql_result($SQL_Result12, $m, 'name' );
@@ -488,13 +502,13 @@ $nr = count($scan);
  if(isset($modi)){
  $koords=explode(":",$scan['4']);
  $koord= explode(":",$_GET['koord']);
- mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$koords['0'].'" AND rp="'.$koords['1'].'" AND type="'.$modi.'";', $SQL_DBConn) or die(mysql_errno()." - ".mysql_error());
- mysql_query('INSERT INTO `gn4scans` (p, g, type, zeit, rg, rp, gen, '.$formart.') VALUES ("'.$koord['0'].'", "'.$koord['1'].'", "'.$modi.'", "'.date("H:i d.m.Y").'", "'.$koords['0'].'", "'.$koords['1'].'", "'.$scan['2'].'", '.$qry.');', $SQL_DBConn) or die(mysql_errno()." - ".mysql_error());
+ tic_mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$koords['0'].'" AND rp="'.$koords['1'].'" AND type="'.$modi.'";', $SQL_DBConn) or die(mysql_errno()." - ".mysql_error());
+ tic_mysql_query('INSERT INTO `gn4scans` (p, g, type, zeit, rg, rp, gen, '.$formart.') VALUES ("'.$koord['0'].'", "'.$koord['1'].'", "'.$modi.'", "'.date("H:i d.m.Y").'", "'.$koords['0'].'", "'.$koords['1'].'", "'.$scan['2'].'", '.$qry.');', $SQL_DBConn) or die(mysql_errno()." - ".mysql_error());
 addgnuser($koords['0'], $koords['1'], $scan['3']);
 }
 }elseif($_GET['modus']==7) {
 if(isset($_GET['auth'])){
-$SQL_Result=mysql_query('SELECT * FROM `gn4accounts` WHERE authnick="'.$_GET['auth'].'";', $SQL_DBConn) or die(mysql_errno()." - ".mysql_error());
+$SQL_Result=tic_mysql_query('SELECT * FROM `gn4accounts` WHERE authnick="'.$_GET['auth'].'";', $SQL_DBConn) or die(mysql_errno()." - ".mysql_error());
 $ok= 'ok';
 if(mysql_num_rows($SQL_Result)!=1){
 $ok = 'fail '.mysql_num_rows($SQL_Result);

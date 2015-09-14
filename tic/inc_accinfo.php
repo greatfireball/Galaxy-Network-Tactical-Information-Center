@@ -1,37 +1,38 @@
 <!-- START: inc_accountinfo -->
-<table width="100%" cellspacing="6" border="0" cellpadding="1">
+<table width="100%" cellspacing="6" border="0" cellpadding="1" style="border:1px #000000 solid;background-color:#ffffff;">
 	<colgroup>
-		<col width="85%">
-		<col width="15%">
+		<col width="85%" />
+		<col width="15%" />
 	</colgroup>
-	<tr bgcolor="#dddddd">
+	<tr>
 		<td valign="middle" rowspan="2" align="center">
 <?php
 	include( "./inc_summary.php" );
 ?>
 		</td>
-		<td align="right" valign="top">
+		<td align="right" valign="top" style="white-space:nowrap;">
 			<font size="-1">
-				<nobr>[ <?=$AllianzTag[$Benutzer['allianz']]?> ] <?=$Benutzer['name']?></nobr><br>
-				<nobr><img src="<?=$RangImage[$Benutzer['rang']]?>" width="20" height="20" border="0" alt="<?=$RangName[$Benutzer['rang']]?>" title="<?=$RangName[$Benutzer['rang']]?>" align="middle"> <?=$Benutzer['galaxie']?>:<?=$Benutzer['planet']?></nobr>
+				[ <?=$AllianzTag[$Benutzer['allianz']]?> ] <?=$Benutzer['name']?><br />
+				<img src="<?=$RangImage[$Benutzer['rang']]?>" width="20" height="20" border="0" alt="<?=$RangName[$Benutzer['rang']]?>" title="<?=$RangName[$Benutzer['rang']]?>" align="middle" /> <?=$Benutzer['galaxie']?>:<?=$Benutzer['planet']?>
 <?
 	if ($Benutzer['umod'] != '') {
-		echo "				<br><font size=\"-2\" COLOR=\"#".$htmlstyle['dunkel_blau']."\"><b>".$Benutzer['umod']."</b></font>\n";
+		echo "				<br /><font size=\"-2\" color=\"#".$htmlstyle['dunkel_blau']."\"><b>".$Benutzer['umod']."</b></font>\n";
 	}
 ?>
 			</font>
 		</td>
 	</tr>
-	<tr bgcolor="#dddddd">
+	<tr>
 		<td align="right" valign="top">
 			<div id="ticktime">
-				Serverzeit: <span id="Uhr"><?=date("H:i:s")?></span><br \>
+				Serverzeit: <span id="Uhr"><?=date("H:i:s")?></span><br />
 				Letzter Tick: <?=$lasttick."\n"?>
 			</div>
 		</td>
 	</tr>
 </table>
 <script type="text/javascript">
+<!--
 	var Uhr = document.getElementById('Uhr');
 	var TimeServer = new Date("<?=date("M, d Y H:i:s")?>");
 	var TimeLocal = new Date();
@@ -50,13 +51,14 @@
 		window.setTimeout('serverzeit_anzeigen();', 999);
 	}
 	window.onload = serverzeit_anzeigen;
+//-->
 </script>
 <?
-	if ($systemnachricht != '') {
-		echo "<p class=\"sysmessage\" style=\"width: 500px;\">\n";
-		echo nl2br(htmlentities($systemnachricht))."\n";
-		echo "</p>\n";
+	if (@$MetaInfo['sysmsg'] !="") {
+		echo "<br /><div class=\"sysmessage\">\n";
+		echo nl2br(htmlentities($MetaInfo['sysmsg'] ))."\n";
+		echo "</div>\n";
 	}
 ?>
-<br>
+<br />
 <!-- ENDE: inc_accountinfo -->

@@ -23,7 +23,7 @@
     $user_type[3]   = '0';
 
     $sql = 'SELECT name, value from `gn4vars` WHERE name="admin" or name="assi" ';
-    $SQL_Result = mysql_query( $sql, $SQL_DBConn );
+    $SQL_Result = tic_mysql_query( $sql, $SQL_DBConn );
     $count = mysql_num_rows($SQL_Result);
     for ( $i=0; $i<$count; $i++ ) {
         $user_value[$i] = mysql_result($SQL_Result, $i, 'value' );
@@ -111,7 +111,7 @@
         $user_type[$i]   = '0';
     }
     $sql = 'SELECT name, value from `gn4vars` WHERE name="scanner" ';
-    $SQL_Result = mysql_query( $sql, $SQL_DBConn );
+    $SQL_Result = tic_mysql_query( $sql, $SQL_DBConn );
     $count = mysql_num_rows($SQL_Result) or $count=0;
     for ( $i=0; $i<$count; $i++ ) {
         $user_value[$i] = mysql_result($SQL_Result, $i, 'value' );
@@ -209,7 +209,7 @@
 
                     $sql = 'SELECT name, id, value from `gn4vars` where name="galainc" order by id ASC ';
 
-                    $SQL_Result = mysql_query( $sql, $SQL_DBConn );
+                    $SQL_Result = tic_mysql_query( $sql, $SQL_DBConn );
                     $count = mysql_num_rows($SQL_Result);
 
                     for ( $i=0; $i<10; $i++ ) {
@@ -222,9 +222,9 @@
                             $zieldesc[$i]= $zieltren[1];
                         }
                         echo '<td width="80"> <font size="-1">'.$nr.'. Ziel </font></td>';
-                        echo '<td width="150"><font size="-1"> Gala-Nummer:&nbsp;<input type="text" name="ziel['.$i.']" value="'.$ziel[$i].'" size="4">';
+                        echo '<td width="150"><font size="-1"> Gala-Nummer:&nbsp;<input type="text" name="ziel'.$i.'" value="'.$ziel[$i].'" size="4">';
                         echo '</font></td>';
-                        echo '<td><font size="-1"> Besonderheit:&nbsp<input type="text" name="zieldesc['.$i.']" value="'.$zieldesc[$i].'" size="30">';
+                        echo '<td><font size="-1"> Besonderheit:&nbsp<input type="text" name="zieldesc'.$i.'" value="'.$zieldesc[$i].'" size="30">';
                         echo '</font></td>';
                         echo '</tr>';
                     }
@@ -268,7 +268,7 @@
             <tr bgcolor="#eeeeee">
             <?php
                 $sql = 'SELECT value from `gn4vars` where name="incfreigabe" ';
-                $SQL_Result = mysql_query( $sql, $SQL_DBConn );
+                $SQL_Result = tic_mysql_query( $sql, $SQL_DBConn );
                 $count = mysql_num_rows($SQL_Result) or $count=0;
                 $selected='';
                 $sel=0;

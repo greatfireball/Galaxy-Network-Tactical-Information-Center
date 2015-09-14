@@ -13,7 +13,7 @@ if ($_GET['action'] == 'displayaendern') {
                 $SQL_command = 'UPDATE `gn4accounts` SET displaymode="0" WHERE id="'.$Benutzer['id'].'";';
                 break;
         }
-        $SQL_Result = mysql_query( $SQL_command, $SQL_DBConn) or $error_code = 7;
+        $SQL_Result = tic_mysql_query( $SQL_command, $SQL_DBConn) or $error_code = 7;
     }
 
 ?>

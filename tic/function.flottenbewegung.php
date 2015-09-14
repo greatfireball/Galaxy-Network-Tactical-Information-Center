@@ -66,9 +66,9 @@
 				$lst_Flugzeit = 20;
 				$rfdauer = 18;
 			} else {
-				$SQL_Result1 = mysql_query("SELECT allianz, ticid FROM `gn4accounts` WHERE galaxie=".$txt_Angreifer_Galaxie." limit 1;", $SQL_DBConn);
+				$SQL_Result1 = tic_mysql_query("SELECT allianz, ticid FROM `gn4accounts` WHERE galaxie=".$txt_Angreifer_Galaxie." limit 1;", $SQL_DBConn);
 				$ismeta1 = mysql_affected_rows();
-				$SQL_Result2 = mysql_query("SELECT allianz, ticid FROM `gn4accounts` WHERE galaxie=".$txt_Verteidiger_Galaxie." limit 1;", $SQL_DBConn);
+				$SQL_Result2 = tic_mysql_query("SELECT allianz, ticid FROM `gn4accounts` WHERE galaxie=".$txt_Verteidiger_Galaxie." limit 1;", $SQL_DBConn);
 				$ismeta2 = mysql_affected_rows();
 				if ($ismeta1 && $ismeta2 && mysql_result($SQL_Result1, 0, 'ticid') == mysql_result($SQL_Result2, 0, 'ticid')) { // meta-intern
 					if (mysql_result($SQL_Result1, 0, 'allianz') == mysql_result($SQL_Result2, 0, 'allianz')) { // alli-intern
@@ -110,15 +110,15 @@
 			$SQL_values = '"'.$Benutzer['ticid'].'", "'.$txt_Angreifer_Galaxie.'", "'.$txt_Angreifer_Planet.'", "'.$txt_Verteidiger_Galaxie.'", "'.$txt_Verteidiger_Planet.'", "'.$lst_ETA.'", "'.$lst_Flugzeit.'", "'.$lst_Flotte.'","'.$_ankunft.'", "'.$_flugzeit.'", "'.$_ruckflug.'", "'.$erfasser.'", "'.date("H").':'.date("i").' Uhr am '.date("d").'.'.date("m").'.'.date("Y").'"';
 
 			if ($modus == 'angreifen') {
-				$SQL_Result = mysql_query('INSERT INTO `gn4flottenbewegungen` ('.$SQL_names.', tparser, save)	VALUES ("1", '.$SQL_values.', '.$tparser.', '.$txt_not_safe.');', $SQL_DBConn) or $error_code = 7;
+				$SQL_Result = tic_mysql_query('INSERT INTO `gn4flottenbewegungen` ('.$SQL_names.', tparser, save)	VALUES ("1", '.$SQL_values.', '.$tparser.', '.$txt_not_safe.');', $SQL_DBConn) or $error_code = 7;
 			} elseif ($modus == 'verteidigen') {
-				$SQL_Result = mysql_query('INSERT INTO `gn4flottenbewegungen` ('.$SQL_names.', tparser)		VALUES ("2", '.$SQL_values.', '.$tparser.');', $SQL_DBConn) or $error_code = 7;
+				$SQL_Result = tic_mysql_query('INSERT INTO `gn4flottenbewegungen` ('.$SQL_names.', tparser)		VALUES ("2", '.$SQL_values.', '.$tparser.');', $SQL_DBConn) or $error_code = 7;
 			} elseif ($modus == 'rueckflug_angreifen') {
-				$SQL_Result = mysql_query('INSERT INTO `gn4flottenbewegungen` ('.$SQL_names.')			VALUES ("3", '.$SQL_values.');', $SQL_DBConn) or $error_code = 7;
+				$SQL_Result = tic_mysql_query('INSERT INTO `gn4flottenbewegungen` ('.$SQL_names.')			VALUES ("3", '.$SQL_values.');', $SQL_DBConn) or $error_code = 7;
 			} elseif ($modus == 'rueckflug_verteidigen') {
-				$SQL_Result = mysql_query('INSERT INTO `gn4flottenbewegungen` ('.$SQL_names.')			VALUES ("4", '.$SQL_values.');', $SQL_DBConn) or $error_code = 7;
+				$SQL_Result = tic_mysql_query('INSERT INTO `gn4flottenbewegungen` ('.$SQL_names.')			VALUES ("4", '.$SQL_values.');', $SQL_DBConn) or $error_code = 7;
 			} elseif ($modus == 'rueckflug') {
-				$SQL_Result = mysql_query('INSERT INTO `gn4flottenbewegungen` ('.$SQL_names.')			VALUES ("0", '.$SQL_values.');', $SQL_DBConn) or $error_code = 7;
+				$SQL_Result = tic_mysql_query('INSERT INTO `gn4flottenbewegungen` ('.$SQL_names.')			VALUES ("0", '.$SQL_values.');', $SQL_DBConn) or $error_code = 7;
 			}
 		} else $error_code = 6;
 	echo mysql_error();

@@ -1,7 +1,17 @@
 <?
-function injsafe($data) {
-	return addcslashes($data, "\000\x00\n\r\\'\"\x1a");
+function injsafe($value) {
+	if (get_magic_quotes_gpc())
+		return $value;
+	if(is_array($value)) {
+		foreach($value as $key => $null)
+			$value[$key] = injsafe($value[$key]);
+	} else {
+//		return addcslashes($value, "\000\x00\n\r\\'\"\x1a");
+		return addslashes($value);
+	}
+	return $value;
 }
+
 
 function connect() {
     include('./accdata.php' );
@@ -14,7 +24,7 @@ function connect() {
 }
 
 function check_user($name, $pass) {
-	$SQL_Query = "SELECT ip, versuche FROM `gn4accounts` WHERE name='".injsafe($name)."' LIMIT 1;";
+	$SQL_Query = "SELECT ip, versuche FROM `gn4accounts` WHERE name='".$name."' LIMIT 1;";
 	$SQL_Result_iplock = mysql_query($SQL_Query) or die(mysql_errno()." - ".mysql_error());
 	$iplock = mysql_fetch_assoc($SQL_Result_iplock);
 	if (!$iplock)
@@ -24,16 +34,16 @@ function check_user($name, $pass) {
 		die ('Dieser Account ist gesperrt, wenden sie sich an Ihren Adminstrator');
 	mysql_free_result($SQL_Result_iplock);
 	
-	$SQL_Query = "SELECT id FROM gn4accounts WHERE name='".injsafe($name)."' AND passwort=MD5('".injsafe($pass)."') LIMIT 1;";
+	$SQL_Query = "SELECT id FROM gn4accounts WHERE name='".$name."' AND passwort=MD5('".$pass."') LIMIT 1;";
 	$SQL_Result_login = mysql_query($SQL_Query) or die(mysql_errno()." - ".mysql_error());
 	if ($user = mysql_fetch_assoc($SQL_Result_login)) {
 		mysql_free_result($SQL_Result_login);
-		$SQL_Query = "UPDATE gn4accounts SET versuche=0, ip='' WHERE name='".injsafe($name)."';";
+		$SQL_Query = "UPDATE gn4accounts SET versuche=0, ip='' WHERE name='".$name."';";
 		mysql_query($SQL_Query) or die(mysql_errno()." - ".mysql_error());
 		return $user['id'];
 	}
 	
-	$SQL_Query = "UPDATE gn4accounts SET versuche=versuche + 1, ip='".$_SERVER['REMOTE_ADDR']."' WHERE name='".injsafe($name)."';";
+	$SQL_Query = "UPDATE gn4accounts SET versuche=versuche + 1, ip='".$_SERVER['REMOTE_ADDR']."' WHERE name='".$name."';";
 	mysql_query($SQL_Query) or die(mysql_errno()." - ".mysql_error());
 	return false;
 }

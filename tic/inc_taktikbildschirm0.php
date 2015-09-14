@@ -35,6 +35,13 @@
 
 		if (mysql_result($SQL_Result_user, $n, 'umod') != '') $farb_zusatz = '_blau';
 		if (mysql_result($SQL_Result_user, $n, 'id') == $Benutzer['id']) $farb_zusatz = '_gruen';
+
+		if (mysql_result($SQL_Result_user, $n, 'lastlogin') == "" || mysql_result($SQL_Result_user, $n, 'lastlogin') == "0000-00-00" || mysql_result($SQL_Result_user, $n, 'lastlogin') == 0 || mysql_result($SQL_Result_user, $n, 'lastlogin') < (time() - (3 * 24 * 3600)) ) {
+		  	$farb_zusatz2 = 'ffaaaa';
+		} else {
+		  	$farb_zusatz2 = 'eeeeee';
+    }
+
 		$dspsave = '0';
 		$display_line=0;
 		$dsp="";
@@ -44,11 +51,12 @@
 		$koord_p = mysql_result($SQL_Result_user, $n, 'planet');
 
 // ------------------
-		$dsp .= "			<td bgcolor=\"eeeeee\"><a href=\"./main.php?modul=vergleich&xgala=".$koord_g."&xplanet=".$koord_p."\"><img src=\"./bilder/default/swords.gif\" width=\"20\" height=\"20\" border=\"0\" alt=\"Flottengegenüberstellung anzeigen\" title=\"Flottengegenüberstellung anzeigen\"></a></td>\n";
+		$dsp .= "			<td bgcolor=".$farb_zusatz2."><a href=\"./main.php?modul=vergleich&xgala=".$koord_g."&xplanet=".$koord_p."\"><img src=\"./bilder/default/swords.gif\" width=\"20\" height=\"20\" border=\"0\" alt=\"Flottengegenüberstellung anzeigen\" title=\"Flottengegenüberstellung anzeigen\"></a></td>\n";
 		$dsp .= "			<td bgcolor=\"".$htmlstyle['dunkel'.$farb_zusatz]."\" align=\"center\"><font size=\"-1\">".$koord_g.":".$koord_p."</font></td>\n";
 		$dsp .= "			<td bgcolor=\"".$htmlstyle['hell'.$farb_zusatz]."\"><font size=\"-1\">\n";
 		$dsp .= "				<a href=\"./main.php?modul=anzeigen&id=".mysql_result($SQL_Result_user, $n, 'id')."\"".($Benutzer['help']?" onmouseover=\"return overlib('Klick hier rauf um inc,deff usw. einzutragen ');\" onmouseout=\"return nd();\"":"").">".mysql_result($SQL_Result_user, $n, 'name')."</a>\n";
-		$dsp .= "				<a href=\"./main.php?modul=showgalascans&xgala=".$koord_g."&xplanet=".$koord_p."\">".GetScans($SQL_DBConn, $koord_g, $koord_p)."</a>\n";
+//		$dsp .= "				<a href=\"./main.php?modul=showgalascans&xgala=".$koord_g."&xplanet=".$koord_p."\">".GetScans2($SQL_DBConn, $koord_g, $koord_p)."</a>\n";
+        $dsp .= Get_Scan3($SQL_DBConn,$koord_g,$koord_p,$Benutzer['help'],0);
 		$dsp .= "				".$RangName[mysql_result($SQL_Result_user, $n, 'rang')]."\n";
 		$dsp .= "			</font></td>\n";
 // ------------------
@@ -64,7 +72,7 @@
 		$incsunsafe = 0;
 
 		$SQL_Query = "SELECT * FROM gn4flottenbewegungen WHERE (angreifer_galaxie = '".$koord_g."' AND angreifer_planet='".$koord_p."') OR (verteidiger_galaxie='".$koord_g."' AND verteidiger_planet='".$koord_p."') ORDER BY eta;";
-		$SQL_Result_fleets = mysql_query($SQL_Query, $SQL_DBConn); // or error("Error while bilding 'taktik' (step 2).", ERROR_SQL, false);
+		$SQL_Result_fleets = tic_mysql_query($SQL_Query, $SQL_DBConn); // or error("Error while bilding 'taktik' (step 2).", ERROR_SQL, false);
 		$SQL_Num_fleets = mysql_num_rows($SQL_Result_fleets);
 
 		for ($x = 0; $x < $SQL_Num_fleets; $x++) {
@@ -79,60 +87,72 @@
 
 // Angriff ->
 			if (( $f_mode == 1 || $f_mode == 3 ) && ( $a_gala == $koord_g ) && ( $a_plan == $koord_p )) {
-				$scan = "<a href=\"./main.php?modul=showgalascans&xgala=".$v_gala."&xplanet=".$v_plan."\">".GetScans($SQL_DBConn, $v_gala, $v_plan)."</a>";
+
+ //      $output = OnMouseFlotte($v_gala, $v_plan, $Benutzer['punkte']);
+ //      $scan="<a href=\"./main.php?modul=showgalascans&xgala=".$v_gala."&xplanet=".$v_plan."\"".($Benutzer['help']?" onmouseover=\"return overlib('".$output."');\" onmouseout=\"return nd();\"":"").">".GetScans2($SQL_DBConn, $v_gala, $v_plan)."</a>";
+         $scan = Get_Scan4($SQL_DBConn,$v_gala,$v_plan,$Benutzer['help'],$Benutzer['punkte'],"");
+//				$scan = "<a href=\"./main.php?modul=showgalascans&xgala=".$v_gala."&xplanet=".$v_plan."\">".GetScans2($SQL_DBConn, $v_gala, $v_plan)."</a>";
+
 				$flonr = mysql_result($SQL_Result_fleets, $x, 'flottennr');
 				$fbid = mysql_result($SQL_Result_fleets, $x, 'id');
 				$lnk = "<a href=\"".$scripturl."&action=flonrchange&fbid=".$fbid."&flonr=".$flonr."\"".($Benutzer['help']?" onmouseover=\"return overlib('Hier kannst du die Flott Nr. ändern. ');\" onmouseout=\"return nd();\"":"").">#".($flonr == 0?"?":$flonr)."</a>";
 				if ($f_mode == 1) {
 					$f1_liste_namen = $f1_liste_namen."				".$v_gala.":".$v_plan." <a href=\"./main.php?modul=flotteaendern&id=".mysql_result($SQL_Result_user, $n, 'id')."&flottenid=".$fbid."\" onmouseover=\"return overlib('Eingetragen von ".mysql_result($SQL_Result_fleets, $x, 'erfasser')." um ".mysql_result($SQL_Result_fleets, $x, 'erfasst_am')." ');\" onmouseout=\"return nd();\">".gnuser($v_gala, $v_plan)."</a> ".$lnk." ".$scan."<br>\n";
-					$f1_liste_eta = $f1_liste_eta ."				".getime4display(eta($time1) * 15 - $tick_abzug)."<br>\n";
+					$f1_liste_eta = $f1_liste_eta ."				".getime4display(eta($time1) * $Ticks['lange'] - $tick_abzug)."<br>\n";
 				} else {
 					$f1_liste_namen = $f2_liste_namen."				Rückflug (".$v_gala.":".$v_plan." ".gnuser($v_gala, $v_plan).")<br>\n";
-					$f1_liste_eta = $f1_liste_eta ."				".getime4display(eta($time3) * 15 - $tick_abzug)."<br>\n";
+					$f1_liste_eta = $f1_liste_eta ."				".getime4display(eta($time3) * $Ticks['lange'] - $tick_abzug)."<br>\n";
 				}
 				if ($_GET['mode'] == 2) $display_line=1;
 			}
 
 // Verteidigen ->
 			if (( $f_mode == 2 || $f_mode == 4 ) && ( $a_gala == $koord_g ) && ( $a_plan == $koord_p )) {
-				$scan = "<a href=\"./main.php?modul=showgalascans&xgala=".$v_gala."&xplanet=".$v_plan."\">".GetScans($SQL_DBConn, $v_gala, $v_plan)."</a>";
+        $scan = Get_Scan3($SQL_DBConn,$v_gala,$v_plan,$Benutzer['help'],0);
+//				$scan = "<a href=\"./main.php?modul=showgalascans&xgala=".$v_gala."&xplanet=".$v_plan."\">".GetScans2($SQL_DBConn, $v_gala, $v_plan)."</a>";
 				$flonr = mysql_result($SQL_Result_fleets, $x, 'flottennr');
 				$fbid = mysql_result($SQL_Result_fleets, $x, 'id');
 				$lnk = "<a href=\"".$scripturl."&action=flonrchange&fbid=".$fbid."&flonr=".$flonr."\"".($Benutzer['help']?" onmouseover=\"return overlib('Hier kannst du die Flott Nr. ändern. ');\" onmouseout=\"return nd();\"":"").">#".($flonr == 0?"?":$flonr)."</a>";
 				if ($f_mode == 2) {
 					$f2_liste_namen = $f2_liste_namen."				".$v_gala.":".$v_plan." <a href=\"./main.php?modul=flotteaendern&id=".mysql_result($SQL_Result_user, $n, 'id')."&flottenid=".$fbid."\" onmouseover=\"return overlib('Eingetragen von ".mysql_result($SQL_Result_fleets, $x, 'erfasser')." um ".mysql_result($SQL_Result_fleets, $x, 'erfasst_am')." ');\" onmouseout=\"return nd();\">".gnuser($v_gala, $v_plan)."</a> ".$lnk." ".$scan."<br>\n";
-					$f2_liste_eta = $f2_liste_eta ."				".getime4display(eta($time1) * 15 - $tick_abzug)."<br>\n";
+					$f2_liste_eta = $f2_liste_eta ."				".getime4display(eta($time1) * $Ticks['lange'] - $tick_abzug)."<br>\n";
 				} else {
 					$f2_liste_namen = $f2_liste_namen."				Rückflug (".$v_gala.":".$v_plan." ".gnuser($v_gala, $v_plan).")<br>\n";
-					$f2_liste_eta = $f2_liste_eta ."				".getime4display(eta($time3) * 15 - $tick_abzug)."<br>\n";
+					$f2_liste_eta = $f2_liste_eta ."				".getime4display(eta($time3) * $Ticks['lange'] - $tick_abzug)."<br>\n";
 				}
 				if ($_GET['mode'] == 2) $display_line=1;
 			}
 
 // Angriff <-
 			if (( $f_mode == 1 ) && ( $v_gala == $koord_g ) && ( $v_plan == $koord_p )) {
-				$scan = "<a href=\"./main.php?modul=showgalascans&xgala=".$a_gala."&xplanet=".$a_plan."\">".GetScans($SQL_DBConn, $a_gala, $a_plan)."</a>";
+//				$scan = "<a href=\"./main.php?modul=showgalascans&xgala=".$a_gala."&xplanet=".$a_plan."\">".GetScans2($SQL_DBConn, $a_gala, $a_plan)."</a>";
 				$flonr = mysql_result($SQL_Result_fleets, $x, 'flottennr');
 				$fbid = mysql_result($SQL_Result_fleets, $x, 'id');
 				$incunsave = mysql_result($SQL_Result_fleets, $x, 'save');
+        if ($flonr ==0) {
+          $scan = Get_Scan3($SQL_DBConn,$a_gala,$a_plan,$Benutzer['help'],$Benutzer['punkte']);
+        } else {
+          $scan = Get_Scan4($SQL_DBConn,$a_gala,$a_plan,$Benutzer['help'],$Benutzer['punkte'],$flonr);
+        }
 				$lnk = "<a href=\"".$scripturl."&action=flonrchange&fbid=".$fbid."&flonr=".$flonr."\"".($Benutzer['help']?" onmouseover=\"return overlib('Hier kannst du die Flott Nr. ändern. ');\" onmouseout=\"return nd();\"":"").">#".($flonr == 0?"?":$flonr)."</a>";
 				$f3_liste_namen = $f3_liste_namen."				".($incunsave?"<font color=\"#FF0000\">":"").$a_gala.":".$a_plan.($incunsave?"</font>":"");
 				$f3_liste_namen = $f3_liste_namen." <a href=\"./main.php?modul=flotteaendern&id=".mysql_result($SQL_Result_user, $n, 'id')."&flottenid=".$fbid."\" onmouseover=\"return overlib('Eingetragen von ".mysql_result($SQL_Result_fleets, $x, 'erfasser')." um ".mysql_result($SQL_Result_fleets, $x, 'erfasst_am')." ');\" onmouseout=\"return nd();\">".gnuser($a_gala, $a_plan)."</a> ";
 				$f3_liste_namen = $f3_liste_namen.$lnk." ".$scan."<br>\n";
-				$f3_liste_eta = $f3_liste_eta ."				<a href=\"".$scripturl."&action=savechange&fbid=".$fbid."&incsave=".$incunsave."\"".($Benutzer['help']?" onmouseover=\"return overlib('Koords rot = Unsave<br>Koords schwarz = Save<br>Klick hier um zu ändern');\" onmouseout=\"return nd();\"":"").">".getime4display(eta($time1) * 15 - $tick_abzug)."</a><br>\n";
+				$f3_liste_eta = $f3_liste_eta ."				<a href=\"".$scripturl."&action=savechange&fbid=".$fbid."&incsave=".$incunsave."\"".($Benutzer['help']?" onmouseover=\"return overlib('Koords rot = Unsave<br>Koords schwarz = Save<br>Klick hier um zu ändern');\" onmouseout=\"return nd();\"":"").">".getime4display(eta($time1) * $Ticks['lange'] - $tick_abzug)."</a><br>\n";
 				$display_line=1;
 				$incsunsafe += $incunsave;
 			}
 
 // Verteidigen <-
 			if (( $f_mode == 2 ) && ( $v_gala == $koord_g ) && ( $v_plan == $koord_p )) {
-				$scan = "<a href=\"./main.php?modul=showgalascans&xgala=".$a_gala."&xplanet=".$a_plan."\">".GetScans($SQL_DBConn, $a_gala, $a_plan)."</a>";
+//				$scan = "<a href=\"./main.php?modul=showgalascans&xgala=".$a_gala."&xplanet=".$a_plan."\">".GetScans2($SQL_DBConn, $a_gala, $a_plan)."</a>";
+        $scan = Get_Scan3($SQL_DBConn,$a_gala,$a_plan,$Benutzer['help'],0);
 				$flonr = mysql_result($SQL_Result_fleets, $x, 'flottennr');
 				$fbid = mysql_result($SQL_Result_fleets, $x, 'id');
 				$lnk = "<a href=\"".$scripturl."&action=flonrchange&fbid=".$fbid."&flonr=".$flonr."\"".($Benutzer['help']?" onmouseover=\"return overlib('Hier kannst du die Flott Nr. ändern. ');\" onmouseout=\"return nd();\"":"").">#".($flonr == 0?"?":$flonr)."</a>";
 				$f4_liste_namen = $f4_liste_namen."				".$a_gala.":".$a_plan." <a href=\"./main.php?modul=flotteaendern&id=".mysql_result($SQL_Result_user, $n, 'id')."&flottenid=".$fbid."\" onmouseover=\"return overlib('Eingetragen von ".mysql_result($SQL_Result_fleets, $x, 'erfasser')." um ".mysql_result($SQL_Result_fleets, $x, 'erfasst_am')." ');\" onmouseout=\"return nd();\">".gnuser($a_gala, $a_plan)."</a> ";
 				$f4_liste_namen = $f4_liste_namen.$lnk." ".$scan."<br>\n";
-				$f4_liste_eta = $f4_liste_eta ."				".getime4display(eta($time1) * 15 - $tick_abzug)."<br>\n";
+				$f4_liste_eta = $f4_liste_eta ."				".getime4display(eta($time1) * $Ticks['lange'] - $tick_abzug)."<br>\n";
 				$display_line=1;
 			}
 		}
@@ -197,6 +217,8 @@
 	<br>
 	<font size="-1"><b>(<u>Blau</u> makierte Spieler sind im Urlaubs-Modus)</b></font>
 	<br>
+	<font size="-1"><b>(<u>NAV-Rot</u> makierte Spieler waren seit 3 Tagen nicht mehr im TIC)</b></font>
+  <br>
 	<a href="<?=$scripturl?>&action=tcchange&tc=<?=$Benutzer['tcausw']?>&id=<?=$Benutzer['id']?>">Taktikscreen wechseln</a>
 </center>
 <!-- ENDE: inc_taktikbildschirm0 -->

@@ -55,7 +55,7 @@ $ftyp3[13] = 'Abfanj&auml;ger &quot;Horus&quot;';
 	// deffer-summen
 	unset($dsum);
 	$not_scanned=0;
-	$SQL_angreifer = mysql_query('SELECT * FROM `gn4flottenbewegungen` where verteidiger_galaxie='.$_GET['xgala'].' and verteidiger_planet='.$_GET['xplanet'].' and modus=1 ORDER BY eta;', $SQL_DBConn) or $error_code = 4;
+	$SQL_angreifer = tic_mysql_query('SELECT * FROM `gn4flottenbewegungen` where verteidiger_galaxie='.$_GET['xgala'].' and verteidiger_planet='.$_GET['xplanet'].' and modus=1 ORDER BY eta;', $SQL_DBConn) or $error_code = 4;
 	$SQL_Num = mysql_num_rows( $SQL_angreifer );
 	$atter_galas = '';
 	for ($n = 0; $n < $SQL_Num; $n++) {
@@ -64,7 +64,7 @@ $ftyp3[13] = 'Abfanj&auml;ger &quot;Horus&quot;';
 		$a_fnr    = mysql_result( $SQL_angreifer, $n, 'flottennr');
 		$atter_galas .= '<a href="./main.php?modul=showgalascans&displaymode=1&xgala='.$a_gala.'&xplanet='.$a_planet.'">'. $a_gala . ':' . $a_planet . '</a> ';
 		$sql = 'select * from `gn4scans` where rg='.$a_gala.' and rp='.$a_planet.' and type=2'; // mili scan
-		$SQL_result = mysql_query( $sql, $SQL_DBConn) or $error_code = 4;
+		$SQL_result = tic_mysql_query( $sql, $SQL_DBConn) or $error_code = 4;
 		$SQL_Num2 = mysql_num_rows( $SQL_result );
 		if ( $SQL_Num2 > 0 ){
 		$mode="angreifer";
@@ -96,7 +96,7 @@ while($line = mysql_fetch_array($SQL_result, MYSQL_ASSOC)){;
 		}
 	}
 
-	$SQL_verteidiger = mysql_query('SELECT * FROM `gn4flottenbewegungen` where verteidiger_galaxie='.$_GET['xgala'].' and verteidiger_planet='.$_GET['xplanet'].' and modus=2 ORDER BY eta;', $SQL_DBConn) or $error_code = 4;
+	$SQL_verteidiger = tic_mysql_query('SELECT * FROM `gn4flottenbewegungen` where verteidiger_galaxie='.$_GET['xgala'].' and verteidiger_planet='.$_GET['xplanet'].' and modus=2 ORDER BY eta;', $SQL_DBConn) or $error_code = 4;
 	$SQL_Num = mysql_num_rows( $SQL_verteidiger );
 	$deffer_galas = '<a href="./main.php?modul=showgalascans&displaymode=1&xgala='.$_GET['xgala'].'&xplanet='.$_GET['xplanet'].'">'. $_GET['xgala'] . ':' . $_GET['xplanet'] . '</a> ';
 	for ($n = 0; $n < $SQL_Num; $n++) {
@@ -105,7 +105,7 @@ while($line = mysql_fetch_array($SQL_result, MYSQL_ASSOC)){;
 		$d_fnr    = mysql_result( $SQL_verteidiger, $n, 'flottennr');
 		$deffer_galas .= '<a href="./main.php?modul=showgalascans&displaymode=1&xgala='.$d_gala.'&xplanet='.$d_planet.'">'. $d_gala . ':' . $d_planet . '</a> ';
 		$sql = 'select * from `gn4scans` where rg='.$d_gala.' and rp='.$d_planet.' and type=2'; // mili scan
-		$SQL_result = mysql_query( $sql, $SQL_DBConn) or $error_code = 4;
+		$SQL_result = tic_mysql_query( $sql, $SQL_DBConn) or $error_code = 4;
 		$SQL_Num2 = mysql_num_rows( $SQL_result );
 		if ( $SQL_Num2 > 0 and $d_fnr > 0 ){
 		$mode="verteidiger";
@@ -138,7 +138,7 @@ while($line = mysql_fetch_array($SQL_result, MYSQL_ASSOC)){;
 
 	// füge orbit des deffers hinzu
 	$sql = 'select * from `gn4scans` where rg='.$_GET['xgala'].' and rp='.$_GET['xplanet'].' and type=2'; // mili scan
-	$SQL_result = mysql_query( $sql, $SQL_DBConn) or $error_code = 4;
+	$SQL_result = tic_mysql_query( $sql, $SQL_DBConn) or $error_code = 4;
 	$SQL_Num2 = mysql_num_rows( $SQL_result );
 	if ( $SQL_Num2 > 0 ){
 		$mode="eigene";
@@ -157,7 +157,7 @@ while($line = mysql_fetch_array($SQL_result, MYSQL_ASSOC)){;
 	}
 
 	// füge NICHT-fliegenden flotte(n) des deffers hinzu
-	$SQL_rumflieg = mysql_query('SELECT * FROM `gn4flottenbewegungen` where angreifer_galaxie='.$_GET['xgala'].' and angreifer_planet='.$_GET['xplanet'].' ORDER BY eta;', $SQL_DBConn) or $error_code = 4;
+	$SQL_rumflieg = tic_mysql_query('SELECT * FROM `gn4flottenbewegungen` where angreifer_galaxie='.$_GET['xgala'].' and angreifer_planet='.$_GET['xplanet'].' ORDER BY eta;', $SQL_DBConn) or $error_code = 4;
 	$SQL_Num = mysql_num_rows( $SQL_rumflieg );
 	for ($n = 0; $n < 2-$SQL_Num; $n++) {
 		if ( $n < $SQL_Num )
@@ -169,7 +169,7 @@ while($line = mysql_fetch_array($SQL_result, MYSQL_ASSOC)){;
 			$fnr = $n+1;
 
 		$sql = 'select * from `gn4scans` where rg='.$_GET['xgala'].' and rp='.$_GET['xplanet'].' and type=2'; // mili scan
-		$SQL_result = mysql_query( $sql, $SQL_DBConn) or $error_code = 4;
+		$SQL_result = tic_mysql_query( $sql, $SQL_DBConn) or $error_code = 4;
 		$SQL_Num2 = mysql_num_rows( $SQL_result );
 		if ( $SQL_Num2 > 0 ) {
 			if ( $fnr == 2 ){
@@ -192,7 +192,7 @@ for($cnt = 0; $cnt <= 8; $cnt++){
 
 	// geschütze
 	$sql = 'select * from `gn4scans` where rg='.$_GET['xgala'].' and rp='.$_GET['xplanet'].' and type=3'; // geschütz scan
-	$SQL_result = mysql_query( $sql, $SQL_DBConn) or $error_code = 4;
+	$SQL_result = tic_mysql_query( $sql, $SQL_DBConn) or $error_code = 4;
 	$SQL_Num2 = mysql_num_rows( $SQL_result );
 	if ( $SQL_Num2 > 0 ){
 		$mode="eigene";
@@ -283,7 +283,7 @@ if($debug == 1){
 
 <?	// füge orbit des deffers hinzu
 	$sql = 'select * from `gn4scans` where rg='.$_GET['xgala'].' and rp='.$_GET['xplanet'].' and type=0'; // sektor scan
-	$SQL_result = mysql_query( $sql, $SQL_DBConn) or $error_code = 4;
+	$SQL_result = tic_mysql_query( $sql, $SQL_DBConn) or $error_code = 4;
 	$SQL_Num2 = mysql_num_rows( $SQL_result );
 	if ( $SQL_Num2 > 0 ){
 		$me = mysql_result( $SQL_result, 0, 'me');

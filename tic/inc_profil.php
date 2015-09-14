@@ -1,220 +1,194 @@
-
-<CENTER>
-  <TABLE WIDTH=70%>
-    <TR>
-      <TD BGCOLOR=#333333><font color="#FFFFFF"><B>Spieler Informationen</B></font></TD>
-    </TR>
-    <TR>
-      <TD>
-        <P CLASS="hell">
-        <FORM ACTION="./main.php" METHOD="POST">
-          <font>
-          <INPUT TYPE="hidden" NAME="modul" VALUE="profil">
-          <INPUT TYPE="hidden" NAME="action" VALUE="infoaendern">
-          </font>
-          <TABLE>
-            <TR>
-              <TD><font>Scantyp:</font></TD>
-              <TD> <font>
-                <SELECT NAME="lstScanTyp" SIZE=1>
+<table align="center" width="70%">
+    <tr>
+      <td class="datatablehead">Spieler Informationen</td>
+    </tr>
+    <tr align="left">
+      <td>
+        <form action="./main.php?modul=profil" method="post">
+          <input type="hidden" name="action" value="infoaendern" />
+          <table width="100%" class="fieldnormallight">
+            <tr>
+              <td>Scantyp:</td>
+              <td colspan="3">
+                <select name="lstScanTyp">
                   <?php
-                    foreach ($ScanTyp as $ScanTypNummer => $ScanTypName) {
+                    foreach ($ScanTyp as $ScanTypNummer => $ScanTypname) {
                             $zusatz = '';
-                            if ($ScanTypNummer == $Benutzer['scantyp']) $zusatz = ' SELECTED';
-                            echo '<OPTION VALUE="'.$ScanTypNummer.'"'.$zusatz.'>'.$ScanTypName.'</OPTION>';
+                            if ($ScanTypNummer == $Benutzer['scantyp']) $zusatz = ' selected="selected"';
+                            echo '<option value="'.$ScanTypNummer.'"'.$zusatz.'>'.$ScanTypname.'</option>';
                     }
                 ?>
-                </SELECT>
-                </font></TD>
-            </TR>
-            <TR>
-              <TD><font>Scanverstärker:</font></TD>
-              <TD><font>
-                <INPUT TYPE="text" NAME="txtSVs" MAXLENGTH=10 SIZE=10 VALUE="<?=ZahlZuText($Benutzer['svs'])?>">
-                </font></TD>
-              <TD><font>Scanblocker:</font></TD>
-              <TD><font>
-                <INPUT TYPE="text" NAME="txtSBs" MAXLENGTH=10 SIZE=10 VALUE="<?=ZahlZuText($Benutzer['sbs'])?>">
-                </font></TD>
-            </TR>
-            <TR>
-              <TD><font>Punkte:</font></TD>
-              <TD><font>
-                <INPUT TYPE="text" NAME="txtPunkte" MAXLENGTH=20 SIZE=10 VALUE="<?=ZahlZuText($Benutzer['punkte'])?>">
-                </font></TD>
-            </TR>
-            <TR>
-              <TD><font>Schiffe:</font></TD>
-              <TD><font>
-                <INPUT TYPE="text" NAME="txtSchiffe" MAXLENGTH=10 SIZE=10 VALUE="<?=ZahlZuText($Benutzer['schiffe'])?>">
-                </font></TD>
-              <TD><font>Defensiveinheiten:</font></TD>
-              <TD><font>
-                <INPUT TYPE="text" NAME="txtDefensiv" MAXLENGTH=10 SIZE=10 VALUE="<?=ZahlZuText($Benutzer['defensiv'])?>">
-                </font></TD>
-            </TR>
-            <TR>
-              <TD><font>Metallextraktoren:</font></TD>
-              <TD><font>
-                <INPUT TYPE="text" NAME="txtExen_m" MAXLENGTH=10 SIZE=10 VALUE="<?=ZahlZuText($Benutzer['exen_m'])?>">
-                </font></TD>
-              <TD><font>Kristallextraktoren:</font></TD>
-              <TD><font>
-                <INPUT TYPE="text" NAME="txtExen_k" MAXLENGTH=10 SIZE=10 VALUE="<?=ZahlZuText($Benutzer['exen_k'])?>">
-                </font></TD>
-            </TR>
-            <TR>
-              <TD><font><BR>
-                </font></TD>
-              <TD><font>
-                <INPUT TYPE="submit" VALUE="Informationen ändern">
-                </font></TD>
-            </TR>
-          </TABLE>
-        </FORM>
-        </p>
-      </TD>
-    </TR>
-    <TR>
-      <TD><font><BR>
-        &nbsp; </font></TD>
-    </TR>
-    <TR>
-      <TD BGCOLOR=#333333><font color="#FFFFFF"><B>Passwort ändern</B></font></TD>
-    </TR>
-    <TR>
-      <TD>
-        <P CLASS="hell">
-        <FORM ACTION="./main.php" METHOD="POST">
-          <font>
-          <INPUT TYPE="hidden" NAME="modul" VALUE="profil">
-          <INPUT TYPE="hidden" NAME="action" VALUE="passwortaendern">
-          </font>
-          <TABLE>
-            <TR>
-              <TD><font>neues Passwort:</font></TD>
-              <TD><font>
-                <INPUT TYPE="text" NAME="txtChPasswort" MAXLENGTH=50>
-                </font></TD>
-            </TR>
-            <TR>
-              <TD><font><BR>
-                </font></TD>
-              <TD><font>
-                <INPUT TYPE="submit" VALUE="Passwort ändern">
-                </font></TD>
-            </TR>
-          </TABLE>
-        </FORM>
-        </p>
-        </TD>
-    </TR>
-    <TR>
-      <TD>&nbsp;</TD>
-    </TR>
-		<TR><TD><BR></TD></TR>
-		<TR>
-			<TD BGCOLOR=#333333><FONT COLOR=#FFFFFF><B>Persönliche Daten</B></FONT></TD>
-		</TR>
-		<TR>
-		<TD>
-		<P CLASS="hell">
+                </select>
+                </td>
+            </tr>
+            <tr>
+              <td>Scanverst&auml;rker:</td>
+              <td>
+                <input type="text" name="txtSVs" maxlength="10" size="10" value="<?=ZahlZuText($Benutzer['svs'])?>" />
+                </td>
+              <td>Scanblocker:</td>
+              <td>
+                <input type="text" name="txtSBs" maxlength="10" size="10" value="<?=ZahlZuText($Benutzer['sbs'])?>" />
+                </td>
+            </tr>
+            <tr>
+              <td>Punkte:</td>
+              <td>
+                <input type="text" name="txtpunkte" maxlength="20" size="10" value="<?=ZahlZuText($Benutzer['punkte'])?>" />
+                </td>
+            </tr>
+            <tr>
+              <td>Schiffe:</td>
+              <td>
+                <input type="text" name="txtSchiffe" maxlength="10" size="10" value="<?=ZahlZuText($Benutzer['schiffe'])?>" />
+                </td>
+              <td>Defensiveinheiten:</td>
+              <td>
+                <input type="text" name="txtdefensiv" maxlength="10" size="10" value="<?=ZahlZuText($Benutzer['defensiv'])?>" />
+                </td>
+            </tr>
+            <tr>
+              <td>Metallextraktoren:</td>
+              <td>
+                <input type="text" name="txtExen_m" maxlength="10" size="10" value="<?=ZahlZuText($Benutzer['exen_m'])?>" />
+                </td>
+              <td>Kristallextraktoren:</td>
+              <td>
+                <input type="text" name="txtExen_k" maxlength="10" size="10" value="<?=ZahlZuText($Benutzer['exen_k'])?>" />
+                </td>
+            </tr>
+            <tr>
+              <td align="center" colspan="4">
+                <input type="submit" value="Informationen &auml;ndern" />
+              </td>
+            </tr>
+          </table>
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td class="datatablehead">Passwort &auml;ndern</td>
+    </tr>
+    <tr>
+      <td align="left">
+        <form action="./main.php?modul=profil" method="post">
+          <input type="hidden" name="action" value="passwortaendern" />
+          <table class="fieldnormallight" width="100%">
+            <tr>
+              <td>Neues Passwort:</td>
+              <td>
+                <input type="password" name="txtChPasswort" maxlength="50" />
+                </td>
+            </tr>
+            <tr>
+              <td>Wiederholen:</td>
+              <td>
+                <input type="password" name="txtChPasswort_p" maxlength="50" />
+                </td>
+            </tr>
+            <tr>
+              <td><br />
+                </td>
+              <td>
+                <input type="submit" value="Passwort &auml;ndern" />
+                </td>
+            </tr>
+          </table>
+        </form>
+        </td>
+    </tr>
+		<tr>
+			<td class="datatablehead">Pers&ouml;nliche Daten</td>
+		</tr>
+		<tr>
+		<td align="left">
 			<?
-				$sql = "SELECT authnick, handy, messangerID, infotext from gn4accounts where id=".$Benutzer["id"].";";
-				$SQL_Result = mysql_query($sql, $SQL_DBConn);
+				$sql = "select authnick, handy, messangerID, infotext from gn4accounts where id=".$Benutzer["id"].";";
+				$SQL_Result = tic_mysql_query($sql, $SQL_DBConn);
 				$pdaten = mysql_fetch_array($SQL_Result);
-				//echo mysql_error()."<br>".$sql;
+				//echo mysql_error()."<br />".$sql;
 			?>
-			<FORM ACTION="./main.php" METHOD="POST">
-			<INPUT TYPE="hidden" NAME="modul" VALUE="profil">
-			<INPUT TYPE="hidden" NAME="action" VALUE="personlich">
-			<table>
-			<tr><td>Handy-Nummer</td><td><input name="handy" value="<?=$pdaten[1]?>"></td></tr>
-			<tr><td>Messanger</td><td><input name="icq" value="<?=$pdaten[2]?>"></td><td>zB.: ICQ : 123 456 678</td></tr>
-			<tr><td>Zusatzinfos</td><td><input name="infotext" value="<?=$pdaten[3]?>"></td><td>
-      Authnick</td><td><input name="authnick" value="<?=$pdaten[0]?>"></td></tr>
-            <TR>
-              <TD><font>Zeitformat:</font></TD>
-              <TD> <font>
-                <SELECT NAME="lstZeitformat" SIZE=1>
+			<form action="./main.php?module=profil" method="post">
+			<input type="hidden" name="action" value="personlich" />
+			<table class="fieldnormallight" width="100%">
+			<tr><td>Handy-Nummer:</td><td><input name="handy" value="<?=$pdaten[1]?>" /></td></tr>
+			<tr><td>Messanger:</td><td><input name="icq" value="<?=$pdaten[2]?>" /></td><td>zB.: ICQ : 123 456 678</td></tr>
+			<tr><td>Zusatzinfos:</td><td><input name="infotext" value="<?=$pdaten[3]?>" /></td><td>
+      Authnick:</td><td><input name="authnick" value="<?=$pdaten[0]?>" /></td></tr>
+            <tr>
+              <td>Zeitformat:</td>
+              <td>
+                <select name="lstZeitformat">
                   <?php
-                    foreach ($Zeitformat as $ZeitformatNummer => $ZeitformatName) {
+                    foreach ($Zeitformat as $ZeitformatNummer => $Zeitformatname) {
                             $zusatz = '';
-                            if ($ZeitformatNummer == $Benutzer["zeitformat"]) $zusatz = ' SELECTED';
-                            echo '<OPTION VALUE="'.$ZeitformatNummer.'"'.$zusatz.'>'.$ZeitformatName.'</OPTION>';
+                            if ($ZeitformatNummer == $Benutzer["zeitformat"]) $zusatz = ' selected="selected"';
+                            echo '<option value="'.$ZeitformatNummer.'"'.$zusatz.'>'.$Zeitformatname.'</option>';
                     }
                 ?>
-                </SELECT>
-                </font></TD>
-            <TD><font>Taktikscreen:</font></TD>
-            <TD> <font>
+                </select>
+                </td>
+            <td>Taktikscreen:</td>
+            <td>
             <?php
                     echo '<select name="ticscreen" size="1">';
                     $freisel='';
                     $sperrsel='';
-                    if ( $Benutzer['tcausw'] == 1 ) $freisel=' SELECTED';
-                    else $spersel=' SELECTED';
+                    if ( $Benutzer['tcausw'] == 1 ) $freisel=' selected="selected"';
+                    else $sperrsel=' selected="selected"';
 
-                    echo '<option value="0"'.$spersel.'>Taktikscreen 1</option>';
+                    echo '<option value="0"'.$sperrsel.'>Taktikscreen 1</option>';
                     echo '<option value="1"'.$freisel.'>Taktikscreen 2</option>';
                     echo '</select>';
             ?>
+            </td>
             </tr>
+            <tr>
             <?php
             $selected='';
             if ( $Benutzer['help'] == 1 ){
-                 $selected = 'checked';
+                 $selected = 'checked="checked"';
                  }
 
             ?>
-            <td width="36%" height="38"><font size="-1">Hilfe
-            </font></td>
-            <td width="5%" height="38"> <font size="-1">
-                <input type="checkbox" name="check" <?php echo $selected; ?> >
-                </font></td>
-              <td width="59%" height="38"> <font size="-1">
-            <TR><TD><BR></TD><TD><INPUT TYPE="submit" VALUE="Persönliche Daten speichern"></TD></TR>
+            <td width="36%" height="38">Hilfe
+            </td>
+            <td width="5%" height="38"><input type="checkbox" name="check" <?php echo $selected; ?>/></td>
+            </tr>
+            <tr><td><br /></td><td><input type="submit" value="Pers&ouml;nliche Daten speichern" /></td></tr>
 			</table>
-			</FORM>
-				</P>
-			</TD>
-		</TR>
-    <TR>
-      <TD>&nbsp;</TD>
-    </TR>
-    <TR>
-      <TD BGCOLOR=#333333><font color="#FFFFFF"><B>Urlaubs-Modus</B></font></TD>
-    </TR>
-    <TR>
-      <TD>
-        <P CLASS="hell">
-        <FORM ACTION="./main.php" METHOD="POST">
-          <font>
-          <INPUT TYPE="hidden" NAME="modul" VALUE="profil">
-          <INPUT TYPE="hidden" NAME="action" VALUE="umod">
-          <INPUT TYPE="hidden" NAME="UModID" VALUE="<?=$Benutzer['id']?>">
-          </font>
-          <TABLE>
+			</form>
+
+			</td>
+		</tr>
+    <tr>
+      <td class="datatablehead">Urlaubs-Modus</td>
+    </tr>
+    <tr>
+      <td align="left">
+        <form action="./main.php?module=profil" method="post">
+          <input type="hidden" name="action" value="umod" />
+          <input type="hidden" name="UModID" value="<?=$Benutzer['id']?>" />
+          <table class="fieldnormallight" width="100%">
             <?php
               if ($Benutzer['umod'] == '') {
-                  echo '<TR>';
-                  echo '  <td><font>Zeitraum des Urlaubs:</td></font><td><font><INPUT TYPE="text" NAME="txtUModZeit" VALUE="'.date("d").'.'.date("m").'.'.date("Y").'-XX.XX.XXXX" MAXLENGTH=21 SIZE=SMALL> (Falls unbekannt einfach so lassen)</td></font>';
-                  echo '</TR>';
-                  echo '<TR>';
-                  echo '  <td><font><BR></td></font><td><font><INPUT TYPE="submit" VALUE="Urlaubs-Modus aktivieren"></td></font>';
-                  echo '</TR>';
+                  echo '<tr>';
+                   echo '  <td>Zeitraum des Urlaubs:</td><td><input type="text" name="txtUModZeit" value="'.date("d").'.'.date("m").'.'.date("Y").'-XX.XX.XXXX" maxlength="21" size="21" /> (Falls unbekannt einfach so lassen)</td>';
+                  echo '</tr>';
+                  echo '<tr>';
+                  echo '  <td><br /></td><td><input type="submit" value="Urlaubs-Modus aktivieren" /></td>';
+                  echo '</tr>';
               } else {
-                  echo '<TR>';
-                  echo '  <td><font>Zeitraum des Urlaubs:</td></font><td><font><B>'.$Benutzer['umod'].'</B><INPUT TYPE="hidden" NAME="txtUModZeit" VALUE=""></td></font>';
-                  echo '</TR>';
-                  echo '<TR>';
-                  echo '  <td><font><BR></td></font><td><font><INPUT TYPE="submit" VALUE="Urlaubs-Modus deaktivieren"></td></font>';
-                  echo '</TR>';
+                  echo '<tr>';
+                  echo '  <td>Zeitraum des Urlaubs:</td><td><B>'.$Benutzer['umod'].'</B><input type="hidden" name="txtUModZeit" value="" /></td>';
+                  echo '</tr>';
+                  echo '<tr>';
+                  echo '  <td><br /></td><td><input type="submit" value="Urlaubs-Modus deaktivieren" /></td>';
+                  echo '</tr>';
               }
           ?>
-          </TABLE>
-        </FORM>
-      </TD>
-    </TR>
-  </TABLE>
-</CENTER>
+          </table>
+        </form>
+      </td>
+    </tr>
+  </table>

@@ -25,7 +25,7 @@
 	if (!isset($_POST['flottenid'])) $_POST['flottenid'] = '';
 	if (!isset($_POST['id'])) $_POST['id'] = '';
 	if ($_POST['flottenid'] == '' || $_POST['id'] == '') $error_code = 8;
-	$SQL_Result = mysql_query('SELECT * FROM `gn4flottenbewegungen` WHERE id="'.$_POST['flottenid'].'";', $SQL_DBConn) or $error_code = 4;
+	$SQL_Result = tic_mysql_query('SELECT * FROM `gn4flottenbewegungen` WHERE id="'.$_POST['flottenid'].'";', $SQL_DBConn) or $error_code = 4;
 	if (mysql_num_rows($SQL_Result) != 1) $error_code = 8;
 	if ($error_code != 0)
 		include('./inc_errors.php');
@@ -56,7 +56,7 @@
 													$tmp = ' SELECTED';
 												else
 													$tmp = '';
-												echo '<OPTION VALUE="'.$n.'"'.$tmp.'>'.getime4display($n * 15 - $tick_abzug).'</OPTION>';
+												echo '<OPTION VALUE="'.$n.'"'.$tmp.'>'.getime4display($n * $Ticks['lange'] - $tick_abzug).'</OPTION>';
 											}
 											echo '</SELECT> Angriffszeit: <SELECT NAME="lst_Flugzeit" SIZE=1>';
 											for ($n = $Ticks['angriffsflug'] - 1; $n >= 0; $n--) {
@@ -64,7 +64,7 @@
 													$tmp = ' SELECTED';
 												else
 													$tmp = '';
-												echo '<OPTION VALUE="'.$n.'"'.$tmp.'>'.getime4display($n * 15).'</OPTION>';
+												echo '<OPTION VALUE="'.$n.'"'.$tmp.'>'.getime4display($n * $Ticks['lange']).'</OPTION>';
 											}
 											echo '</SELECT><BR>';
 											$tmp_selected = 1;
@@ -75,7 +75,7 @@
 													$tmp = ' SELECTED';
 												else
 													$tmp = '';
-												echo '<OPTION VALUE="'.$n.'"'.$tmp.'>'.getime4display($n * 15 - $tick_abzug).'</OPTION>';
+												echo '<OPTION VALUE="'.$n.'"'.$tmp.'>'.getime4display($n * $Ticks['lange'] - $tick_abzug).'</OPTION>';
 											}
 											echo '</SELECT> Verteidigungszeit: <SELECT NAME="lst_Flugzeit" SIZE=1>';
 											for ($n = $Ticks['angriffsflug'] - 1; $n >= 0; $n--) {
@@ -83,7 +83,7 @@
 													$tmp = ' SELECTED';
 												else
 													$tmp = '';
-												echo '<OPTION VALUE="'.$n.'"'.$tmp.'>'.getime4display($n * 15).'</OPTION>';
+												echo '<OPTION VALUE="'.$n.'"'.$tmp.'>'.getime4display($n * $Ticks['lange']).'</OPTION>';
 											}
 											echo '</SELECT><BR>';
 											$tmp_selected = 1;
@@ -98,7 +98,7 @@
 													$tmp = ' SELECTED';
 												else
 													$tmp = '';
-											echo '<OPTION VALUE="'.$n.'"'.$tmp.'>'.getime4display($n * 15 - $tick_abzug).'</OPTION>';
+											echo '<OPTION VALUE="'.$n.'"'.$tmp.'>'.getime4display($n * $Ticks['lange'] - $tick_abzug).'</OPTION>';
 										}
 										echo '</SELECT>';
 									?>
@@ -107,15 +107,17 @@
 									Flotte:
 									<SELECT NAME="lst_Flotte" SIZE=1>
 										<?
-											$selectflotte0 = '';
-											$selectflotte1 = '';
-											$selectflotte2 = '';
-											$var = 'selectflotte'.mysql_result($SQL_Result, 0, 'flottennr');
-											$$var = ' SELECTED';
-											echo '<OPTION VALUE="0"'.$selectflotte0.'>Unbekannt</OPTION>';
-											echo '<OPTION VALUE="1"'.$selectflotte1.'>1. Flotte</OPTION>';
-											echo '<OPTION VALUE="2"'.$selectflotte2.'>2. Flotte</OPTION>';
-										?>
+										$_name['0']='Unbekannt';
+                    $_name['1']='1. Flotte';
+                    $_name['2']='2. Flotte';
+                    for($x=0;$x<3;$x++){
+											$tmp ='';
+                      if($x== mysql_result($SQL_Result, 0, 'flottennr')){
+											$tmp = ' SELECTED';
+                      }
+											echo '<OPTION VALUE="'.$x.'"'.$tmp.'>'.$_name[$x].'</OPTION>';
+										}
+                    ?>
 									</SELECT>
 									<A HREF="javascript:document.frmAendern.submit()">Flottenbewegung ändern</A>
 								</TD>

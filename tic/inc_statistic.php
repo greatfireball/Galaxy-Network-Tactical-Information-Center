@@ -1,20 +1,14 @@
-<CENTER>
-<TABLE>
+<table align="center">
   <tr>
-    <td width="3">&nbsp;</td>
-    <td bgcolor="#6490BB" class="menu"><font size="-1" color="#99FF00"><b>Statistic
+    <td class="datatablehead">Statistic</td>
   </tr>
   <tr>
-    <td bgcolor="#0000FF" class="menu" width="3">&nbsp;</td>
-    <td bgcolor="#6490BB" class="menu" width="137"><font size="-1"><font face="Verdana" size="-1"><a href="./main.php?modul=statistik">TIC-Info</a></font></td>
+    <td class="fieldnormallight" width="137"><a href="./main.php?modul=statistik">TIC-Info</a></td>
   </tr>
   <tr>
-    <td bgcolor="#0000FF" class="menu" width="3">&nbsp;</td>
-    <td bgcolor="#6490BB" class="menu" width="137"><font face="Verdana" size="-1"><a href="./main.php?modul=show_login&sort=ASC">Anmeldezeiten</a></font></td>
+    <td class="fieldnormallight" width="137"><a href="./main.php?modul=show_login&amp;sort=ASC">Anmeldezeiten</a></td>
   </tr>
   <tr>
-    <td bgcolor="#0000FF" class="menu" width="3">&nbsp;</td>
-    <td bgcolor="#6490BB" class="menu" width="137"><font face="Verdana" size="-1"><a href="./main.php?modul=rankings">Rankings</a></font></td>
+    <td class="fieldnormallight" width="137"><a href="./main.php?modul=rankings">Rankings</a></td>
   </tr>
-  </TABLE>
-</CENTER>
+</table>

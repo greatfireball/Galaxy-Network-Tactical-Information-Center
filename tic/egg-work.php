@@ -46,8 +46,8 @@
 // Alle Atts anzeigen
     if ($modus == 0) {
 
-        $SQL_Result1 = mysql_query('SELECT galaxie, planet, allianz FROM `gn4accounts` ORDER BY galaxie, planet;', $SQL_DBConn);
-        $SQL_Result2 = mysql_query('SELECT * FROM `gn4flottenbewegungen` WHERE modus="1" && save="1" ORDER BY eta, verteidiger_galaxie, verteidiger_planet;', $SQL_DBConn);
+        $SQL_Result1 = tic_mysql_query('SELECT galaxie, planet, allianz FROM `gn4accounts` ORDER BY galaxie, planet;', $SQL_DBConn);
+        $SQL_Result2 = tic_mysql_query('SELECT * FROM `gn4flottenbewegungen` WHERE modus="1" && save="1" ORDER BY eta, verteidiger_galaxie, verteidiger_planet;', $SQL_DBConn);
 
         $SQL_Num1 = mysql_num_rows($SQL_Result1) or $SQL_Num1=0;
         $SQL_Num2 = mysql_num_rows($SQL_Result2) or $SQL_Num2=0;
@@ -97,7 +97,7 @@
             else {
                 $tmp_galaxie = substr($koord, 0, $tmp_pos);
                 $tmp_planet = substr($koord, $tmp_pos + 1);
-                $SQL_Result = mysql_query('SELECT * FROM `gn4flottenbewegungen` WHERE verteidiger_galaxie="'.$tmp_galaxie.'" AND verteidiger_planet="'.$tmp_planet.'" ORDER BY eta, angreifer_galaxie, angreifer_planet;', $SQL_DBConn);
+                $SQL_Result = tic_mysql_query('SELECT * FROM `gn4flottenbewegungen` WHERE verteidiger_galaxie="'.$tmp_galaxie.'" AND verteidiger_planet="'.$tmp_planet.'" ORDER BY eta, angreifer_galaxie, angreifer_planet;', $SQL_DBConn);
                 $incomming_counter = 0;
                 $deff_counter = 0;
                 $tmp_atter = '';
@@ -147,7 +147,7 @@ elseif($modus == 2) {
 
 
 		$sql='select * from `gn4scans` where rg='.$tmp_galaxie.' and rp='.$tmp_planet.' ';
-			$SQL_Result = mysql_query( $sql, $SQL_DBConn );
+			$SQL_Result = tic_mysql_query( $sql, $SQL_DBConn );
 		 $count =  mysql_num_rows($SQL_Result);
     if ( $count == 0 ) {
         echo 'Sorry - Keine Scans vorhanden.';

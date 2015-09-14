@@ -1,5 +1,5 @@
 <?PHP
-    // Ränge
+    // Rï¿½ge
     $RangName[0] = 'Mitglied';
     $RangName[1] = 'Kommodore';
     $RangName[2] = 'Vize Admiral';
@@ -20,7 +20,7 @@
     $Rang_Admiral = 3;
     $Rang_Techniker = 4;
     $Rang_STechniker = 5;
-    
+
     define("RANG_MITGLIED", 0);
     define("RANG_GC", 1);
     define("RANG_VIZEADMIRAL", 2);
@@ -30,8 +30,34 @@
 
     // Scantypen
     $ScanTyp[0] = 'Unbekannt';
-    $ScanTyp[1] = 'Militärscan';
+    $ScanTyp[1] = 'Militaerscan';
     $ScanTyp[2] = 'Newsscan';
+
+    // Attplaner Typen von Bytehoppers 20.07.05
+    $PlanerTyps[0] = "AllyScanner";
+    $PlanerTyps[1] = "AllyPlaner";
+    $PlanerTyps[2] = "MetaPlaner";
+    $PlanerTyps[3] = "SuperGauPlaner";
+
+   // grün
+    $ATTSTATUSINFO[0] = 'Planung';
+    $ATTSTATUSHTML[0] = 'aaffaa';
+   // gelb
+    $ATTSTATUSINFO[1] = 'VOLL';
+    $ATTSTATUSHTML[1] = 'FCB60E';
+   // grün
+    $ATTSTATUSINFO[2] = 'GESTARTET';
+    $ATTSTATUSHTML[2] = '0EBC1A';
+  // dunkles rot
+    $ATTSTATUSINFO[3] = 'STOP';
+    $ATTSTATUSHTML[3] = 'F4DFAC';
+ // pink
+    $ATTSTATUSINFO[4] = 'WARN DEFFER!';
+    $ATTSTATUSHTML[4] = 'E85AD6';
+ // ROT
+    $ATTSTATUSINFO[5] = 'ABBRUCH/RECALL!';
+    $ATTSTATUSHTML[5] = 'FF1B1B';
+
 
     // Allianzcodes
     $AllianzCode[0] = "<FONT COLOR=#0000FF><B>DEFCON-0</B></FONT>";
@@ -49,23 +75,16 @@
     $Zeitformat[1] = 'Stunden:Minuten';
     $Zeitformat[2] = 'Ticks';
 
-    // Schiffe
-    $Schiffe[0] = 'j';      // Jäger
-    $Schiffe[1] = 'b';      // Bomber
-    $Schiffe[2] = 'f';      // Fregatte
-    $Schiffe[3] = 'z';      // Zerstörer
-    $Schiffe[4] = 'kr';     // Kreuzer
-    $Schiffe[5] = 'sa';     // Schlachtschiff
-    $Schiffe[6] = 't';      // Trägerschiff
-    $Schiffe[7] = 'ko';     // Kommandoschiff
-    $Schiffe[8] = 'ka';     // Kaperschiff
-    $Schiffe[9] = 'su';     // Schutzschiff
+    define("LOG_SYSTEM", 0);
+    define("LOG_ERROR", 1);
+    define("LOG_SETSAFE", 2);
 
-    // Defensiveinheiten
-    $Defensiv[0] = 'lo';    // Leichtes Orbitalgeschütz
-    $Defensiv[1] = 'lr';    // Leichtes Raumgeschütz
-    $Defensiv[2] = 'mr';    // Mittleres Raumgeschütz
-    $Defensiv[3] = 'sr';    // Schweres Raumgeschütz
-    $Defensiv[4] = 'a';     // Abfangjäger
-    $Defensiv[5] = 'r';     // Raumbasis
+    $Ticks['lange']=15;
+	$SQL_Result = mysql_query('SELECT value FROM `gn4vars` WHERE name="tickdauer";');
+	if(mysql_num_rows($SQL_Result)==1)
+	{
+		$Ticks['lange'] = mysql_result($SQL_Result,0);
+	}
+
+    include './globalvars2.php';
 ?>

@@ -30,18 +30,18 @@
                     echo '  <TR><td BGCOLOR=#333333 WIDTH=45%><font size="-1"><FONT COLOR=#FFFFFF SIZE="-1"><B>Thema</B></FONT></td></font><td BGCOLOR=#333333 WIDTH=5%><font size="-1"><FONT COLOR=#FFFFFF SIZE="-1"><B><CENTER>Antworten</CENTER></B></FONT></td></font><td BGCOLOR=#333333 WIDTH=5%><font size="-1"><FONT COLOR=#FFFFFF SIZE="-1"><B><CENTER>Klicks</CENTER></B></FONT></td></font><td BGCOLOR=#333333 WIDTH=10%><font size="-1"><FONT COLOR=#FFFFFF SIZE="-1"><B><CENTER>Autor</CENTER></B></FONT></td></font><td BGCOLOR=#333333 WIDTH=15%><font size="-1"><FONT COLOR=#FFFFFF SIZE="-1"><B><CENTER>Letzte Antwort</CENTER></B></FONT></td></font><td BGCOLOR=#333333 WIDTH=10%><font size="-1"><FONT COLOR=#FFFFFF SIZE="-1"><B><CENTER>Letzter Autor</CENTER></B></FONT></td></font><td BGCOLOR=#333333 WIDTH=10%><font size="-1"><FONT COLOR=#FFFFFF SIZE="-1"><B><CENTER>Moderieren</CENTER></B></FONT></td></font></TR>';
                 else
                     echo '  <TR><td BGCOLOR=#333333 WIDTH=55%><font size="-1"><FONT COLOR=#FFFFFF SIZE="-1"><B>Thema</B></FONT></td></font><td BGCOLOR=#333333 WIDTH=5%><font size="-1"><FONT COLOR=#FFFFFF SIZE="-1"><B><CENTER>Antworten</CENTER></B></FONT></td></font><td BGCOLOR=#333333 WIDTH=5%><font size="-1"><FONT COLOR=#FFFFFF SIZE="-1"><B><CENTER>Klicks</CENTER></B></FONT></td></font><td BGCOLOR=#333333 WIDTH=10%><font size="-1"><FONT COLOR=#FFFFFF SIZE="-1"><B><CENTER>Autor</CENTER></B></FONT></td></font><td BGCOLOR=#333333 WIDTH=15%><font size="-1"><FONT COLOR=#FFFFFF SIZE="-1"><B><CENTER>Letzte Antwort</CENTER></B></FONT></td></font><td BGCOLOR=#333333 WIDTH=10%><font size="-1"><FONT COLOR=#FFFFFF SIZE="-1"><B><CENTER>Letzter Autor</CENTER></B></FONT></td></font></TR>';
-                $SQL_Result = mysql_query('SELECT id, autorid, zeit, belongsto, allianz, topic, wichtig, views  FROM `gn4forum` WHERE allianz="'.$falli.'" AND belongsto="0" ORDER BY wichtig DESC, priority DESC, id DESC;', $SQL_DBConn) or $error_code = 4;
+                $SQL_Result = tic_mysql_query('SELECT id, autorid, zeit, belongsto, allianz, topic, wichtig, views  FROM `gn4forum` WHERE allianz="'.$falli.'" AND belongsto="0" ORDER BY wichtig DESC, priority DESC, id DESC;', $SQL_DBConn) or $error_code = 4;
                 $SQL_Num = mysql_num_rows($SQL_Result);
                 if ($SQL_Num == 0) {
                     echo '  <TR><td BGCOLOR=#'.$htmlstyle['hell'].' COLSPAN=7><font size="-1">Es wurden keine Themen in diesem Forum gefunden.</td></font></TR>';
                 } else {
                     for ($n = 0; $n < $SQL_Num; $n++) {
-                        $SQL_Result2 = mysql_query('SELECT name FROM `gn4accounts` WHERE  id="'.mysql_result($SQL_Result, $n, 'autorid').'";', $SQL_DBConn) or $error_code = 4;
+                        $SQL_Result2 = tic_mysql_query('SELECT name FROM `gn4accounts` WHERE  id="'.mysql_result($SQL_Result, $n, 'autorid').'";', $SQL_DBConn) or $error_code = 4;
                         if (mysql_num_rows($SQL_Result2) != 1)
                             $forum_autor = '<I>Unbekannt</I>';
                         else
                             $forum_autor = '<A HREF="./main.php?modul=anzeigen&id='.mysql_result($SQL_Result, $n, 'autorid').'">'.mysql_result($SQL_Result2, 0, 'name').'</A>';
-                        $SQL_Result2 = mysql_query('SELECT autorid, zeit FROM `gn4forum` WHERE belongsto="'.mysql_result($SQL_Result, $n, 'id').'" ORDER BY priority DESC LIMIT 1;', $SQL_DBConn) or $error_code = 4;
+                        $SQL_Result2 = tic_mysql_query('SELECT autorid, zeit FROM `gn4forum` WHERE belongsto="'.mysql_result($SQL_Result, $n, 'id').'" ORDER BY priority DESC LIMIT 1;', $SQL_DBConn) or $error_code = 4;
                         if (mysql_num_rows($SQL_Result2) == 1) {
                             $forum_zeit = mysql_result($SQL_Result2, 0, 'zeit');
                             $last_id = mysql_result($SQL_Result2, 0, 'autorid');
@@ -49,12 +49,12 @@
                             $forum_zeit = mysql_result($SQL_Result, $n, 'zeit');
                             $last_id = mysql_result($SQL_Result, $n, 'autorid');
                         }
-                        $SQL_Result2 = mysql_query('SELECT id, name FROM `gn4accounts` WHERE  id="'.$last_id.'";', $SQL_DBConn) or $error_code = 4;
+                        $SQL_Result2 = tic_mysql_query('SELECT id, name FROM `gn4accounts` WHERE  id="'.$last_id.'";', $SQL_DBConn) or $error_code = 4;
                         if (mysql_num_rows($SQL_Result2) != 1)
                             $last_autor = '<I>Unbekannt</I>';
                         else
                             $last_autor = '<A HREF="./main.php?modul=anzeigen&id='.mysql_result($SQL_Result2, 0, 'id').'">'.mysql_result($SQL_Result2, 0, 'name').'</A>';
-                        $SQL_Result2 = mysql_query('SELECT COUNT(*) FROM `gn4forum` WHERE belongsto="'.mysql_result($SQL_Result, $n, 'id').'";', $SQL_DBConn) or $error_code = 4;
+                        $SQL_Result2 = tic_mysql_query('SELECT COUNT(*) FROM `gn4forum` WHERE belongsto="'.mysql_result($SQL_Result, $n, 'id').'";', $SQL_DBConn) or $error_code = 4;
                         $SQL_Row = mysql_fetch_row($SQL_Result2);
                         $wichtig = '';
                         if (mysql_result($SQL_Result, $n, 'wichtig') != 0) $wichtig = '<B>(!)</B> ';
@@ -68,12 +68,12 @@
                 echo '</TABLE>';
             } else {
 // Topic anzeigen
-                $SQL_Result = mysql_query('SELECT *  FROM `gn4forum` WHERE  id="'.$ftopic.'" AND allianz="'.$falli.'";', $SQL_DBConn) or $error_code = 4;
+                $SQL_Result = tic_mysql_query('SELECT *  FROM `gn4forum` WHERE  id="'.$ftopic.'" AND allianz="'.$falli.'";', $SQL_DBConn) or $error_code = 4;
                 if ($SQL_Num == 0) {
                     echo '<B>Thema nicht gefunden!</B>';
                 } else {
-                    $SQL_Result2 = mysql_query('UPDATE `gn4forum` SET views="'.(mysql_result($SQL_Result, 0, 'views') + 1).'" WHERE  id="'.$ftopic.'";', $SQL_DBConn) or $error_code = 4;
-                    $SQL_Result2 = mysql_query('SELECT id, ticid, galaxie, planet, name, rang, allianz, umod FROM `gn4accounts` WHERE  id="'.mysql_result($SQL_Result, 0, 'autorid').'";', $SQL_DBConn) or $error_code = 4;
+                    $SQL_Result2 = tic_mysql_query('UPDATE `gn4forum` SET views="'.(mysql_result($SQL_Result, 0, 'views') + 1).'" WHERE  id="'.$ftopic.'";', $SQL_DBConn) or $error_code = 4;
+                    $SQL_Result2 = tic_mysql_query('SELECT id, ticid, galaxie, planet, name, rang, allianz, umod FROM `gn4accounts` WHERE  id="'.mysql_result($SQL_Result, 0, 'autorid').'";', $SQL_DBConn) or $error_code = 4;
                     if (mysql_num_rows($SQL_Result2) != 1) {
                         $forum_user['id'] = 0;
                         $forum_user['name'] = '<I>Unbekannt</I>';
@@ -89,13 +89,13 @@
                         $forum_user['koords'] = mysql_result($SQL_Result2, 0, 'galaxie').':'.mysql_result($SQL_Result2, 0, 'planet');
                         $forum_user['umod'] = mysql_result($SQL_Result2, 0, 'umod');
                         $forum_user['ticid'] = mysql_result($SQL_Result2, 0, 'ticid');
-                        $SQL_Result2 = mysql_query('SELECT COUNT(*) FROM `gn4forum` WHERE autorid="'.$forum_user['id'].'"', $SQL_DBConn);
+                        $SQL_Result2 = tic_mysql_query('SELECT COUNT(*) FROM `gn4forum` WHERE autorid="'.$forum_user['id'].'"', $SQL_DBConn);
                         $SQL_Row2 = mysql_fetch_row($SQL_Result2);
                         $forum_user['posts'] = $SQL_Row2[0];
-                        $SQL_Result2 = mysql_query('SELECT tag, name FROM `gn4allianzen` WHERE  id="'.$forum_user['allianz'].'";', $SQL_DBConn) or $error_code = 4;
+                        $SQL_Result2 = tic_mysql_query('SELECT tag, name FROM `gn4allianzen` WHERE  id="'.$forum_user['allianz'].'";', $SQL_DBConn) or $error_code = 4;
                         $forum_user['tag'] = mysql_result($SQL_Result2, 0, 'tag');
                         $forum_user['aliname'] = mysql_result($SQL_Result2, 0, 'name');
-                        $SQL_Result2 = mysql_query('SELECT value FROM `gn4vars` WHERE  ticid="'.$forum_user['ticid'].'" and name="ticeb";', $SQL_DBConn) or $error_code = 4;
+                        $SQL_Result2 = tic_mysql_query('SELECT value FROM `gn4vars` WHERE  ticid="'.$forum_user['ticid'].'" and name="ticeb";', $SQL_DBConn) or $error_code = 4;
                         $forum_user['meta'] = mysql_result($SQL_Result2, 0, 'value');
                     }
                     if ($falli == 0)
@@ -133,11 +133,11 @@
                     echo '      </td></font>';
                     echo '  </TR>';
                     // Alle Antworten posten
-                    $SQL_Result = mysql_query('SELECT *  FROM `gn4forum` WHERE belongsto="'.$ftopic.'" ORDER BY id ASC;', $SQL_DBConn) or $error_code = 4;
+                    $SQL_Result = tic_mysql_query('SELECT *  FROM `gn4forum` WHERE belongsto="'.$ftopic.'" ORDER BY id ASC;', $SQL_DBConn) or $error_code = 4;
                     $SQL_Num = mysql_num_rows($SQL_Result);
                     if ($SQL_Num > 0) {
                         for ($n = 0; $n < $SQL_Num; $n++) {
-                            $SQL_Result2 = mysql_query('SELECT id, ticid, galaxie, planet, name, rang, allianz, umod FROM `gn4accounts` WHERE  id="'.mysql_result($SQL_Result, $n, 'autorid').'";', $SQL_DBConn) or $error_code = 4;
+                            $SQL_Result2 = tic_mysql_query('SELECT id, ticid, galaxie, planet, name, rang, allianz, umod FROM `gn4accounts` WHERE  id="'.mysql_result($SQL_Result, $n, 'autorid').'";', $SQL_DBConn) or $error_code = 4;
                             if (mysql_num_rows($SQL_Result2) != 1) {
                                 $forum_user['id'] = 0;
                                 $forum_user['name'] = '<I>Unbekannt</I>';
@@ -153,13 +153,13 @@
                                 $forum_user['allianz'] = mysql_result($SQL_Result2, 0, 'allianz');
                                 $forum_user['koords'] = mysql_result($SQL_Result2, 0, 'galaxie').':'.mysql_result($SQL_Result2, 0, 'planet');
                                 $forum_user['umod'] = mysql_result($SQL_Result2, 0, 'umod');
-                                $SQL_Result2 = mysql_query('SELECT COUNT(*) FROM `gn4forum` WHERE autorid="'.$forum_user['id'].'"', $SQL_DBConn);
+                                $SQL_Result2 = tic_mysql_query('SELECT COUNT(*) FROM `gn4forum` WHERE autorid="'.$forum_user['id'].'"', $SQL_DBConn);
                                 $SQL_Row2 = mysql_fetch_row($SQL_Result2);
                                 $forum_user['posts'] = $SQL_Row2[0];
-                                $SQL_Result2 = mysql_query('SELECT tag, name FROM `gn4allianzen` WHERE  id="'.$forum_user['allianz'].'";', $SQL_DBConn) or $error_code = 4;
+                                $SQL_Result2 = tic_mysql_query('SELECT tag, name FROM `gn4allianzen` WHERE  id="'.$forum_user['allianz'].'";', $SQL_DBConn) or $error_code = 4;
                                 $forum_user['tag'] = mysql_result($SQL_Result2, 0, 'tag');
                                 $forum_user['aliname'] = mysql_result($SQL_Result2, 0, 'name');
-                                $SQL_Result2 = mysql_query('SELECT value FROM `gn4vars` WHERE  ticid="'.$forum_user['ticid'].'" and name="ticeb";', $SQL_DBConn) or $error_code = 4;
+                                $SQL_Result2 = tic_mysql_query('SELECT value FROM `gn4vars` WHERE  ticid="'.$forum_user['ticid'].'" and name="ticeb";', $SQL_DBConn) or $error_code = 4;
                                 $forum_user['meta'] = mysql_result($SQL_Result2, 0, 'value');
                             }
                             // echo '   <TR><td COLSPAN=3><font size="-1"><BR></td></font></TR>';
@@ -203,7 +203,7 @@
             $post_title = 'Neues Thema erstellen';
             $new_title = '';
         } else {
-            $SQL_Result = mysql_query('SELECT topic FROM `gn4forum` WHERE  id="'.$ftopic.'" AND belongsto="0";', $SQL_DBConn) or $error_code = 4;
+            $SQL_Result = tic_mysql_query('SELECT topic FROM `gn4forum` WHERE  id="'.$ftopic.'" AND belongsto="0";', $SQL_DBConn) or $error_code = 4;
             if (mysql_num_rows($SQL_Result) != 1) {
                 $post_title = '';
                 echo '<FONT COLOR=#FF0000><B>Thema nicht gefunden</B></FONT>';
@@ -231,7 +231,7 @@
         if ($ftopic == 0) {
             $post_title = '';
         } else {
-            $SQL_Result = mysql_query('SELECT * FROM `gn4forum` WHERE  id="'.$ftopic.'";', $SQL_DBConn) or $error_code = 4;
+            $SQL_Result = tic_mysql_query('SELECT * FROM `gn4forum` WHERE  id="'.$ftopic.'";', $SQL_DBConn) or $error_code = 4;
             if (mysql_num_rows($SQL_Result) != 1) {
                 $post_title = '';
                 echo '<FONT COLOR=#FF0000><B>Thema nicht gefunden</B></FONT>';
@@ -269,7 +269,7 @@
         else
             $access = 0;
         if ($p_belongsto != 0) {
-            $SQL_Result = mysql_query('SELECT allianz FROM `gn4forum` WHERE  id="'.$p_belongsto.'";', $SQL_DBConn) or $error_code = 4;
+            $SQL_Result = tic_mysql_query('SELECT allianz FROM `gn4forum` WHERE  id="'.$p_belongsto.'";', $SQL_DBConn) or $error_code = 4;
             if (mysql_num_rows($SQL_Result) != 1) {
                 echo '<FONT COLOR=#FF0000><B>Sie sind nicht berechtigt zu diesem Thema eine Antwort zu schreiben</B></FONT>';
                 $access = 0;
@@ -282,10 +282,10 @@
                 echo '<FONT COLOR=#FF0000><B>Sie müssen alle Felder ausfüllen</B></FONT>';
             } else {
                 $p_text = str_replace("\n", '<BR>', $p_text);
-                $SQL_Result = mysql_query('INSERT INTO `gn4forum` (ticid, autorid, zeit, belongsto, topic, text, allianz, priority) VALUES ("'.$Benutzer['ticid'].'", "'.$Benutzer['id'].'", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$p_belongsto.'", "'.$p_topic.'", "'.$p_text.'", "'.$p_alli.'", "'.$forumpriority.'")', $SQL_DBConn) or $error_code = 7;
-                if ($p_belongsto != 0) $SQL_Result = mysql_query('UPDATE `gn4forum` SET priority="'.$forumpriority.'" WHERE  id="'.$p_belongsto.'";', $SQL_DBConn) or $error_code = 4;
+                $SQL_Result = tic_mysql_query('INSERT INTO `gn4forum` (ticid, autorid, zeit, belongsto, topic, text, allianz, priority) VALUES ("'.$Benutzer['ticid'].'", "'.$Benutzer['id'].'", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$p_belongsto.'", "'.$p_topic.'", "'.$p_text.'", "'.$p_alli.'", "'.$forumpriority.'")', $SQL_DBConn) or $error_code = 7;
+                if ($p_belongsto != 0) $SQL_Result = tic_mysql_query('UPDATE `gn4forum` SET priority="'.$forumpriority.'" WHERE  id="'.$p_belongsto.'";', $SQL_DBConn) or $error_code = 4;
                 $forumpriority++;
-                $SQL_Result = mysql_query('UPDATE `gn4vars` SET value="'.$forumpriority.'" WHERE name="forumpriority";', $SQL_DBConn) or $error_code = 4;
+                $SQL_Result = tic_mysql_query('UPDATE `gn4vars` SET value="'.$forumpriority.'" WHERE name="forumpriority";', $SQL_DBConn) or $error_code = 4;
                 echo '<B>Post hinzugefügt</B><BR><A HREF="./main.php?modul=forum&faction=show&falli='.$p_alli.'&ftopic='.$p_belongsto.'">Zum Thema</A>';
             }
         }
@@ -296,7 +296,7 @@
         if (!isset($p_text)) $p_text = '';
         if (!isset($p_alli)) $p_alli = 0;
         if (!isset($p_belongsto)) $p_belongsto = 0;
-        $SQL_Result = mysql_query('SELECT allianz FROM `gn4forum` WHERE  id="'.$p_topicid.'" AND (allianz="0" OR allianz="'.$Benutzer['allianz'].'");', $SQL_DBConn) or $error_code = 4;
+        $SQL_Result = tic_mysql_query('SELECT allianz FROM `gn4forum` WHERE  id="'.$p_topicid.'" AND (allianz="0" OR allianz="'.$Benutzer['allianz'].'");', $SQL_DBConn) or $error_code = 4;
         if (mysql_num_rows($SQL_Result) != 1) {
             echo '<FONT COLOR=#FF0000><B>Dieses Topic wurde nicht gefunden</B></FONT>';
         } else {
@@ -305,7 +305,7 @@
             } else {
                 $p_text = str_replace("\n", '<BR>', $p_text);
                 $p_text = $p_text.'<BR><BR><I>Dieses Post wurde von '.$Benutzer['name'].' am '.date("d").'.'.date("m").'.'.date("Y").' um '.date("H").':'.date("i").' editiert</I>';
-                $SQL_Result = mysql_query('UPDATE `gn4forum` SET topic="'.$p_topic.'", text="'.$p_text.'" WHERE  id="'.$p_topicid.'"', $SQL_DBConn) or $error_code = 7;
+                $SQL_Result = tic_mysql_query('UPDATE `gn4forum` SET topic="'.$p_topic.'", text="'.$p_text.'" WHERE  id="'.$p_topicid.'"', $SQL_DBConn) or $error_code = 7;
                 echo '<B>Post editiert</B><BR><A HREF="./main.php?modul=forum&faction=show&falli='.$p_alli.'&ftopic='.$p_belongsto.'">Zum Thema</A>';
             }
         }
@@ -317,8 +317,8 @@
             echo '<FONT COLOR=#FF0000><B>Sie sind nicht berechtigt diesen Post zu löschen</B></FONT><BR><A HREF="./main.php?modul=forum&faction=show&falli='.$p_alli.'&ftopic=0">Zur Themenübersicht</A>';
         } else {
             if ($ftopic != 0) {
-                $SQL_Result = mysql_query('DELETE FROM `gn4forum` WHERE  id="'.$ftopic.'" AND allianz="'.$falli.'"', $SQL_DBConn);
-                $SQL_Result = mysql_query('DELETE FROM `gn4forum` WHERE belongsto="'.$ftopic.'" AND allianz="'.$falli.'"', $SQL_DBConn);
+                $SQL_Result = tic_mysql_query('DELETE FROM `gn4forum` WHERE  id="'.$ftopic.'" AND allianz="'.$falli.'"', $SQL_DBConn);
+                $SQL_Result = tic_mysql_query('DELETE FROM `gn4forum` WHERE belongsto="'.$ftopic.'" AND allianz="'.$falli.'"', $SQL_DBConn);
                 echo '<B>Post gelöscht</B><BR><A HREF="./main.php?modul=forum&faction=show&falli='.$falli.'&ftopic=0">Zur Themenübersicht</A>';
             } else {
                 echo '<FONT COLOR=#FF0000><B>Ungültiger Post</B></FONT><BR><A HREF="./main.php?modul=forum&faction=show&falli='.$p_alli.'&ftopic=0">Zur Themenübersicht</A>';
@@ -333,7 +333,7 @@
             echo '<FONT COLOR=#FF0000><B>Sie sind nicht berechtigt diesen Post wichtig zu makieren</B></FONT><BR><A HREF="./main.php?modul=forum&faction=show&falli='.$p_alli.'&ftopic=0">Zur Themenübersicht</A>';
         } else {
             if ($ftopic != 0) {
-                $SQL_Result = mysql_query('UPDATE `gn4forum` SET wichtig="1" WHERE  id="'.$ftopic.'" AND allianz="'.$falli.'"', $SQL_DBConn);
+                $SQL_Result = tic_mysql_query('UPDATE `gn4forum` SET wichtig="1" WHERE  id="'.$ftopic.'" AND allianz="'.$falli.'"', $SQL_DBConn);
                 echo '<B>Post wichtig makiert</B><BR><A HREF="./main.php?modul=forum&faction=show&falli='.$p_alli.'&ftopic=0">Zur Themenübersicht</A>';
             } else {
                 echo '<FONT COLOR=#FF0000><B>Ungültiger Post</B></FONT><BR><A HREF="./main.php?modul=forum&faction=show&falli='.$p_alli.'&ftopic=0">Zur Themenübersicht</A>';
@@ -347,7 +347,7 @@
             echo '<FONT COLOR=#FF0000><B>Sie sind nicht berechtigt diesen Post als unwichtig zu makieren</B></FONT><BR><A HREF="./main.php?modul=forum&faction=show&falli='.$p_alli.'&ftopic=0">Zur Themenübersicht</A>';
         } else {
             if ($ftopic != 0) {
-                $SQL_Result = mysql_query('UPDATE `gn4forum` SET wichtig="0" WHERE  id="'.$ftopic.'" AND allianz="'.$falli.'"', $SQL_DBConn);
+                $SQL_Result = tic_mysql_query('UPDATE `gn4forum` SET wichtig="0" WHERE  id="'.$ftopic.'" AND allianz="'.$falli.'"', $SQL_DBConn);
                 echo '<B>Post unwichtig makiert</B><BR><A HREF="./main.php?modul=forum&faction=show&falli='.$p_alli.'&ftopic=0">Zur Themenübersicht</A>';
             } else {
                 echo '<FONT COLOR=#FF0000><B>Ungültiger Post</B></FONT><BR><A HREF="./main.php?modul=forum&faction=show&falli='.$p_alli.'&ftopic=0">Zur Themenübersicht</A>';
