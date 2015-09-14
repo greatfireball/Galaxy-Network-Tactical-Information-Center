@@ -54,6 +54,7 @@
     $sf1ko=$_GET['sf1ko'];
     $sf1ka=$_GET['sf1ka'];
     $sf1su=$_GET['sf1su'];
+    $ziel1=$_GET['ziel1'];
     $status1=$_GET['status1'];
     $sf2j=$_GET['sf2j'];
     $sf2b=$_GET['sf2b'];
@@ -65,6 +66,7 @@
     $sf2ko=$_GET['sf2ko'];
     $sf2ka=$_GET['sf2ka'];
     $sf2su=$_GET['sf2su'];
+    $ziel2=$_GET['ziel2'];
     $status2=$_GET['status2'];
     $glo=$_GET['glo'];
     $glr=$_GET['glr'];
@@ -119,6 +121,7 @@
     if (!isset($sf1ko)) $sf1ko = 0;
     if (!isset($sf1ka)) $sf1ka = 0;
     if (!isset($sf1su)) $sf1su = 0;
+    if (!isset($ziel1)) $ziel1 = '';
     if (!isset($status1)) $status1 = 0;
     if (!isset($sf2j)) $sf2j = 0;
     if (!isset($sf2b)) $sf2b = 0;
@@ -130,6 +133,7 @@
     if (!isset($sf2ko)) $sf2ko = 0;
     if (!isset($sf2ka)) $sf2ka = 0;
     if (!isset($sf2su)) $sf2su = 0;
+    if (!isset($ziel2)) $ziel2 = '';
     if (!isset($status2)) $status2 = 0;
     if (!isset($glo)) $glo = 0;
     if (!isset($glr)) $glr = 0;
@@ -167,11 +171,11 @@
     if ($action == 'sm') {
         $SQL_Result = tic_mysql_query('DELETE FROM `gn4scans` WHERE rg="'.$rg.'" AND rp="'.$rp.'" AND type="2";', $SQL_DBConn);
         $insert_names = 'sf0j, sf0b, sf0f, sf0z, sf0kr, sf0sa, sf0t, sf0ko, sf0ka, sf0su';
-        $insert_names = $insert_names.', sf1j, sf1b, sf1f, sf1z, sf1kr, sf1sa, sf1t, sf1ko, sf1ka, sf1su, status1';
-        $insert_names = $insert_names.', sf2j, sf2b, sf2f, sf2z, sf2kr, sf2sa, sf2t, sf2ko, sf2ka, sf2su, status2';
+        $insert_names = $insert_names.', sf1j, sf1b, sf1f, sf1z, sf1kr, sf1sa, sf1t, sf1ko, sf1ka, sf1su, ziel1, status1';
+        $insert_names = $insert_names.', sf2j, sf2b, sf2f, sf2z, sf2kr, sf2sa, sf2t, sf2ko, sf2ka, sf2su, ziel2, status2';
         $insert_values = '"'.$sf0j.'", "'.$sf0b.'", "'.$sf0f.'", "'.$sf0z.'", "'.$sf0kr.'", "'.$sf0sa.'", "'.$sf0t.'", "'.$sf0ko.'", "'.$sf0ka.'", "'.$sf0su.'"';
-        $insert_values = $insert_values.', "'.$sf1j.'", "'.$sf1b.'", "'.$sf1f.'", "'.$sf1z.'", "'.$sf1kr.'", "'.$sf1sa.'", "'.$sf1t.'", "'.$sf1ko.'", "'.$sf1ka.'", "'.$sf1su.'", "'.$status1.'"';
-        $insert_values = $insert_values.', "'.$sf2j.'", "'.$sf2b.'", "'.$sf2f.'", "'.$sf2z.'", "'.$sf2kr.'", "'.$sf2sa.'", "'.$sf2t.'", "'.$sf2ko.'", "'.$sf2ka.'", "'.$sf2su.'", "'.$status2.'"';
+        $insert_values = $insert_values.', "'.$sf1j.'", "'.$sf1b.'", "'.$sf1f.'", "'.$sf1z.'", "'.$sf1kr.'", "'.$sf1sa.'", "'.$sf1t.'", "'.$sf1ko.'", "'.$sf1ka.'", "'.$sf1su.'", "'.$ziel1.'", "'.$status1.'"';
+        $insert_values = $insert_values.', "'.$sf2j.'", "'.$sf2b.'", "'.$sf2f.'", "'.$sf2z.'", "'.$sf2kr.'", "'.$sf2sa.'", "'.$sf2t.'", "'.$sf2ko.'", "'.$sf2ka.'", "'.$sf2su.'", "'.$ziel2.'", "'.$status2.'"';
         $SQL_Result = tic_mysql_query('INSERT INTO `gn4scans` (type, zeit, g, p, rg, rp, gen, '.$insert_names.') VALUES ("2", "'.date("H").':'.date("i").' '.date("d").'.'.date("m").'.'.date("Y").'", "'.$g.'", "'.$p.'", "'.$rg.'", "'.$rp.'", "'.$gen.'", '.$insert_values.');', $SQL_DBConn) or die("<html>\n<body>\nERROR 2 Konnte Datensatz nicht schreiben\n</body>\n</html>");
     }
     if ($action == 'sg') {

@@ -41,7 +41,7 @@
 	$mtime = $mtime[1] + $mtime[0];
 	$start_time = $mtime;
 
-	$version = "1.17.1";
+	$version = "1.19.1";
 
 	include("./accdata.php");
 	include("./globalvars.php");
