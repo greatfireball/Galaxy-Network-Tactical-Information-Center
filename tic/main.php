@@ -41,7 +41,7 @@
 	$mtime = $mtime[1] + $mtime[0];
 	$start_time = $mtime;
 
-	$version = "1.19.1";
+	$version = "1.36.2";
 
 	include("./accdata.php");
 	include("./globalvars.php");
@@ -265,7 +265,7 @@
 ?>
 				</td>
 				<td align="right" valign="top">
-					<a href="http://www.tic-entwickler.de" target="_blank"><img style="border:0px" src="./bilder/TICELogo.jpg" alt="Tic-Entwickler" /></a>
+					<a href="irc://irc.quakenet.org/tic-progger" target="_blank"><img style="border:0px" src="./bilder/TICELogo.jpg" alt="Tic-Entwickler" /></a>
 				</td>
 			</tr></table>
 		</div></div></div></div>
