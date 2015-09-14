@@ -25,7 +25,7 @@ if($Benutzer['rang']>=RANG_TECHNIKER and (isset($_POST['newchannel']) or isset($
 
 	};
 	if(isset($_POST['newchannel'])) {
-		$qry = sprintf ("INSERT INTO `gn4channels` (channame, joincommand, pass, ally, accessrang, inviterang, oprang, opcontrol, voicerang, answer) VALUES ('%s', '%s', '%s', %d, %d, %d, %d, %d, %d, %d, %d);",
+		$qry = sprintf ("INSERT INTO `gn4channels` (channame, joincommand, pass, ally, accessrang, inviterang, oprang, opcontrol, voicerang, answer) VALUES ('%s', '%s', '%s', %d, %d, %d, %d, %d, %d, %d);",
 			$channame, $joincommand, $pass, $ally, $accessrang, $inviterang, $oprang, $opcontrol, $voicerang, $answer
 			);
 	} elseif(isset($_POST['chanspeichern'])) {
@@ -37,10 +37,10 @@ if($Benutzer['rang']>=RANG_TECHNIKER and (isset($_POST['newchannel']) or isset($
 	} elseif(isset($_POST['delchannel'])) {
 		$qry = sprintf("delete from `gn4channels` where id=$id");
 	};
-	print ("<!--\n");
-	print_r($_POST);
-	print("\n -->");
-	print("<!-- ".$qry." -->\n");
+	//print ("<!--\n");
+	//print_r($_POST);
+	//print("\n -->");
+	//print("<!-- ".$qry." -->\n");
 	tic_mysql_query($qry,__FILE__,__LINE__);
 }
 ?>

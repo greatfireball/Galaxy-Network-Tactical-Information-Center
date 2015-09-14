@@ -16,7 +16,7 @@
 /////////////////////////////////////////////////////
 
     $status = array("Vollerversion");
-    $version = array(1,19,1);
+    $version = array(1,36,2);
 
     include("mysql.php");
     include("steps.php");

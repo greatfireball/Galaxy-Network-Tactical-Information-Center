@@ -34,7 +34,7 @@ CREATE TABLE `gn4accounts` (
   `versuche` int(1) NOT NULL default '0',
   `attplaner` tinyint(4) default '0',
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM;";
+) ;";
 
 $sqlquery['gn4allianzen'] = "DROP TABLE IF EXISTS `gn4allianzen`;
 CREATE TABLE `gn4allianzen` (
@@ -49,14 +49,14 @@ CREATE TABLE `gn4allianzen` (
   `code` int(11) NOT NULL default '0',
   `blind` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM;";
+) ;";
 
 $sqlquery['gn4cron'] = "DROP TABLE IF EXISTS `gn4cron`;
 CREATE TABLE `gn4cron` (
   `time` int(14) default NULL,
   `ticid` varchar(5) NOT NULL default '',
   `count` int(14) NOT NULL default '0'
-) TYPE=MyISAM;
+) ;
 INSERT INTO `gn4cron` VALUES (0, 1, 1);";
 
 $sqlquery['gn4flottenbewegungen'] = "DROP TABLE IF EXISTS `gn4flottenbewegungen`;
@@ -81,7 +81,7 @@ CREATE TABLE `gn4flottenbewegungen` (
   PRIMARY KEY  (`id`),
   INDEX	start_koords (`angreifer_galaxie`, `angreifer_planet`),
   INDEX	ziel_koords (`verteidiger_galaxie`, `verteidiger_planet`)
-) TYPE=MyISAM;";
+);";
 
 $sqlquery['gn4forum'] = "DROP TABLE IF EXISTS `gn4forum`;
 CREATE TABLE `gn4forum` (
@@ -99,7 +99,7 @@ CREATE TABLE `gn4forum` (
   `views` bigint(20) NOT NULL default '0',
   `geandert` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM;";
+) ;";
 
 $sqlquery['gn4incplanets'] = "DROP TABLE IF EXISTS `gn4incplanets`;
 CREATE TABLE `gn4incplanets` (
@@ -109,7 +109,7 @@ CREATE TABLE `gn4incplanets` (
   `bestaetigt` varchar(200) NOT NULL default '',
   `vorgemerkt` varchar(200) NOT NULL default '',
   `frei` tinyint(4) NOT NULL default '1'
-) TYPE=MyISAM;";
+) ;";
 
 $sqlquery['gn4log'] = "DROP TABLE IF EXISTS `gn4log`;
 CREATE TABLE `gn4log` (
@@ -124,7 +124,7 @@ CREATE TABLE `gn4log` (
   `type` tinyint(1) NOT NULL default '0',
   `ip` varchar(15) NOT NULL default '',
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM;";
+) ;";
 
 $sqlquery['gn4nachrichten'] = "DROP TABLE IF EXISTS `gn4nachrichten`;
 CREATE TABLE `gn4nachrichten` (
@@ -135,7 +135,7 @@ CREATE TABLE `gn4nachrichten` (
   `zeit` varchar(20) NOT NULL default '',
   `text` text NOT NULL,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM;";
+) ;";
 
 $sqlquery['gn4nachtwache'] = "DROP TABLE IF EXISTS `gn4nachtwache`;
 CREATE TABLE `gn4nachtwache` (
@@ -157,7 +157,7 @@ CREATE TABLE `gn4nachtwache` (
   `planet7` tinyint(2) NOT NULL default '0',
   `done7` enum('0','1') NOT NULL default '0',
   PRIMARY KEY  (`time`,`gala`)
-) TYPE=MyISAM;";
+) ;";
 
 $sqlquery['gn4scans'] = "DROP TABLE IF EXISTS `gn4scans`;
 CREATE TABLE `gn4scans` (
@@ -228,7 +228,7 @@ CREATE TABLE `gn4scans` (
   `gr` bigint(20) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   INDEX	scan_koords (`rg`, `rp`)
-) TYPE=MyISAM;";
+) ;";
 
 $sqlquery['gn4gnuser'] = "DROP TABLE IF EXISTS `gn4gnuser`;
 CREATE TABLE `gn4gnuser` (
@@ -241,7 +241,7 @@ CREATE TABLE `gn4gnuser` (
   `erfasst` varchar(32) NOT NULL default '',
   PRIMARY KEY  (`id`),
   INDEX	user_koords (`gala`, `planet`)
-) TYPE=MyISAM;";
+);";
 
 $sqlquery['gn4vars'] = "
 DROP TABLE IF EXISTS `gn4vars`;
@@ -251,7 +251,7 @@ CREATE TABLE `gn4vars` (
   `value` text NOT NULL,
   `ticid` varchar(5) NOT NULL default '',
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM;";
+) ;";
 
 $sqlquery['gn4meta'] = "
 DROP TABLE IF EXISTS `gn4meta`;
@@ -264,7 +264,7 @@ CREATE TABLE `gn4meta` (
   `wars` varchar(255) NOT NULL default '',
   `duell` varchar(20) default NULL,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM;";
+) ;";
 
 $sqlquery['gn4attplanung'] = "DROP TABLE IF EXISTS `gn4attplanung`;
 CREATE TABLE `gn4attplanung` (
@@ -282,14 +282,14 @@ CREATE TABLE `gn4attplanung` (
   `forallianz` int(11) default '0',
   PRIMARY KEY  (`lfd`),
   UNIQUE KEY `lfd` (`lfd`)
-) TYPE=MyISAM;";
+) ;";
 
 $sqlquery['gn4attflotten'] = "DROP TABLE IF EXISTS `gn4attflotten`;
 CREATE TABLE `gn4attflotten` (
   `lfd` int(11) default NULL,
   `id` int(11) default NULL,
   `flottenr` tinyint(4) default '1'
-) TYPE=MyISAM;";
+) ;";
 
 $sqlquery['gn4channels'] = "DROP TABLE IF EXISTS gn4channels;
 CREATE TABLE `gn4channels` (
@@ -307,6 +307,6 @@ CREATE TABLE `gn4channels` (
   `inviterang` tinyint(4) NOT NULL default '0',
   `opcontrol` tinyint(4) NOT NULL default '1',
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM;"
+) ;"
 
 ?>
