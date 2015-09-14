@@ -42,6 +42,9 @@
 				<td class="menu"><a href="./main.php?modul=scans"><img src="bilder/skin/menu_item_icon.bmp" alt="" style="padding:0px 5px 0px 5px;" />Scan-Erfassen</a></td>
 			</tr>
 			<tr>
+				<td class="menu"><a href="./main.php?modul=ircpaste"><img src="bilder/skin/menu_item_icon.bmp" alt="" style="padding:0px 5px 0px 5px;" />IRC-Paste</a></td>
+			</tr>
+			<tr>
 				<td class="menu"><a href="./main.php?modul=showgalascans&amp;displaytype=0&amp;xgala=<?=$Benutzer['galaxie']?>&amp;xplanet=<?=$Benutzer['planet']?>"><img src="bilder/skin/menu_item_icon.bmp" alt="" style="padding:0px 5px 0px 5px;" />Scans-Anzeige</a></td>
 			</tr>
 			<tr>
@@ -81,6 +84,11 @@
 		echo "			<tr>\n";
 		echo "				<td class=\"menu\"><a href=\"./main.php?modul=management_meta\"><img src=\"bilder/skin/menu_item_icon.bmp\" alt=\"\" style=\"padding:0px 5px 0px 5px;\" />Meta-Management</a></td>\n";
 		echo "			</tr>\n";
+		if ($Benutzer['rang'] >= $Rang_Techniker) {
+			echo "			<tr>\n";
+			echo "				<td class=\"menu\"><a href=\"./main.php?modul=management_channels\"><img src=\"bilder/skin/menu_item_icon.bmp\" alt=\"\" style=\"padding:0px 5px 0px 5px;\" />Channel-Management</a></td>\n";
+			echo "			</tr>\n";
+		}
 		echo "			<tr>\n";
 		echo "				<td class=\"menu\"><a href=\"./main.php?modul=userman\"><img src=\"bilder/skin/menu_item_icon.bmp\" alt=\"\" style=\"padding:0px 5px 0px 5px;\" />Benutzerverw.</a></td>\n";
 		echo "			</tr>\n";
@@ -106,6 +114,9 @@
 	</tr>
 	<tr><td>
 		<table cellspacing="1" style="width:100%;background:#000000;">
+			<tr>
+				<td class="menu"><a href="./main.php?modul=vag-rechner"><img src="bilder/skin/menu_item_icon.bmp" alt="" style="padding:0px 5px 0px 5px;" />Vag-Rechner</a></td>
+			</tr>
 			<tr>
 				<td class="menu"><a href="./main.php?modul=kampf"><img src="bilder/skin/menu_item_icon.bmp" alt="" style="padding:0px 5px 0px 5px;" />Kampf-Simu</a></td>
 			</tr>

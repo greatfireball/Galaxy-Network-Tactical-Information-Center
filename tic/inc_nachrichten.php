@@ -4,13 +4,13 @@
     <?PHP
         $ccode = "333333";
         if ($Benutzer['rang'] == $Rang_Mitglied) {
-           $SQL_Result = tic_mysql_query('SELECT * FROM `gn4nachrichten` where ticid="'.$Benutzer['ticid'].'" ORDER BY id DESC;', $SQL_DBConn) or die(mysql_errno()." - ".mysql_error());
+           $SQL_Result = tic_mysql_query('SELECT * FROM `gn4nachrichten` where ticid="'.$Benutzer['ticid'].'" OR ticid="alle" ORDER BY id DESC;', $SQL_DBConn) or die(mysql_errno()." - ".mysql_error());
         } else {
            if ($Benutzer['rang'] >= $Rang_VizeAdmiral) {
               // Auch SuperGau news anzeigen
-              $SQL_Result = tic_mysql_query('SELECT * FROM `gn4nachrichten` where ticid="'.$Benutzer['ticid'].'" or ticid="H'.$Benutzer['ticid'].'"  or ticid="SHC" ORDER BY id DESC;', $SQL_DBConn) or die(mysql_errno()." - ".mysql_error());
+              $SQL_Result = tic_mysql_query('SELECT * FROM `gn4nachrichten` where ticid="'.$Benutzer['ticid'].'" or ticid="H'.$Benutzer['ticid'].'"  or ticid="SHC" OR ticid="alle" ORDER BY id DESC;', $SQL_DBConn) or die(mysql_errno()." - ".mysql_error());
            } else {
-              $SQL_Result = tic_mysql_query('SELECT * FROM `gn4nachrichten` where ticid="'.$Benutzer['ticid'].'" or ticid="H'.$Benutzer['ticid'].'" ORDER BY id DESC;', $SQL_DBConn) or die(mysql_errno()." - ".mysql_error());
+              $SQL_Result = tic_mysql_query('SELECT * FROM `gn4nachrichten` where ticid="'.$Benutzer['ticid'].'" or ticid="H'.$Benutzer['ticid'].'" OR ticid="alle" ORDER BY id DESC;', $SQL_DBConn) or die(mysql_errno()." - ".mysql_error());
            }
         }
         $SQL_Num = mysql_num_rows($SQL_Result);

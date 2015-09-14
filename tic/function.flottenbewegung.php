@@ -66,9 +66,9 @@
 				$lst_Flugzeit = 20;
 				$rfdauer = 18;
 			} else {
-				$SQL_Result1 = tic_mysql_query("SELECT allianz, ticid FROM `gn4accounts` WHERE galaxie=".$txt_Angreifer_Galaxie." limit 1;", $SQL_DBConn);
+				$SQL_Result1 = tic_mysql_query("SELECT allianz, ticid FROM `gn4accounts` WHERE galaxie='".$txt_Angreifer_Galaxie."' limit 1;", $SQL_DBConn);
 				$ismeta1 = mysql_affected_rows();
-				$SQL_Result2 = tic_mysql_query("SELECT allianz, ticid FROM `gn4accounts` WHERE galaxie=".$txt_Verteidiger_Galaxie." limit 1;", $SQL_DBConn);
+				$SQL_Result2 = tic_mysql_query("SELECT allianz, ticid FROM `gn4accounts` WHERE galaxie='".$txt_Verteidiger_Galaxie."' limit 1;", $SQL_DBConn);
 				$ismeta2 = mysql_affected_rows();
 				if ($ismeta1 && $ismeta2 && mysql_result($SQL_Result1, 0, 'ticid') == mysql_result($SQL_Result2, 0, 'ticid')) { // meta-intern
 					if (mysql_result($SQL_Result1, 0, 'allianz') == mysql_result($SQL_Result2, 0, 'allianz')) { // alli-intern

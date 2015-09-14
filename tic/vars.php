@@ -1,5 +1,5 @@
 <?
-	$SQL_Result = tic_mysql_query('SELECT * FROM `gn4vars` where ticid="'.$Benutzer['ticid'].'" ORDER BY id;', $SQL_DBConn);
+	$SQL_Result = tic_mysql_query('SELECT * FROM `gn4vars` ORDER BY id;');
 	for ($n = 0; $n < mysql_num_rows($SQL_Result); $n++) {
 		$var = mysql_result($SQL_Result, $n, 'name');
 		$$var = mysql_result($SQL_Result, $n, 'value');
@@ -9,12 +9,12 @@
 	$MetaInfo = mysql_fetch_assoc($SQL_Result);
 
 	// Allianzen
-    $SQL_Result = tic_mysql_query("SELECT a.*, b.name as metaname FROM `gn4allianzen` as a LEFT JOIN gn4meta as b ON(a.ticid = b.id) ORDER BY tag;", $SQL_DBConn) or $error_code = 4;
-    $SQL_Num = mysql_num_rows($SQL_Result);
-    if ($SQL_Num == 0)
-    	$error_code = 12;
-    else {
-    	for ($n = 0; $n < $SQL_Num; $n++) {
+	$SQL_Result = tic_mysql_query("SELECT a.*, b.name as metaname FROM `gn4allianzen` as a LEFT JOIN gn4meta as b ON(a.ticid = b.id) ORDER BY tag;", $SQL_DBConn) or $error_code = 4;
+	$SQL_Num = mysql_num_rows($SQL_Result);
+	if ($SQL_Num == 0)
+		$error_code = 12;
+	else {
+		for ($n = 0; $n < $SQL_Num; $n++) {
 			$AllianzName[mysql_result($SQL_Result, $n, 'id')] = mysql_result($SQL_Result, $n, 'name');
 			$AllianzTag[mysql_result($SQL_Result, $n, 'id')] = mysql_result($SQL_Result, $n, 'tag');
 			$AllianzInfo[mysql_result($SQL_Result, $n, 'id')]['name']			= mysql_result($SQL_Result, $n, 'name');

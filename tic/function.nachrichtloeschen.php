@@ -1,7 +1,7 @@
 <?PHP
 // Nachricht löschen
     if ($_POST['action'] == 'nachrichtloeschen') {
-        if ($Benutzer['rang'] <= $Rang_GC)
+        if ($Benutzer['rang'] < $Rang_GC)
             $error_code = 5;
         else {
             if (!isset($_POST['id'])) $_POST['id'] = '';

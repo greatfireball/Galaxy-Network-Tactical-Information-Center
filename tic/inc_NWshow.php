@@ -181,6 +181,9 @@
             </tr>";
 
     $time = $nextweekstart;
+
+    $sql_insert = array();
+
     for($x = 0; $x < count($NW_times)-1;$x++)
     {
         echo "<tr><td style=\"width:80px;white-space:nowrap;\" class=\"".$style_class[1]."\">".$NW_times[$x]."-".$NW_times[$x+1]."</td>";
@@ -189,9 +192,18 @@
             echo "<td class=\"".$style_class[$y%2]."\">";
 
             if(isset($data[$time]))
+            {
                 $planet_id = $data[$time]['planet'.($y+1)];
+            }
+            else if(isset($data[$time-604800]))
+            {
+                $planet_id = $data[$time-604800]['planet'.($y+1)];
+                $sql_insert[$time] = $data[$time-604800];
+            }
             else
+            {
                 $planet_id = 0;
+            }
 
             echo "<select style=\"font-size:8pt;\" name=\"nextnachtwache[".($time)."][".$y."]\">";
             foreach($gala_member as $planet => $name)
@@ -211,6 +223,18 @@
     echo "  <tr class=\"datatablefoot\"><td colspan=\"8\"><input type=\"submit\" value=\"Speichern\" /></td></tr>
           </table>
           </form></td></tr></table>";
+
+    foreach($sql_insert as $time => $data)
+    {
+        $sqlquery1 = array();
+        $sqlquery2 = array();
+        for($i = 1; $i <= 7;$i++)
+        {
+            $sqlquery1[] = "planet".$i;
+            $sqlquery2[] = $data['planet'+$i];
+        }
+        tic_mysql_query("INSERT INTO gn4nachtwache (time, ticid, gala, ".implode(", ", $sqlquery1).") VALUES('".injsafe($time)."', '".$Benutzer['ticid']."', '".injsafe($selected_gala)."', '".implode("', '", $sqlquery2)."')") or die(tic_mysql_error(__FILE__, __LINE__));
+    }
 
 ?>
 <!-- ENDE: inc_NWshow -->

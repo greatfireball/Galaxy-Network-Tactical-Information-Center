@@ -30,7 +30,7 @@ CREATE TABLE `gn4accounts` (
   `zeitformat` varchar(8) NOT NULL default 'hh:mm',
   `taktiksort` varchar(10) NOT NULL default '0 asc',
   `help` int(1) NOT NULL default '1',
-  `tcausw` char(1) NOT NULL default '0',
+  `tcausw` char(1) NOT NULL default '1',
   `versuche` int(1) NOT NULL default '0',
   `attplaner` tinyint(4) default '0',
   PRIMARY KEY  (`id`)
@@ -290,5 +290,23 @@ CREATE TABLE `gn4attflotten` (
   `id` int(11) default NULL,
   `flottenr` tinyint(4) default '1'
 ) TYPE=MyISAM;";
+
+$sqlquery['gn4channels'] = "DROP TABLE IF EXISTS gn4channels;
+CREATE TABLE `gn4channels` (
+  `id` mediumint(9) NOT NULL auto_increment,
+  `channame` varchar(63) NOT NULL default '',
+  `joincommand` varchar(127) NOT NULL default '',
+  `pass` varchar(63) NOT NULL default '',
+  `ally` mediumint(9) NOT NULL default '0',
+  `metachan` tinyint(4) NOT NULL default '0',
+  `guard` tinyint(4) NOT NULL default '0',
+  `answer` tinyint(4) NOT NULL default '0',
+  `voicerang` tinyint(4) NOT NULL default '-1',
+  `oprang` tinyint(4) NOT NULL default '2',
+  `accessrang` tinyint(4) NOT NULL default '0',
+  `inviterang` tinyint(4) NOT NULL default '0',
+  `opcontrol` tinyint(4) NOT NULL default '1',
+  PRIMARY KEY  (`id`)
+) TYPE=MyISAM;"
 
 ?>

@@ -66,31 +66,31 @@ $ftyp3[13] = 'Abfanj&auml;ger &quot;Horus&quot;';
 		$sql = 'select * from `gn4scans` where rg='.$a_gala.' and rp='.$a_planet.' and type=2'; // mili scan
 		$SQL_result = tic_mysql_query( $sql, $SQL_DBConn) or $error_code = 4;
 		$SQL_Num2 = mysql_num_rows( $SQL_result );
-		if ( $SQL_Num2 > 0 ){
-		$mode="angreifer";
-                $flotte = $a_fnr;
-                $eta = mysql_result( $SQL_angreifer, $n, 'eta');
-                 if($eta < $ka_eta) $ka_eta = $eta;
-		$flug[$mode][$a_gala.':'.$a_planet.'.'.$flotte][eta] = $eta;
-		$fzeit = mysql_result( $SQL_angreifer, $n, 'flugzeit');
-		if (($eta + $fzeit) > $ka) $ka = ($eta + $fzeit);
-		$flug[$mode][$a_gala.':'.$a_planet.'.'.$flotte][fzeit] = $fzeit;
-
-while($line = mysql_fetch_array($SQL_result, MYSQL_ASSOC)){;
- for($cnt = 0; $cnt <= 8; $cnt++){
-		$flug[$mode][$a_gala.':'.$a_planet.'.'.$flotte][$ftyp1[$cnt]] = $line['sf'.$a_fnr.$ftyp2[$cnt]];
-		$asum[$cnt] += $flug[$mode][$a_gala.':'.$a_planet.'.'.$flotte][$ftyp1[$cnt]];
- }
-// DEBUG ausgabe
- $f_output .= "Angreifer ".$a_gala.":".$a_planet.'.'.$flotte." erreicht das Ziel in ".$eta." Tick's und verbleibt ".$fzeit." von max 5 Tick's.<br>\n";
- $fl_output .= "Flotte ".$a_gala.":".$a_planet.'.'.$flotte.": ";
- for($cnt = 0; $cnt <= 8; $cnt++){
-  $fl_output .= $ftyp1[$cnt]." = ".$line['sf'.$a_fnr.$ftyp2[$cnt]]." ";
- }
- $fl_output .= "<br>\n";
-// DEBUG ende
-}
-		}else{
+		if ( $SQL_Num2 > 0 ) {
+			$mode="angreifer";
+			$flotte = $a_fnr;
+			$eta = mysql_result( $SQL_angreifer, $n, 'eta');
+			if($eta < $ka_eta) $ka_eta = $eta;
+			$flug[$mode][$a_gala.':'.$a_planet.'.'.$flotte][eta] = $eta;
+			$fzeit = mysql_result( $SQL_angreifer, $n, 'flugzeit');
+			if (($eta + $fzeit) > $ka) $ka = ($eta + $fzeit);
+			$flug[$mode][$a_gala.':'.$a_planet.'.'.$flotte][fzeit] = $fzeit;
+	
+			while ($line = mysql_fetch_array($SQL_result, MYSQL_ASSOC)) {
+				for($cnt = 0; $cnt <= 8; $cnt++){
+					$flug[$mode][$a_gala.':'.$a_planet.'.'.$flotte][$ftyp1[$cnt]] = $line['sf'.$a_fnr.$ftyp2[$cnt]];
+					$asum[$cnt] += $flug[$mode][$a_gala.':'.$a_planet.'.'.$flotte][$ftyp1[$cnt]];
+				}
+				// DEBUG ausgabe
+				$f_output .= "Angreifer ".$a_gala.":".$a_planet.'.'.$flotte." erreicht das Ziel in ".$eta." Ticks und verbleibt ".$fzeit." von max 5 Ticks.<br>\n";
+				$fl_output .= "Flotte ".$a_gala.":".$a_planet.'.'.$flotte.": ";
+				for($cnt = 0; $cnt <= 8; $cnt++){
+					$fl_output .= $ftyp1[$cnt]." = ".$line['sf'.$a_fnr.$ftyp2[$cnt]]." ";
+				}
+				$fl_output .= "<br>\n";
+				// DEBUG ende
+			}
+		} else {
 			$not_scanned++;
 			$missing .= "Scan von Angreifer ".$a_gala.":".$a_planet." fehlt.<br>\n";
 		}
@@ -107,30 +107,30 @@ while($line = mysql_fetch_array($SQL_result, MYSQL_ASSOC)){;
 		$sql = 'select * from `gn4scans` where rg='.$d_gala.' and rp='.$d_planet.' and type=2'; // mili scan
 		$SQL_result = tic_mysql_query( $sql, $SQL_DBConn) or $error_code = 4;
 		$SQL_Num2 = mysql_num_rows( $SQL_result );
-		if ( $SQL_Num2 > 0 and $d_fnr > 0 ){
-		$mode="verteidiger";
-                $flotte = $d_fnr;
-                $eta = mysql_result( $SQL_verteidiger, $n, 'eta');
-		$flug[$mode][$d_gala.':'.$d_planet.'.'.$flotte][eta] = $eta;
-		$fzeit = mysql_result( $SQL_verteidiger, $n, 'flugzeit');
-		if (($eta + $fzeit) > $kv) $kv = ($eta + $fzeit);
-		$flug[$mode][$d_gala.':'.$d_planet.'.'.$flotte][fzeit] = $fzeit;
+		if ( $SQL_Num2 > 0 and $d_fnr > 0 ) {
+			$mode="verteidiger";
+			$flotte = $d_fnr;
+			$eta = mysql_result( $SQL_verteidiger, $n, 'eta');
+			$flug[$mode][$d_gala.':'.$d_planet.'.'.$flotte][eta] = $eta;
+			$fzeit = mysql_result( $SQL_verteidiger, $n, 'flugzeit');
+			if (($eta + $fzeit) > $kv) $kv = ($eta + $fzeit);
+			$flug[$mode][$d_gala.':'.$d_planet.'.'.$flotte][fzeit] = $fzeit;
 
-while($line = mysql_fetch_array($SQL_result, MYSQL_ASSOC)){;
- for($cnt = 0; $cnt <= 8; $cnt++){
-		$flug[$mode][$d_gala.':'.$d_planet.'.'.$flotte][$ftyp1[$cnt]] = $line['sf'.$d_fnr.$ftyp2[$cnt]];
-		$dsum[$cnt] += $flug[$mode][$d_gala.':'.$d_planet.'.'.$flotte][$ftyp1[$cnt]];
- }
-// DEBUG ausgabe
- $f_output .= "Verteidiger ".$d_gala.":".$d_planet.'.'.$flotte." erreicht das Ziel in ".$eta." Tick's und verbleibt ".$fzeit." von max 20 Tick's.<br>\n";
- $fl_output .= "Flotte ".$a_gala.":".$a_planet.'.'.$flotte.": ";
- for($cnt = 0; $cnt <= 8; $cnt++){
-  $fl_output .= $ftyp1[$cnt]." = ".$line['sf'.$d_fnr.$ftyp2[$cnt]]." ";
- }
- $fl_output .= "<br>\n";
-// DEBUG ende
-}
-		}else{
+			while($line = mysql_fetch_array($SQL_result, MYSQL_ASSOC)) {
+				for($cnt = 0; $cnt <= 8; $cnt++) {
+					$flug[$mode][$d_gala.':'.$d_planet.'.'.$flotte][$ftyp1[$cnt]] = $line['sf'.$d_fnr.$ftyp2[$cnt]];
+					$dsum[$cnt] += $flug[$mode][$d_gala.':'.$d_planet.'.'.$flotte][$ftyp1[$cnt]];
+				}
+				// DEBUG ausgabe
+				$f_output .= "Verteidiger ".$d_gala.":".$d_planet.'.'.$flotte." erreicht das Ziel in ".$eta." Tick's und verbleibt ".$fzeit." von max 20 Tick's.<br>\n";
+				$fl_output .= "Flotte ".$d_gala.":".$d_planet.'.'.$flotte.": ";
+				for($cnt = 0; $cnt <= 8; $cnt++) {
+					$fl_output .= $ftyp1[$cnt]." = ".$line['sf'.$d_fnr.$ftyp2[$cnt]]." ";
+				}
+				$fl_output .= "<br>\n";
+				// DEBUG ende
+			}
+		} else {
 			$not_scanned++;
 			$missing .= "Scan von Verteidiger ".$d_gala.":".$d_planet." fehlt.<br>\n";
 		}
@@ -140,18 +140,17 @@ while($line = mysql_fetch_array($SQL_result, MYSQL_ASSOC)){;
 	$sql = 'select * from `gn4scans` where rg='.$_GET['xgala'].' and rp='.$_GET['xplanet'].' and type=2'; // mili scan
 	$SQL_result = tic_mysql_query( $sql, $SQL_DBConn) or $error_code = 4;
 	$SQL_Num2 = mysql_num_rows( $SQL_result );
-	if ( $SQL_Num2 > 0 ){
+	if ( $SQL_Num2 > 0 ) {
 		$mode="eigene";
-                $flotte = 0;
-
-while($line = mysql_fetch_array($SQL_result, MYSQL_ASSOC)){;
- for($cnt = 0; $cnt <= 8; $cnt++){
-//		$flug[$mode][$flotte][$ftyp1[$cnt]] = mysql_result( $SQL_result, 0, 'sf0'.$ftyp2[$cnt]);
-		$flug[$mode][$flotte][$ftyp1[$cnt]] = $line['sf0'.$ftyp2[$cnt]];
-		$dsum[$cnt] += $flug[$mode][$flotte][$ftyp1[$cnt]];
- }
-}
-	}else{
+		$flotte = 0;
+		while($line = mysql_fetch_array($SQL_result, MYSQL_ASSOC)) {
+			for($cnt = 0; $cnt <= 8; $cnt++){
+//				$flug[$mode][$flotte][$ftyp1[$cnt]] = mysql_result( $SQL_result, 0, 'sf0'.$ftyp2[$cnt]);
+				$flug[$mode][$flotte][$ftyp1[$cnt]] = $line['sf0'.$ftyp2[$cnt]];
+				$dsum[$cnt] += $flug[$mode][$flotte][$ftyp1[$cnt]];
+			}
+		}
+	} else {
 		$not_scanned++;
 		$missing .= "Scan des Angegriffenen ".$_GET['xgala'].":".$_GET['xplanet']." fehlt.<br>\n";
 	}
@@ -172,20 +171,20 @@ while($line = mysql_fetch_array($SQL_result, MYSQL_ASSOC)){;
 		$SQL_result = tic_mysql_query( $sql, $SQL_DBConn) or $error_code = 4;
 		$SQL_Num2 = mysql_num_rows( $SQL_result );
 		if ( $SQL_Num2 > 0 ) {
-			if ( $fnr == 2 ){
-		$mode="eigene";
-                $flotte = 1;
-for($cnt = 0; $cnt <= 8; $cnt++){
-		$flug[$mode][$flotte][$ftyp1[$cnt]] = mysql_result( $SQL_result, 0, 'sf1'.$ftyp2[$cnt]);
-		$dsum[$cnt] += $flug[$mode][$flotte][$ftyp1[$cnt]];
-}
+			if ( $fnr == 2 ) {
+				$mode="eigene";
+				$flotte = 1;
+				for($cnt = 0; $cnt <= 8; $cnt++) {
+					$flug[$mode][$flotte][$ftyp1[$cnt]] = mysql_result( $SQL_result, 0, 'sf1'.$ftyp2[$cnt]);
+					$dsum[$cnt] += $flug[$mode][$flotte][$ftyp1[$cnt]];
+				}
 			} else {
-		$mode="eigene";
-                $flotte = 2;
-for($cnt = 0; $cnt <= 8; $cnt++){
-		$flug[$mode][$flotte][$ftyp1[$cnt]] = mysql_result( $SQL_result, 0, 'sf2'.$ftyp2[$cnt]);
-		$dsum[$cnt] += $flug[$mode][$flotte][$ftyp1[$cnt]];
-}
+				$mode="eigene";
+				$flotte = 2;
+				for($cnt = 0; $cnt <= 8; $cnt++) {
+					$flug[$mode][$flotte][$ftyp1[$cnt]] = mysql_result( $SQL_result, 0, 'sf2'.$ftyp2[$cnt]);
+					$dsum[$cnt] += $flug[$mode][$flotte][$ftyp1[$cnt]];
+				}
 			}
 		}
 	}
@@ -196,11 +195,11 @@ for($cnt = 0; $cnt <= 8; $cnt++){
 	$SQL_Num2 = mysql_num_rows( $SQL_result );
 	if ( $SQL_Num2 > 0 ){
 		$mode="eigene";
-                $flotte = 0;
-for($cnt = 9; $cnt <= 13; $cnt++){
-		$flug[$mode][$flotte][$ftyp1[$cnt]] = mysql_result( $SQL_result, 0, $ftyp2[$cnt]);
-		$dsum[$cnt] += $flug[$mode][$flotte][$ftyp1[$cnt]];
-}
+		$flotte = 0;
+		for($cnt = 9; $cnt <= 13; $cnt++){
+			$flug[$mode][$flotte][$ftyp1[$cnt]] = mysql_result( $SQL_result, 0, $ftyp2[$cnt]);
+			$dsum[$cnt] += $flug[$mode][$flotte][$ftyp1[$cnt]];
+		}
 	}else{
 		$not_scanned++;
 		$missing .= "Geschütze des Angegriffenen ".$_GET['xgala'].":".$_GET['xplanet']." fehlen.<br>\n";
@@ -314,10 +313,10 @@ if($debug == 1){
 		}
 	} // end if != ''
 
-include_once("GNSimuclass.php");
-    $gnsimu = new GNSimu();
-    $gnsimu->mexen = $me;
-    $gnsimu->kexen = $ke;
+	include_once("GNSimuclass.php");
+	$gnsimu = new GNSimu();
+	$gnsimu->mexen = $me;
+	$gnsimu->kexen = $ke;
 
 	// Flotte zusammenzählen
 	if($tick != ''){
@@ -337,144 +336,147 @@ include_once("GNSimuclass.php");
 					}
 				}
 
-			for($k = 0; $k <= 2; $k++) {
-				for($cnt = 0; $cnt <= 13; $cnt++) {
-					$v[$cnt] += $flug[eigene][$k][$ftyp1[$cnt]];
+				for($k = 0; $k <= 2; $k++) {
+					for($cnt = 0; $cnt <= 13; $cnt++) {
+						$v[$cnt] += $flug[eigene][$k][$ftyp1[$cnt]];
+					}
 				}
-			}
+	
+				for($i=0;$i<14;$i++) {
+					$gnsimu->attaking[$i] = ($a[$i]?$a[$i]:0);
+					$gnsimu->deffending[$i] = ($v[$i]?$v[$i]:0);
+				}
+				echo '<table border="0" cellspacing="5" cellpadding="0" bgcolor="#999999"><tr><td>1ter Orbitaler Vortick<br>';
+				echo "Tick: ".$key." >> <br>Opfer: ". $_GET['xgala'].':'.$_GET['xplanet']." <br><font color=red>vs.</font> <br>Angreifer: ".$val[vortick2]."<br>\n";
+				$gnsimu->ComputeTwoTickBefore();
+				$gnsimu->PrintStatesGun();
+				echo '</td></tr></table><br>';
+	
+				for($i = 0; $i < 9; $i++) {
+					$averlust[$i] = $gnsimu->Oldatt[$i] - $gnsimu->attaking[$i];
+				}
+	
+				while(list($key2,$val2) = each($fa2)){
+				// gesamtverlust * eigene / gesamtflotte
+					for($cnt = 0; $cnt <= 8; $cnt++){
+						if ($averlust[$cnt] != 0) $flug[angreifer][$val2][$ftyp1[$cnt]] = round($flug[angreifer][$val2][$ftyp1[$cnt]] - ($averlust[$cnt] * $flug[angreifer][$val2][$ftyp1[$cnt]] / $gnsimu->Oldatt[$cnt]));
+					}
+				}
+			} // ende if($val[vortick2] != '') {
 
-			for($i=0;$i<14;$i++) {
-				$gnsimu->attaking[$i] = ($a[$i]?$a[$i]:0);
-				$gnsimu->deffending[$i] = ($v[$i]?$v[$i]:0);
-			}
-			echo '<table border="0" cellspacing="5" cellpadding="0" bgcolor="#999999"><tr><td>1ter Orbitaler Vortick<br>';
-			echo "Tick: ".$key." >> <br>Opfer: ". $_GET['xgala'].':'.$_GET['xplanet']." <br><font color=red>vs.</font> <br>Angreifer: ".$val[vortick2]."<br>\n";
-			$gnsimu->ComputeTwoTickBefore();
-			$gnsimu->PrintStatesGun();
-			echo '</td></tr></table><br>';
+			// VORTICK noch 1 zuvor
+			if($val[vortick1] != '') {
+				unset($v);
+				unset($a);
+				$fa = explode(" ",$val[vortick1]);
+				$fa2 = $fa;
+			
+				while(list($key2,$val2) = each($fa)){
+					for($cnt = 0; $cnt <= 8; $cnt++){
+						$a[$cnt] += $flug[angreifer][$val2][$ftyp1[$cnt]];
+					}
+				}
+			
+				for($k = 0; $k <= 2; $k++) {
+					for($cnt = 0; $cnt <= 13; $cnt++){
+						$v[$cnt] += $flug[eigene][$k][$ftyp1[$cnt]];
+					}
+				}
 
-for($i = 0; $i < 9; $i++) {
- $averlust[$i] = $gnsimu->Oldatt[$i] - $gnsimu->attaking[$i];
-}
+				for($i=0;$i<14;$i++) {
+					$gnsimu->attaking[$i] = ($a[$i]?$a[$i]:0);
+					$gnsimu->deffending[$i] = ($v[$i]?$v[$i]:0);
+				}
+				echo '<table border="0" cellspacing="5" cellpadding="0" bgcolor="#999999"><tr><td>2ter Orbitaler Vortick<br>';
+				echo "Tick: ".$key." >> <br>Opfer: ". $_GET['xgala'].':'.$_GET['xplanet']." <br><font color=red>vs.</font> <br>Angreifer: ".$val[vortick1]."<br>\n";
+				$gnsimu->ComputeOneTickBefore();
+				$gnsimu->PrintStatesGun();
+				echo '</td></tr></table><br>';
 
- while(list($key2,$val2) = each($fa2)){
-// gesamtverlust * eigene / gesamtflotte
-  for($cnt = 0; $cnt <= 8; $cnt++){
-   if ($averlust[$cnt] != 0) $flug[angreifer][$val2][$ftyp1[$cnt]] = round($flug[angreifer][$val2][$ftyp1[$cnt]] - ($averlust[$cnt] * $flug[angreifer][$val2][$ftyp1[$cnt]] / $gnsimu->Oldatt[$cnt]));
-  }
- }
+				for($i = 0; $i < 9; $i++) {
+					$averlust[$i] = $gnsimu->Oldatt[$i] - $gnsimu->attaking[$i];
+				}
 
-} // ende if($val[vortick2] != '') {
-// VORTICK noch 1 zuvor
-if($val[vortick1] != '') {
-unset($v);
-unset($a);
-  $fa = explode(" ",$val[vortick1]);
-  $fa2 = $fa;
+				while(list($key2,$val2) = each($fa2)){
+					// gesamtverlust * eigene / gesamtflotte
+					for($cnt = 0; $cnt <= 8; $cnt++){
+						if ($averlust[$cnt] != 0) $flug[angreifer][$val2][$ftyp1[$cnt]] = round($flug[angreifer][$val2][$ftyp1[$cnt]] - ($averlust[$cnt] * $flug[angreifer][$val2][$ftyp1[$cnt]] / $gnsimu->Oldatt[$cnt]));
+					}
+				}
+			} // ende if($val[vortick2] != '') {
 
- while(list($key2,$val2) = each($fa)){
-  for($cnt = 0; $cnt <= 8; $cnt++){
-   $a[$cnt] += $flug[angreifer][$val2][$ftyp1[$cnt]];
-  }
- }
+			// Sachbearbeitung der Kampfhandlungen schiff vs Schiff
+			if($val[att] != '') {
+				// Rücksetzten von variablen
+				unset($v);
+				unset($a);
+				$fa = explode(" ",$val[att]);
+				$fa2 = $fa;
+				$fv = explode(" ",$val[deff]);
+				$fv2 = $fv;
+				while(list($key2,$val2) = each($fa)){
+					for($cnt = 0; $cnt <= 8; $cnt++){
+						$a[$cnt] += $flug[angreifer][$val2][$ftyp1[$cnt]];
+					}
+				}
+				while(list($key2,$val2) = each($fv)){
+					for($cnt = 0; $cnt <= 8; $cnt++){
+						$v[$cnt] += $flug[verteidiger][$val2][$ftyp1[$cnt]];
+					}
+				}
+				for($k = 0; $k <= 2; $k++) {
+					for($cnt = 0; $cnt <= 13; $cnt++){
+						$v[$cnt] += $flug[eigene][$k][$ftyp1[$cnt]];
+					}
+				}
 
- for($k = 0; $k <= 2; $k++) {
-  for($cnt = 0; $cnt <= 13; $cnt++){
-   $v[$cnt] += $flug[eigene][$k][$ftyp1[$cnt]];
-  }
- }
+				for($i=0;$i<14;$i++) {
+					$gnsimu->attaking[$i] = ($a[$i]?$a[$i]:0);
+					$gnsimu->deffending[$i] = ($v[$i]?$v[$i]:0);
+				}
 
-			for($i=0;$i<14;$i++) {
-				$gnsimu->attaking[$i] = ($a[$i]?$a[$i]:0);
-				$gnsimu->deffending[$i] = ($v[$i]?$v[$i]:0);
-			}
-echo '<table border="0" cellspacing="5" cellpadding="0" bgcolor="#999999"><tr><td>2ter Orbitaler Vortick<br>';
-echo "Tick: ".$key." >> <br>Opfer: ". $_GET['xgala'].':'.$_GET['xplanet']." <br><font color=red>vs.</font> <br>Angreifer: ".$val[vortick1]."<br>\n";
-        $gnsimu->ComputeOneTickBefore();
-        $gnsimu->PrintStatesGun();
-echo '</td></tr></table><br>';
-
-for($i = 0; $i < 9; $i++) {
- $averlust[$i] = $gnsimu->Oldatt[$i] - $gnsimu->attaking[$i];
-}
-
- while(list($key2,$val2) = each($fa2)){
-// gesamtverlust * eigene / gesamtflotte
-  for($cnt = 0; $cnt <= 8; $cnt++){
-   if ($averlust[$cnt] != 0) $flug[angreifer][$val2][$ftyp1[$cnt]] = round($flug[angreifer][$val2][$ftyp1[$cnt]] - ($averlust[$cnt] * $flug[angreifer][$val2][$ftyp1[$cnt]] / $gnsimu->Oldatt[$cnt]));
-  }
- }
-
-} // ende if($val[vortick2] != '') {
-// Sachbearbeitung der Kampfhandlungen schiff vs Schiff
-if($val[att] != '') {
-// Rücksetzten von variablen
-unset($v);
-unset($a);
-  $fa = explode(" ",$val[att]);
-  $fa2 = $fa;
-  $fv = explode(" ",$val[deff]);
-  $fv2 = $fv;
- while(list($key2,$val2) = each($fa)){
-  for($cnt = 0; $cnt <= 8; $cnt++){
-   $a[$cnt] += $flug[angreifer][$val2][$ftyp1[$cnt]];
-  }
- }
- while(list($key2,$val2) = each($fv)){
-  for($cnt = 0; $cnt <= 8; $cnt++){
-   $v[$cnt] += $flug[verteidiger][$val2][$ftyp1[$cnt]];
-  }
- }
- for($k = 0; $k <= 2; $k++) {
-  for($cnt = 0; $cnt <= 13; $cnt++){
-   $v[$cnt] += $flug[eigene][$k][$ftyp1[$cnt]];
-  }
- }
-
-			for($i=0;$i<14;$i++) {
-				$gnsimu->attaking[$i] = ($a[$i]?$a[$i]:0);
-				$gnsimu->deffending[$i] = ($v[$i]?$v[$i]:0);
-			}
-//berechnung des gewählten tickes mit ausgabe
+				//berechnung des gewählten tickes mit ausgabe
 ?>
 <table border="0" cellspacing="5" cellpadding="0" bgcolor="#999999"><tr><td>
-<? if($val[deff] == '') { $tmp = '';} else {$tmp = " <br>Verteidiger:".$val[deff];}
-echo "Tick: ".$key." >> <br>Opfer: ". $_GET['xgala'].':'.$_GET['xplanet'].$tmp." <br><font color=red>vs.</font><br> Angreifer: ".$val[att]."<br>\n";
-    $gnsimu->Compute($i==$ticks-1);
-    $gnsimu->PrintStates();
+<?
+				if($val[deff] == '') { $tmp = '';} else {$tmp = " <br>Verteidiger:".$val[deff];}
+				echo "Tick: ".$key." >> <br>Opfer: ". $_GET['xgala'].':'.$_GET['xplanet'].$tmp." <br><font color=red>vs.</font><br> Angreifer: ".$val[att]."<br>\n";
+				$gnsimu->Compute($i==$ticks-1);
+				$gnsimu->PrintStates();
 ?>
 </td></tr></table><br>
 <?
-for($i = 0; $i < 9; $i++) {
- $averlust[$i] = $gnsimu->Oldatt[$i] - $gnsimu->attaking[$i];
-}
-for($i = 0; $i < 14; $i++) {
- $vverlust[$i] = $gnsimu->Olddeff[$i] - $gnsimu->deffending[$i];
-}
+				for($i = 0; $i < 9; $i++) {
+					$averlust[$i] = $gnsimu->Oldatt[$i] - $gnsimu->attaking[$i];
+				}
+				for($i = 0; $i < 14; $i++) {
+					$vverlust[$i] = $gnsimu->Olddeff[$i] - $gnsimu->deffending[$i];
+				}
 
- while(list($key2,$val2) = each($fa2)){
-// gesamtverlust * eigene / gesamtflotte
-  for($cnt = 0; $cnt <= 8; $cnt++){
-   if ($averlust[$cnt] != 0) $flug[angreifer][$val2][$ftyp1[$cnt]] = round($flug[angreifer][$val2][$ftyp1[$cnt]] - ($averlust[$cnt] * $flug[angreifer][$val2][$ftyp1[$cnt]] / $gnsimu->Oldatt[$cnt]));
-  }
- }
+				while(list($key2,$val2) = each($fa2)){
+					// gesamtverlust * eigene / gesamtflotte
+					for($cnt = 0; $cnt <= 8; $cnt++){
+						if ($averlust[$cnt] != 0) $flug[angreifer][$val2][$ftyp1[$cnt]] = round($flug[angreifer][$val2][$ftyp1[$cnt]] - ($averlust[$cnt] * $flug[angreifer][$val2][$ftyp1[$cnt]] / $gnsimu->Oldatt[$cnt]));
+					}
+				}
 
- while(list($key2,$val2) = each($fv2)){
-// gesamtverlust * eigene / gesamtflotte
-  for($cnt = 0; $cnt <= 8; $cnt++){
-   if ($vverlust[$cnt] != 0) $flug[verteidiger][$val2][$ftyp1[$cnt]] = round($flug[verteidiger][$val2][$ftyp1[$cnt]] - ($vverlust[$cnt] * $flug[verteidiger][$val2][$ftyp1[$cnt]] / $gnsimu->Olddeff[$cnt]));
-  }
- }
- for($k = 0; $k <= 2; $k++) {
-  for($cnt = 0; $cnt <= 13; $cnt++){
-   if ($vverlust[$cnt] != 0) $flug[eigene][$k][$ftyp1[$cnt]] = round($flug[eigene][$k][$ftyp1[$cnt]] - ($vverlust[$cnt] * $flug[eigene][$k][$ftyp1[$cnt]] / $gnsimu->Olddeff[$cnt]));
-  }
- }
-} // Ende der $val[att] != '' IFschleife
-} // ende der while-$tick schleife
-} // end if != ''
+				while(list($key2,$val2) = each($fv2)){
+					// gesamtverlust * eigene / gesamtflotte
+					for($cnt = 0; $cnt <= 8; $cnt++){
+						if ($vverlust[$cnt] != 0) $flug[verteidiger][$val2][$ftyp1[$cnt]] = round($flug[verteidiger][$val2][$ftyp1[$cnt]] - ($vverlust[$cnt] * $flug[verteidiger][$val2][$ftyp1[$cnt]] / $gnsimu->Olddeff[$cnt]));
+					}
+				}
 
-if($tick != '')    $gnsimu->PrintOverView();
+				for($k = 0; $k <= 2; $k++) {
+					for($cnt = 0; $cnt <= 13; $cnt++){
+						if ($vverlust[$cnt] != 0) $flug[eigene][$k][$ftyp1[$cnt]] = round($flug[eigene][$k][$ftyp1[$cnt]] - ($vverlust[$cnt] * $flug[eigene][$k][$ftyp1[$cnt]] / $gnsimu->Olddeff[$cnt]));
+					}
+				}
+			} // Ende der $val[att] != '' IFschleife
+		} // ende der while-$tick schleife
+	} // end if != ''
+
+	if($tick != '')    $gnsimu->PrintOverView();
 // include change #### "gnsim.php" ####
 echo "\n";
 ?>

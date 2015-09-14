@@ -69,6 +69,7 @@
             } else {
 // Topic anzeigen
                 $SQL_Result = tic_mysql_query('SELECT *  FROM `gn4forum` WHERE  id="'.$ftopic.'" AND allianz="'.$falli.'";', $SQL_DBConn) or $error_code = 4;
+                $SQL_Num=mysql_num_rows($SQL_Result);
                 if ($SQL_Num == 0) {
                     echo '<B>Thema nicht gefunden!</B>';
                 } else {
@@ -95,8 +96,8 @@
                         $SQL_Result2 = tic_mysql_query('SELECT tag, name FROM `gn4allianzen` WHERE  id="'.$forum_user['allianz'].'";', $SQL_DBConn) or $error_code = 4;
                         $forum_user['tag'] = mysql_result($SQL_Result2, 0, 'tag');
                         $forum_user['aliname'] = mysql_result($SQL_Result2, 0, 'name');
-                        $SQL_Result2 = tic_mysql_query('SELECT value FROM `gn4vars` WHERE  ticid="'.$forum_user['ticid'].'" and name="ticeb";', $SQL_DBConn) or $error_code = 4;
-                        $forum_user['meta'] = mysql_result($SQL_Result2, 0, 'value');
+                        $SQL_Result2 = tic_mysql_query('SELECT name FROM `gn4meta` WHERE  id="'.$forum_user['ticid'].'";', $SQL_DBConn) or $error_code = 4;
+                        $forum_user['meta'] = mysql_result($SQL_Result2, 0, 'name');
                     }
                     if ($falli == 0)
                         $forum_titel = '<A HREF="./main.php?modul=forum&faction=show&falli=0&ftopic=0">Zum allgemeinem Forum</A>';
@@ -159,8 +160,8 @@
                                 $SQL_Result2 = tic_mysql_query('SELECT tag, name FROM `gn4allianzen` WHERE  id="'.$forum_user['allianz'].'";', $SQL_DBConn) or $error_code = 4;
                                 $forum_user['tag'] = mysql_result($SQL_Result2, 0, 'tag');
                                 $forum_user['aliname'] = mysql_result($SQL_Result2, 0, 'name');
-                                $SQL_Result2 = tic_mysql_query('SELECT value FROM `gn4vars` WHERE  ticid="'.$forum_user['ticid'].'" and name="ticeb";', $SQL_DBConn) or $error_code = 4;
-                                $forum_user['meta'] = mysql_result($SQL_Result2, 0, 'value');
+                                $SQL_Result2 = tic_mysql_query('SELECT name FROM `gn4meta` WHERE id="'.$forum_user['ticid'].'";', $SQL_DBConn) or $error_code = 4;
+                                $forum_user['meta'] = mysql_result($SQL_Result2, 0, 'name');
                             }
                             // echo '   <TR><td COLSPAN=3><font size="-1"><BR></td></font></TR>';
                             echo '  <TR>';

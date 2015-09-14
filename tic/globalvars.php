@@ -1,5 +1,5 @@
 <?PHP
-    // Rï¿½ge
+    // Raenge
     $RangName[0] = 'Mitglied';
     $RangName[1] = 'Kommodore';
     $RangName[2] = 'Vize Admiral';
@@ -39,13 +39,13 @@
     $PlanerTyps[2] = "MetaPlaner";
     $PlanerTyps[3] = "SuperGauPlaner";
 
-   // grün
+   // gruen
     $ATTSTATUSINFO[0] = 'Planung';
     $ATTSTATUSHTML[0] = 'aaffaa';
    // gelb
     $ATTSTATUSINFO[1] = 'VOLL';
     $ATTSTATUSHTML[1] = 'FCB60E';
-   // grün
+   // gruen
     $ATTSTATUSINFO[2] = 'GESTARTET';
     $ATTSTATUSHTML[2] = '0EBC1A';
   // dunkles rot
@@ -79,12 +79,55 @@
     define("LOG_ERROR", 1);
     define("LOG_SETSAFE", 2);
 
-    $Ticks['lange']=15;
-	$SQL_Result = mysql_query('SELECT value FROM `gn4vars` WHERE name="tickdauer";');
-	if(mysql_num_rows($SQL_Result)==1)
-	{
-		$Ticks['lange'] = mysql_result($SQL_Result,0);
+    $Ticks['lange'] = 15;
+	$SQL_Result = mysql_query('SELECT value FROM gn4vars WHERE name="tickdauer";', $SQL_DBConn);
+	if(mysql_num_rows($SQL_Result) == 1) {
+		$Ticks['lange'] = mysql_result($SQL_Result,0,'value');
 	}
 
-    include './globalvars2.php';
+$vag_faktor = 2; // Faktor fuer den Verlustausgleich
+
+$db_format['sektor'] = array('pts', 's', 'd', 'me', 'ke', 'a');
+$db_format['deff'] = array('lo', 'lr', 'mr', 'sr', 'a');
+$db_format['schiffe'] = array('j', 'b', 'f', 'z', 'kr', 'sa', 't', 'ka', 'su');
+
+$alg_format['sektor'] = array('punkte', 'schiffe', 'deff', 'me', 'ke', 'ast');
+$alg_format['deff'] = array('lo', 'lr', 'mr', 'sr', 'aj');
+$alg_format['schiffe'] = array('j', 'b', 'f', 'z', 'kr', 'sl', 'tr', 'ka', 'ss');
+
+$html_format['sektor'] = array('Punkte', 'Schiffe', 'Defensiveinheiten',
+				'Metall Exen', 'Kristall Exen', 'Asteroiden'
+);
+$html_format['deff'] = array('Leichtes Orbitalgesch&uuml;tz &quot;Rubium&quot;', 'Leichtes Raumgesch&uuml;tz &quot;Pulsar&quot;',
+				'Mittleres Raumgesch&uuml;tz &quot;Coon&quot;', 'Schweres Raumgesch&uuml;tz &quot;Centurion&quot;',
+				'Abfangj&auml;ger &quot;Horus&quot;'
+);
+$html_format['schiffe'] = array('J&auml;ger &quot;Leo&quot;', 'Bomber &quot;Aquilae&quot;', 'Fregatten &quot;Fornax&quot;',
+				'Zerst&ouml;rer &quot;Draco&quot;', 'Kreuzer &quot;Goron&quot;', 'Schlachtschiffe &quot;Pentalin&quot;',
+				'Tr&auml;ger &quot;Zenit&quot;', 'Kaperschiffe &quot;Kleptor&quot;&quot;', 'Schutzschiffe &quot;Cancri&quot;'
+);
+
+$kosten['m']['j'] = 4000; $kosten['k']['j'] = 6000;
+$kosten['m']['b'] = 2000; $kosten['k']['b'] = 8000;
+$kosten['m']['f'] = 15000; $kosten['k']['f'] = 7500;
+$kosten['m']['z'] = 40000; $kosten['k']['z'] = 30000;
+$kosten['m']['kr'] = 65000; $kosten['k']['kr'] = 85000;
+$kosten['m']['sl'] = 250000; $kosten['k']['sl'] = 150000;
+$kosten['m']['tr'] = 200000; $kosten['k']['tr'] = 50000;
+$kosten['m']['ka'] = 1500; $kosten['k']['ka'] = 1000;
+$kosten['m']['ss'] = 1000; $kosten['k']['ss'] = 1500;
+$kosten['m']['lo'] = 6000; $kosten['k']['lo'] = 2000;
+$kosten['m']['lr'] = 20000; $kosten['k']['lr'] = 10000;
+$kosten['m']['mr'] = 60000; $kosten['k']['mr'] = 100000;
+$kosten['m']['sr'] = 200000; $kosten['k']['sr'] = 300000;
+$kosten['m']['aj'] = 1000; $kosten['k']['aj'] = 1000;
+
+$scan_teil = array(
+	"sek" => array("punkte", "schiffe", "deff", "me", "ke", "ast"),
+	"unit" => array("j", "b", "f", "z", "kr", "sl", "tr", "ka", "ss"),
+	"g" => array("lo", "lr", "mr", "sr", "aj"),
+);
+$scan_teil['mili'] = $scan_teil['unit'];
+
+include './globalvars2.php';
 ?>

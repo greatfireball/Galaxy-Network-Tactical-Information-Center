@@ -50,7 +50,7 @@
 		case 4:
 			if (isset($_GET['metanr'])) $_SESSION['metanr'] = $_GET['metanr'];
 			if (!isset($_SESSION['metanr'])) $_SESSION['metanr'] = $Benutzer['ticid'];
-			$SQL_Query = "SELECT * FROM gn4vars WHERE name='ticeb' ORDER BY value;";
+			$SQL_Query = "SELECT id as ticid, name as value FROM gn4meta ORDER BY name;";
 			$SQL_Result_metas = tic_mysql_query($SQL_Query, $SQL_DBConn) or $error_code = 4;
 			for ($m=0; $m<mysql_num_rows($SQL_Result_metas); $m++) {
 				$MetaNummer = mysql_result($SQL_Result_metas, $m, 'ticid');

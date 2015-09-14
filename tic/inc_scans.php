@@ -66,7 +66,8 @@
                 </tr>
                 <tr>
                   <td class="fieldnormallight" align="center">
-                    <form method="post" action="./main.php?modul=sektor_editor">
+                    <form method="post" action="./main.php?modul=scan_editor">
+			<input type="hidden" name="scanart" value="sek">
                       <br />
                       <input type="text" name="galakoord" size="4" maxlength="4" value="<?=$coords_gala?>" />
                       :
@@ -76,11 +77,12 @@
                   </td>
                 </tr>
                 <tr>
-                  <td align="center" class="datatablehead">Flotten-Eingabe&quot;von Hand&quot;</td>
+                  <td class="datatablehead" align="center" >Einheiten-Eingabe&quot;von Hand&quot;</td>
                 </tr>
                 <tr>
-                  <td class="fieldnormallight" align="center" >
-                    <form method="post" action="./main.php?modul=fleet_editor">
+                  <td class="fieldnormallight" align="center">
+                    <form method="post" action="./main.php?modul=scan_editor">
+			<input type="hidden" name="scanart" value="unit">
                       <br />
                       <input type="text" name="galakoord" size="4" maxlength="4" value="<?=$coords_gala?>" />
                       :
@@ -94,7 +96,8 @@
                 </tr>
                 <tr>
                   <td class="fieldnormallight" align="center" >
-                    <form method="post" action="./main.php?modul=gun_editor">
+                    <form method="post" action="./main.php?modul=scan_editor">
+			<input type="hidden" name="scanart" value="g">
                       <br />
                       <font size="-1">
                       <input type="text" name="galakoord" size="4" maxlength="4" value="<?=$coords_gala?>" />
@@ -103,6 +106,21 @@
                       <input type="submit" name="manuell" value="Manuell erfassen" />
                       <br />
                       </font>
+                    </form>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" class="datatablehead">Milit&auml;r-Eingabe&quot;von Hand&quot;</td>
+                </tr>
+		<tr>
+                  <td class="fieldnormallight" align="center" >
+                    <form method="post" action="./main.php?modul=scan_editor">
+			<input type="hidden" name="scanart" value="mili">
+                      <br />
+                      <input type="text" name="galakoord" size="4" maxlength="4" value="<?=$coords_gala?>" />
+                      :
+                      <input type="text" name="planetkoord" size="2" maxlength="2" value="<?=$coords_planet?>" />
+                      <input type="submit" name="manuell" value="Manuell erfassen" />
                     </form>
                   </td>
                 </tr>

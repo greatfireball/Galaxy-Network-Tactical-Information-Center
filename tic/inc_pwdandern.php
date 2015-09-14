@@ -17,7 +17,7 @@
 					<TABLE>
 						<TR>
 							<TD VALIGN="top">neues Passwort (2x):</TD>
-							<TD><INPUT TYPE="password" NAME="txtChPasswort" MAXLENGTH=50><br><INPUT TYPE="password" NAME="txtChPasswort_p" MAXLENGTH=50 /></TD>
+							<TD><INPUT TYPE="password" NAME="txtChPasswort" MAXLENGTH=50 /><br><INPUT TYPE="password" NAME="txtChPasswort_p" MAXLENGTH=50 /></TD>
 						</TR>
 						<TR>
 							<TD></TD>
